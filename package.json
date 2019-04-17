@@ -1,0 +1,19 @@
+{
+  "name": "digital-receipts",
+  "version": "1.0.0",
+  "description": "A monorepo for everything concerning digital receipts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Iteam1337/digital-receipts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Iteam1337/digital-receipts/issues"
+  },
+  "homepage": "https://github.com/Iteam1337/digital-receipts#readme"
+}
