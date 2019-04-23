@@ -6,16 +6,14 @@ const staticMails = require('./assets/staticMails')
 const qrcode = require('qrcode')
 
 app.use(require('body-parser').json())
-const receipts = [
-  {
-    hash: 'jdeuhhfgsfu',
-    receipt: {
-      shopName: 'Flygresor.se',
-      items: ['Stockholm Malmö resa']
-    },
-    date: '10:04'
-  }
-]
+const receipts = [{
+  hash: 'jdeuhhfgsfu',
+  receipt: {
+    shopName: 'tågresor.se',
+    items: ['Stockholm Malmö resa']
+  },
+  date: '10:04'
+}]
 
 function newReceipt(r) {
   return `
@@ -28,7 +26,9 @@ function newReceipt(r) {
 }
 
 function openReceipt(r) {
-  const { receipt } = r
+  const {
+    receipt
+  } = r
   const receiptJson = JSON.stringify(r)
   const receiptHtml = `
         <h2>${receipt.shopName}</h2>

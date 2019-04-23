@@ -1,60 +1,52 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <link rel="stylesheet" type="text/css" href="css.css">
-</head>
-
 <body>
     <p>
         Resa mellan Stockholm Malmö
     </p>
 
     <div style="display: table-cell;">
-    <div class="flights-row" style="display: table; width: 100;">
-        <div class="airlines">
-            <img src="/static/v2019032679/images/airlines/iata/DY.png" class="airline-logo" title="Norwegian"
-                alt="Norwegian" onerror="showresult_desktop.missingAirlineLogo(this);">
-        </div>
-        <div class="flight">
-            <span>
-                <div class="flight-row">
+        <div class="trains-row" style="display: table; width: 100;">
+            <div class="train">
+                <span>
+                    <div class="train-row">
 
 
-                    <span class="flight-row-cell iata-from">
-                        <span class="date-string date-string-short">Tor 9 Maj</span>
-                        <span class="time-iata">20:35 <strong>ARN</strong></span><br>Stockholm
-                    </span>
+                        <span class="train-row-cell iata-from">
+                            <span class="date-string date-string-short">Tor 9 Maj</span>
+                            <span class="time-iata">20:35 <strong>ARN</strong></span><br>Stockholm
+                        </span>
 
 
-                    <div class="flight-row-cell stops">
+                        <div class="train-row-cell stops">
 
-                        <div class="iata-wait-time">
+                            <div class="iata-wait-time">
 
 
-                            1h 5m</div>
+                                1h 5m</div>
 
-                        <div class="line">
+                            <div class="line">
+                            </div>
+
+                            <div class="stop-count direct">direktanslutning</div>
+
                         </div>
 
-                        <div class="stop-count direct">direktflyg</div>
+                        <span class="train-row-cell iata-to">
+                            <span class="date-string date-string-short">Tor 9 Maj</span>
+                            <span class="time-iata">21:40 <strong>MMX</strong></span><br> Malmö</span>
+
 
                     </div>
-
-                    <span class="flight-row-cell iata-to">
-                        <span class="date-string date-string-short">Tor 9 Maj</span>
-                        <span class="time-iata">21:40 <strong>MMX</strong></span><br> Malmö</span>
-
-
-                </div>
-            </span>
+                </span>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="buy">
-    <button onclick="buy()">KÖP</button>
-</div>
+    <div id="buy">
+        <button onclick="buy()">KÖP</button>
+    </div>
     <script type="text/javascript">
         async function buy() {
             await fetch('http://localhost:9000/buy', {

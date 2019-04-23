@@ -17,7 +17,7 @@ app.post('/buy', (req, res) => {
     body: JSON.stringify({
       hash: 'jdeuhhfgsfu',
       receipt: {
-        shopName: 'Flygresor.se',
+        shopName: 'tågresor.se',
         items: ['Stockholm Malmö resa']
       }
     })
