@@ -3,19 +3,22 @@ const app = express()
 const port = 7900
 const moment = require('moment')
 const staticMails = require('./assets/staticMails')
+const qrcode = require('qrcode')
 
 app.use(require('body-parser').json())
-const receipts = [{
+const receipts = [
+  {
     hash: 'jdeuhhfgsfu',
     receipt: {
-        shopName: 'Flygresor.se',
-        items: ['Stockholm Malmö resa']
+      shopName: 'Flygresor.se',
+      items: ['Stockholm Malmö resa']
     },
     date: '10:04'
-}]
+  }
+]
 
 function newReceipt(r) {
-    return `
+  return `
     <tr onclick='openReceipt(${JSON.stringify(r)})'>
         <td><input type="checkbox"/></td>
         <td><strong>${r.receipt.shopName}</strong></td>
@@ -25,40 +28,54 @@ function newReceipt(r) {
 }
 
 function openReceipt(r) {
-    console.log(JSON.stringify(r))
-    const {
-        receipt
-    } = r
-    const receiptHtml = `
+  const { receipt } = r
+  const receiptJson = JSON.stringify(r)
+  const receiptHtml = `
         <h2>${receipt.shopName}</h2>
         <ul>
-            ${Object.keys(receipt).map(k => {
+            ${Object.keys(receipt)
+              .map(k => {
                 return `<li>${k} : ${receipt[k]}</li>`
-            }).join('')}
+              })
+              .join('')}
         </ul>
         <pre>${JSON.stringify(receipt, null, 2)}</pre>
         <canvas id="canvas"></canvas>
-        <input style="display: block;" type="button" value="Ladda ner" onclick='downloadReceipt(${JSON.stringify(r)})'/>
+        <input style="display: block;" type="button" value="Ladda ner" onclick='downloadReceipt(${receiptJson})'/>
         <br/>
         <ul class="email-actions">
             <li><input type="button" value="Reply"/></li>
             <li><input type="button" value="Reply all"/></li>
-            <li><input type="button" value="Forward" onclick="forwardReceipt()"/></li>
+            <li><input type="button" value="Forward" onclick='forwardReceipt(${receiptJson})'/></li>
         </ul>
     `
-    document.getElementById('email-container').innerHTML = receiptHtml
-    QRCode.toCanvas(document.getElementById('canvas'), JSON.stringify(r))
+  document.getElementById('email-container').innerHTML = receiptHtml
+  QRCode.toCanvas(document.getElementById('canvas'), receiptJson)
 }
 
-app.post('/receipts', (req, res) => {
-    receipts.push({
-        ...req.body,
-        date: moment().format('HH:MM')
+function forwardReceipt(r) {
+  const result = prompt('To', 'kvitton@ekonomi.se')
+  if (result) {
+    fetch('/forward', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(r)
     })
-    res.sendStatus(200)
+  }
+}
+
+app.post('/emails', (req, res) => {
+  receipts.push({
+    ...req.body,
+    date: moment().format('HH:MM')
+  })
+  res.sendStatus(200)
 })
-app.get('/receipts', (req, res) => {
-    res.send(`
+app.get('/emails', (req, res) => {
+  res.send(`
     <!DOCTYPE html>
     <html>
         <head>
@@ -77,12 +94,20 @@ app.get('/receipts', (req, res) => {
             <div id="email-container"></div>
             <script type="text/javascript">
                 var openReceipt = ${eval(openReceipt)}
+                var forwardReceipt = ${eval(forwardReceipt)}
             </script>
         </body>
     </html>
     `)
 })
 
+app.post('/forward', (req, res) => {
+  qrcode.toFile(
+    `../user-accounting/assets/receipt-${Date.now()}.png`,
+    JSON.stringify(req.body)
+  )
+  res.sendStatus(200)
+})
 
 app.use(express.static('node_modules'))
 app.use(express.static('public'))

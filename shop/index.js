@@ -8,21 +8,21 @@ app.get('/', (req, res) => {
 })
 
 app.post('/buy', (req, res) => {
-    got('http://localhost:7900/receipts', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            hash: 'jdeuhhfgsfu',
-            receipt: {
-                shopName: 'Flygresor.se',
-                items: ['Stockholm Malmö resa']
-            }
-        })
+  got('http://localhost:7900/emails', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      hash: 'jdeuhhfgsfu',
+      receipt: {
+        shopName: 'Flygresor.se',
+        items: ['Stockholm Malmö resa']
+      }
     })
-    res.sendStatus(200)
+  })
+  res.sendStatus(200)
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
