@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css.css" />
+    <script src="/qrcode/build/qrcode.min.js"></script>
+    <script src="/socket.io-client/dist/socket.io.js"></script>
+  </head>
+  <body>
+    <div class="content">
+      <form
+        id="resultForm"
+        name="resultForm"
+        method="post"
+        action="/web/secure/expense/sort.xhtml"
+        enctype="application/x-www-form-urlencoded"
+      >
+        <input type="hidden" name="resultForm" value="resultForm" />
+        <span id="resultForm:result"></span
+        ><input
+          type="hidden"
+          name="javax.faces.ViewState"
+          id="j_id1:javax.faces.ViewState:3"
+          value="6893979733569971144:-7683708668989594846"
+          autocomplete="off"
+        />
+      </form>
+
+      <form
+        id="expenseForm"
+        name="expenseForm"
+        method="post"
+        action="/web/secure/expense/sort.xhtml"
+        enctype="multipart/form-data"
+      >
+        <input type="hidden" name="expenseForm" value="expenseForm" />
+        <div
+          id="expenseForm:j_idt335:j_idt339"
+          class="ui-outputpanel ui-widget headerContainer"
+        >
+          <h2>Hantera utlägg</h2>
+        </div>
+        <table class="datatable-header ">
+          <tbody>
+            <tr>
+              <td class="datatable-header-left">
+                <span class="datatable-header-buttons"></span>
+              </td>
+
+              <td class="datatable-header-right">
+                <div
+                  id="expenseForm:j_idt335:j_idt370"
+                  class="ui-outputpanel ui-widget"
+                >
+                  <span id="expenseForm:j_idt335:j_idt337" class="translation"
+                    >0 kvitton/bilder kvar att sortera</span
+                  >
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div
+          id="expenseForm:j_idt454:j_idt455"
+          class="ui-outputpanel ui-widget headerContainer"
+        >
+          <h2>Nya kvitton</h2>
+        </div>
+        <div id="expenseForm:files" class="ui-outputpanel ui-widget">
+          <div
+            id="expenseForm:j_idt506"
+            class="ui-outputpanel ui-widget information-box"
+          >
+            <span id="expenseForm:j_idt507" class="translation"
+              >Det finns inga fler kvitton att sortera.<br />Nya kvitton kan du
+              maila till
+              <a href="mailto:kvitton@expense.pe">kvitton@expense.pe</a> så
+              dyker de automatiskt upp här.</span
+            >
+          </div>
+        </div>
+        <div
+          id="expenseForm:j_idt515"
+          class="ui-outputpanel ui-widget form-panel clearfix "
+        >
+          <div
+            id="expenseForm:fileUpload"
+            class="ui-fileupload ui-widget ui-fileupload-responsive dragndrop-fileupload"
+          >
+            <div class="ui-fileupload-buttonbar ui-widget-header ui-corner-top">
+              <span
+                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-left ui-fileupload-choose"
+                tabindex="0"
+                role="button"
+                aria-labelledby="expenseForm:fileUpload_label"
+                ><span
+                  class="ui-button-icon-left ui-icon ui-c ui-icon-plusthick"
+                ></span
+                ><span
+                  id="expenseForm:fileUpload_label"
+                  class="ui-button-text ui-c"
+                  >Släpp filer här för att ladda upp, eller klicka för att
+                  bläddra</span
+                ><input
+                  type="file"
+                  id="expenseForm:fileUpload_input"
+                  name="expenseForm:fileUpload_input"
+                  tabindex="-1"
+                  multiple="multiple"
+              /></span>
+            </div>
+            <div
+              class="ui-fileupload-content ui-widget-content ui-corner-bottom"
+            >
+              <div
+                class="ui-messages ui-widget ui-helper-hidden ui-fileupload-messages"
+              >
+                <div class="ui-messages-error ui-corner-all">
+                  <a class="ui-messages-close" href="#"
+                    ><span class="ui-icon ui-icon-close"></span></a
+                  ><span class="ui-messages-error-icon"></span>
+                  <ul></ul>
+                </div>
+              </div>
+              <div class="ui-fileupload-files"><div></div></div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
+  <script type="text/javascript">
+    ;(async () => {
+      var socket = io()
+      const response = await fetch('/receiptsList.html')
+      const receiptsTemplate = await response.text()
+      const receipts = []
+      socket.on('receipt', r => {
+        receipts.push(r)
+
+        const receiptsHtml = receipts
+          .map(r => {
+            return `
+          <li>
+            <a href="${r}">
+                <img
+                  src="${r}"
+                  alt=""
+                  border="1"
+                  class="expense-file-preview"
+              /></a>
+              </li>
+          `
+          })
+          .join('')
+
+        document.getElementById(
+          'expenseForm:files'
+        ).innerHTML = receiptsTemplate
+        document.getElementById(
+          'expenseForm:j_idt510:table'
+        ).innerHTML = receiptsHtml
+        document.getElementById('expenseForm:j_idt335:j_idt337').innerText = `${
+          receipts.length
+        } kvitton/bilder kvar att sortera`
+      })
+    })()
+  </script>
+</html>

@@ -39,7 +39,7 @@ function openReceipt(r) {
               })
               .join('')}
         </ul>
-        <pre>${JSON.stringify(receipt, null, 2)}</pre>
+        <pre>${JSON.stringify(r, null, 2)}</pre>
         <canvas id="canvas"></canvas>
         <input style="display: block;" type="button" value="Ladda ner" onclick='downloadReceipt(${receiptJson})'/>
         <br/>

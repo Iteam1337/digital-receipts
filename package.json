@@ -4,7 +4,9 @@
   "description": "A monorepo for everything concerning digital receipts",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm start --prefix shop & npm start --prefix user-email & npm start --prefix user-accounting",
+    "start:iframe": "npm run start & nodemon ."
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,11 @@
   "bugs": {
     "url": "https://github.com/Iteam1337/digital-receipts/issues"
   },
-  "homepage": "https://github.com/Iteam1337/digital-receipts#readme"
+  "homepage": "https://github.com/Iteam1337/digital-receipts#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.11"
+  }
 }

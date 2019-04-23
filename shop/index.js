@@ -4,7 +4,7 @@ const app = express()
 const port = 9000
 
 app.get('/', (req, res) => {
-  res.sendFile(process.cwd() + '/index.html')
+  res.sendFile(__dirname + '/index.html')
 })
 
 app.post('/buy', (req, res) => {
@@ -25,4 +25,4 @@ app.post('/buy', (req, res) => {
   res.sendStatus(200)
 })
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Shop app listening on port ${port}!`))
