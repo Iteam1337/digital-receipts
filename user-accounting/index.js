@@ -18,13 +18,14 @@ const watcher = chokidar.watch(`${__dirname}/assets`, {
   persistent: true
 })
 
+fs.mkdir(`${__dirname}/assets`, () => {})
 watcher
-  .on('add', async function(path) {
+  .on('add', async function (path) {
     const imgPath = path.replace(`${__dirname}/assets`, '')
     const imgBuffer = await readFile(`${__dirname}/assets/${imgPath}`)
     const image = await jimpRead(imgBuffer)
     const qr = new QrCode()
-    qr.callback = function(err, value) {
+    qr.callback = function (err, value) {
       if (err) {
         console.error(err)
         // TODO handle error
@@ -38,13 +39,13 @@ watcher
     }
     qr.decode(image.bitmap)
   })
-  .on('change', function(path) {
+  .on('change', function (path) {
     console.log('File', path, 'has been changed')
   })
-  .on('unlink', function(path) {
+  .on('unlink', function (path) {
     console.log('File', path, 'has been removed')
   })
-  .on('error', function(error) {
+  .on('error', function (error) {
     console.error('Error happened', error)
   })
 
