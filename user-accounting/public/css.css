@@ -1637,6 +1637,11 @@ a.show-accounts {
 
 /* Expense file (Kvittosortering) */
 
+img.expense-file-preview {
+  width: 150px;
+  height: 150px;
+}
+
 ul.ulcircle {
   margin-left: 14px;
 }

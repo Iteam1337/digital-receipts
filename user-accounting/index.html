@@ -2,7 +2,6 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="css.css" />
-    <script src="/qrcode/build/qrcode.min.js"></script>
     <script src="/socket.io-client/dist/socket.io.js"></script>
   </head>
   <body>
@@ -134,20 +133,21 @@
       const response = await fetch('/receiptsList.html')
       const receiptsTemplate = await response.text()
       const receipts = []
-      socket.on('receipt', r => {
-        receipts.push(r)
 
+      socket.on('receipt', async r => {
+        receipts.push(r)
         const receiptsHtml = receipts
           .map(r => {
             return `
           <li>
-            <a href="${r}">
+            <a href="${r.img}">
                 <img
-                  src="${r}"
+                  src="${r.img}"
                   alt=""
                   border="1"
                   class="expense-file-preview"
               /></a>
+              <pre>${JSON.stringify(JSON.parse(r.receipt), null, 2)}</pre>
               </li>
           `
           })
