@@ -2,6 +2,7 @@ const express = require('express')
 const got = require('got')
 const app = express()
 const port = 9000
+const uuid = require('uuid/v4')
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html')
@@ -15,10 +16,15 @@ app.post('/buy', (req, res) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      hash: 'jdeuhhfgsfu',
+      hash: Buffer.from(uuid()).toString('base64'),
       receipt: {
         shopName: 'tågresor.se',
-        items: ['Stockholm Malmö resa']
+        items: ['Stockholm Malmö resa'],
+        amount: 411,
+        currency: 'SEK',
+        vat: 24.66,
+        vatPercent: 6,
+        date: new Date()
       }
     })
   })

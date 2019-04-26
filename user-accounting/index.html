@@ -139,15 +139,29 @@
         const receiptsHtml = receipts
           .map(r => {
             return `
-          <li>
-            <a href="${r.img}">
+          <li style="position: relative;">
+            ${
+              r.saved
+                ? `
+              <div style="color: green; font-size:100px; position: absolute; top:16px; left: 25px; z-index: 11;">&#9989</div>
+            `
+                : ``
+            }
+              <a style="position: absolute; top:0; left: 0; z-index:10;" href="/report-receipt/${r.img.replace(
+                '/',
+                ''
+              )}">
                 <img
                   src="${r.img}"
                   alt=""
                   border="1"
                   class="expense-file-preview"
               /></a>
-              <pre>${JSON.stringify(JSON.parse(r.receipt), null, 2)}</pre>
+              <pre style="left: 160px; position: relative;">${JSON.stringify(
+                r.receipt,
+                null,
+                2
+              )}</pre>
               </li>
           `
           })

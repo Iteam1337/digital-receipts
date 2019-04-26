@@ -4,16 +4,10 @@ const port = 7900
 const moment = require('moment')
 const staticMails = require('./assets/staticMails')
 const qrcode = require('qrcode')
+const uuid = require('uuid/v4')
 
 app.use(require('body-parser').json())
-const receipts = [{
-  hash: 'jdeuhhfgsfu',
-  receipt: {
-    shopName: 'tågresor.se',
-    items: ['Stockholm Malmö resa']
-  },
-  date: '10:04'
-}]
+let receipts = []
 
 function newReceipt(r) {
   return `
@@ -26,9 +20,7 @@ function newReceipt(r) {
 }
 
 function openReceipt(r) {
-  const {
-    receipt
-  } = r
+  const { receipt } = r
   const receiptJson = JSON.stringify(r)
   const receiptHtml = `
         <h2>${receipt.shopName}</h2>
@@ -83,6 +75,7 @@ app.get('/emails', (req, res) => {
             <script src="/qrcode/build/qrcode.min.js"></script>
         </head>
         <body>
+            <input type="button" value="Refresh" onclick="location.href='/emails'"/>
             <table>
                 <thead><h2>FakeMail</h2></thead>
                 <tbody>
@@ -103,7 +96,7 @@ app.get('/emails', (req, res) => {
 
 app.post('/forward', (req, res) => {
   qrcode.toFile(
-    `../user-accounting/assets/receipt-${Date.now()}.png`,
+    `../user-accounting/receipts/receipt-${Date.now()}.png`,
     JSON.stringify(req.body)
   )
   res.sendStatus(200)
