@@ -14,7 +14,8 @@ app.get('/', (_, res) => {
         <ul style="list-style-type: none;">
           <li style="display: inline;"><iframe src="http://localhost:9000" width="500" height="700"></iframe></li>
           <li style="display: inline;"><iframe src="http://localhost:7900/emails" width="992" height="700"></iframe></li>
-          <li style="display: inline;"><iframe src="http://localhost:8900/expenses" width="1500" height="1500"></iframe></li>
+          <li style="display: inline;"><iframe src="http://localhost:8900/expenses" width="992" height="1500"></iframe></li>
+          <li style="display: inline;"><iframe src="http://localhost:5500/receipts" width="500" height="1500"></iframe></li>
         </ul>
       </body>
     </html>

@@ -13,6 +13,10 @@ const util = require('util')
 const readFile = util.promisify(fs.readFile)
 const jimpRead = util.promisify(jimp.read)
 const moment = require('moment')
+const HASH_REGISTRY_URL = 'http://localhost:5500'
+const got = require('got')
+const USER_ACCOUNTING_ORG_ID = '987'
+
 
 const watcher = chokidar.watch(`${__dirname}/receipts`, {
   ignored: /^\./,
@@ -21,15 +25,16 @@ const watcher = chokidar.watch(`${__dirname}/receipts`, {
 
 fs.mkdir(`${__dirname}/receipts`, () => {})
 watcher
-  .on('add', async function(path) {
+  .on('add', async function (path) {
     const imgPath = path.replace(`${__dirname}/receipts`, '')
     const imgBuffer = await readFile(`${__dirname}/receipts/${imgPath}`)
     const image = await jimpRead(imgBuffer)
     const qr = new QrCode()
-    qr.callback = function(err, value) {
+    qr.callback = function (err, value) {
       if (err) {
-        console.error(err)
+        console.error('hej', err)
         // TODO handle error
+        return
       }
       const receipt = {
         img: imgPath,
@@ -40,18 +45,20 @@ watcher
     }
     qr.decode(image.bitmap)
   })
-  .on('change', function(path) {
+  .on('change', function (path) {
     console.log('File', path, 'has been changed')
   })
-  .on('unlink', function(path) {
+  .on('unlink', function (path) {
     console.log('File', path, 'has been removed')
   })
-  .on('error', function(error) {
+  .on('error', function (error) {
     console.error('Error happened', error)
   })
 
 app.use(require('body-parser').json())
-app.use(require('body-parser').urlencoded({ extended: true }))
+app.use(require('body-parser').urlencoded({
+  extended: true
+}))
 
 app.post('/emails', (req, res) => {
   receipts.push({
@@ -66,18 +73,22 @@ app.get('/expenses', (_, res) => {
 })
 
 app.get('/report-receipt/:id', async (req, res) => {
-  const { id } = req.params
+  const {
+    id
+  } = req.params
   const imgBuffer = await readFile(`${__dirname}/receipts/${id}`)
   const image = await jimpRead(imgBuffer)
   const qr = new QrCode()
-  qr.callback = function(err, value) {
+  qr.callback = function (err, value) {
     if (err) {
       console.error(err)
       // TODO handle error
     }
 
     const digitalDeceipt = JSON.parse(value.result)
-    const { receipt } = digitalDeceipt
+    const {
+      receipt
+    } = digitalDeceipt
     const html = `
     <!DOCTYPE html>
     <html>
@@ -112,6 +123,8 @@ app.get('/report-receipt/:id', async (req, res) => {
           receipt.vat
         }'/>
 
+        <input type="hidden" id="id_organizationId" name="organizationId" value='${ receipt.organizationId }'/>
+
         <input type="submit" value="Spara"/>
         <input type="button" value="Tillbaka" onclick="location.href='/expenses';"/>
         </form>
@@ -124,13 +137,31 @@ app.get('/report-receipt/:id', async (req, res) => {
 })
 
 app.post('/report-receipt/:hash', async (req, res) => {
-  const { hash } = req.params
+  const {
+    hash
+  } = req.params
   const body = req.body
   console.log('body', body)
   receipts = receipts.map(x => ({
     ...x,
     saved: x.saved || x.receipt.hash === hash
   }))
+  try {
+    await got(`${HASH_REGISTRY_URL}/receipts`, {
+      method: 'POST',
+      json: true,
+      body: {
+        reporterOrgId: USER_ACCOUNTING_ORG_ID,
+        receipt: {
+          hash,
+          issuerOrgId: body.organizationId
+        }
+      }
+    })
+
+  } catch (error) {
+    console.log('erroh', error)
+  }
   res.redirect('/expenses')
 })
 

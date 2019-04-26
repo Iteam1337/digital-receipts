@@ -4,7 +4,6 @@ const port = 7900
 const moment = require('moment')
 const staticMails = require('./assets/staticMails')
 const qrcode = require('qrcode')
-const uuid = require('uuid/v4')
 
 app.use(require('body-parser').json())
 let receipts = []
@@ -20,7 +19,9 @@ function newReceipt(r) {
 }
 
 function openReceipt(r) {
-  const { receipt } = r
+  const {
+    receipt
+  } = r
   const receiptJson = JSON.stringify(r)
   const receiptHtml = `
         <h2>${receipt.shopName}</h2>

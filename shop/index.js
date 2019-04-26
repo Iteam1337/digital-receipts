@@ -18,6 +18,7 @@ app.post('/buy', (req, res) => {
     body: JSON.stringify({
       hash: Buffer.from(uuid()).toString('base64'),
       receipt: {
+        organizationId: '123',
         shopName: 'tågresor.se',
         items: ['Stockholm Malmö resa'],
         amount: 411,

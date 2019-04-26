@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm start --prefix shop & npm start --prefix user-email & npm start --prefix user-accounting",
+    "start": "npm start --prefix shop & npm start --prefix user-email & npm start --prefix user-accounting & npm start --prefix hash-registry",
     "start:iframe": "npm run start & nodemon ."
   },
   "repository": {
