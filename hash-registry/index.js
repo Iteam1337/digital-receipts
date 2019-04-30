@@ -23,13 +23,13 @@ app.get('/receipts', async (req, res) => {
 app.post('/register-receipt', async (req, res) => {
   console.log(req.body)
   const {
-    header: { kid }
+    header: { kid },
+    payload: { iss }
   } = jwt.decode(req.body, { complete: true })
-  const key = await retrieveKey(kid)
+  const key = await retrieveKey(kid, iss)
   const { hash, organizationId } = jwt.verify(req.body, key, {
     algorithms: ['RS256', 'RS512']
   })
-  // return res.send({})
   const result = await registerReceipt({ hash, organizationId })
   res.send(result)
 })

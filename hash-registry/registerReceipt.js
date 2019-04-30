@@ -1,6 +1,6 @@
 const r = require('rethinkdbdash')({
   db: 'hash_registry'
-})
+}) // TODO remove rethinkdb or move to adapter
 
 async function registerReceipt({ hash, organizationId }) {
   const existing = await r.table('receipts').filter({ hash })
