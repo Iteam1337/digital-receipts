@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.4.0",
     "rethinkdbdash": "^2.3.31"
   }
 }

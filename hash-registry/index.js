@@ -1,3 +1,4 @@
+const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
 const r = require('rethinkdbdash')({
@@ -5,9 +6,11 @@ const r = require('rethinkdbdash')({
 })
 const registerReceipt = require('./registerReceipt')
 const useReceipt = require('./useReceipt')
+const retrieveKey = require('./retrieveKey')
+const jwt = require('jsonwebtoken')
 const port = 5500
-
-app.use(require('body-parser').json())
+app.use(bodyParser.json())
+app.use(bodyParser.text())
 
 app.get('/receipts', async (req, res) => {
   const receipts = await r.table('receipts')
@@ -18,7 +21,15 @@ app.get('/receipts', async (req, res) => {
 })
 
 app.post('/register-receipt', async (req, res) => {
-  const { hash, organizationId } = req.body
+  console.log(req.body)
+  const {
+    header: { kid }
+  } = jwt.decode(req.body, { complete: true })
+  const key = await retrieveKey(kid)
+  const { hash, organizationId } = jwt.verify(req.body, key, {
+    algorithms: ['RS256', 'RS512']
+  })
+  // return res.send({})
   const result = await registerReceipt({ hash, organizationId })
   res.send(result)
 })

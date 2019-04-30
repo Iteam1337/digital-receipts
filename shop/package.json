@@ -12,6 +12,8 @@
   "dependencies": {
     "express": "^4.16.4",
     "got": "^9.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-provider": "^0.1.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
