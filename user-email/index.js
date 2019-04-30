@@ -13,15 +13,13 @@ function newReceipt(r) {
     <tr onclick='openReceipt(${JSON.stringify(r)})'>
         <td><input type="checkbox"/></td>
         <td><strong>${r.receipt.shopName}</strong></td>
-        <td>Lorem ipsum dolor sit amet</td>
+        <td>Tack för din beställning NULL NULL</td>
         <td>${r.date}</td>
     </tr>`
 }
 
 function openReceipt(r) {
-  const {
-    receipt
-  } = r
+  const { receipt } = r
   const receiptJson = JSON.stringify(r)
   const receiptHtml = `
         <h2>${receipt.shopName}</h2>
@@ -61,7 +59,7 @@ function forwardReceipt(r) {
 }
 
 app.post('/emails', (req, res) => {
-  receipts.push({
+  receipts.unshift({
     ...req.body,
     date: moment().format('HH:MM')
   })

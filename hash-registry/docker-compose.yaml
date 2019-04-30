@@ -1,0 +1,18 @@
+---
+version: '3'
+
+services:
+  rethinkdb:
+    image: rethinkdb:2.3.6
+    ports:
+      - 127.0.0.1:8080:8080
+      - 127.0.0.1:28015:28015
+    networks:
+      digital-receipts:
+        aliases:
+          - rethinkdb
+
+networks:
+  digital-receipts:
+    external:
+      name: digital-receipts
