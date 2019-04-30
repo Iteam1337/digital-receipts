@@ -18,8 +18,7 @@ const kid = crypto
   .createHash('SHA256')
   .update(publicKey)
   .digest('hex')
-
-const keyid = `${JWKS_URL}/${kid}` // TODO move KID creation to a key provider
+// TODO move keyid creation to a key provider
 
 app.get('/', (_, res) => {
   res.sendFile(__dirname + '/index.html')
@@ -29,7 +28,7 @@ app.get('/jwks', async (_, res) => {
   const key = {
     publicKey,
     use: 'sig',
-    kid: keyid
+    kid
   } // TODO this should be part of key provider
   res.send(serialize([key]))
 })
@@ -53,7 +52,7 @@ app.post('/buy', (_, res) => {
       organizationId: ORGANIZATION_ID
     },
     privateKey,
-    { algorithm: 'RS256', keyid, issuer: ORGANIZATION_ID }
+    { algorithm: 'RS256', keyid: kid, issuer: ORGANIZATION_ID }
   )
 
   got('http://localhost:7900/emails', {
