@@ -14,6 +14,7 @@ app.use(bodyParser.json())
 app.get('/', async (_, res) => {
   const keys = await r.table('keys')
   res.send(`
+    <h1>CA</h1>
     <pre>${JSON.stringify(keys, null, 2)}</pre>
     <script type="text/javascript">setTimeout(() => { location.reload()}, 3000)</script>
   `)
