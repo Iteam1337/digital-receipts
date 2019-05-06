@@ -24,7 +24,7 @@ async function registerReceipt(req, res) {
     algorithms: ['RS256', 'RS512']
   })
 
-  const existing = await r.table('receipts').filter({
+  const existing = await r.table('registered_receipts').filter({
     hash
   })
 
@@ -34,7 +34,7 @@ async function registerReceipt(req, res) {
     return res.status(500).send(message)
   }
 
-  const result = await r.table('registered-receipts').insert({
+  const result = await r.table('registered_receipts').insert({
     hash,
     registerOrgId: organizationId
   })
