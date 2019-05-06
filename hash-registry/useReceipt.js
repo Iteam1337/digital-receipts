@@ -2,7 +2,11 @@ const r = require('rethinkdbdash')({
   db: 'hash_registry'
 })
 
-async function useReceipt(receipt) {
+
+async function useReceipt(req, res) {
+  const {
+    receipt
+  } = req.body
   await r.table('receipts').insert(receipt)
 }
 module.exports = useReceipt
