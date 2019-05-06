@@ -4,6 +4,7 @@ const port = 7900
 const moment = require('moment')
 const staticMails = require('./assets/staticMails')
 const qrcode = require('qrcode')
+const fs = require('fs')
 
 app.use(require('body-parser').json())
 let receipts = []
@@ -19,7 +20,9 @@ function newReceipt(r) {
 }
 
 function openReceipt(r) {
-  const { receipt } = r
+  const {
+    receipt
+  } = r
   const receiptJson = JSON.stringify(r)
   const receiptHtml = `
         <h2>${receipt.shopName}</h2>
@@ -94,10 +97,12 @@ app.get('/emails', (req, res) => {
 })
 
 app.post('/forward', (req, res) => {
+  const now = Date.now()
   qrcode.toFile(
-    `../user-accounting/receipts/receipt-${Date.now()}.png`,
+    `../user-accounting/receipts/receipt-${now}.png`,
     JSON.stringify(req.body)
   )
+  fs.writeFileSync(`../user-accounting/receipts/receipt-${now}.json`, JSON.stringify(req.body))
   res.sendStatus(200)
 })
 

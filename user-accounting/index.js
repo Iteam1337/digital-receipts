@@ -22,35 +22,54 @@ const watcher = chokidar.watch(`${__dirname}/receipts`, {
   persistent: true
 })
 
+async function readReceiptQR(path) {
+  const imgPath = path.replace(`${__dirname}/receipts`, '')
+  const imgBuffer = await readFile(`${__dirname}/receipts/${imgPath}`)
+  const image = await jimpRead(imgBuffer)
+  const qr = new QrCode()
+  qr.callback = function (err, value) {
+    if (err) {
+      console.error('Error reading receipt', err)
+      // TODO handle error
+      return
+    }
+    const receipt = {
+      img: imgPath,
+      receipt: JSON.parse(value.result)
+    }
+    receipts.push(receipt)
+    io.emit('receipt', receipt)
+  }
+  qr.decode(image.bitmap)
+}
+
+async function readReceiptJson(path) {
+  const imgPath = path.replace(`${__dirname}/receipts`, '').replace('json', 'png')
+  const receiptJsonPath = path.replace(`${__dirname}/receipts`, '')
+  const json = await fs.readFileSync(`${__dirname}/receipts/${receiptJsonPath}`)
+  const data = JSON.parse(json)
+  const receipt = {
+    img: imgPath,
+    receipt: data
+  }
+  receipts.push(receipt)
+  io.emit('receipt', receipt)
+}
+
 fs.mkdir(`${__dirname}/receipts`, () => {})
 watcher
-  .on('add', async function(path) {
-    const imgPath = path.replace(`${__dirname}/receipts`, '')
-    const imgBuffer = await readFile(`${__dirname}/receipts/${imgPath}`)
-    const image = await jimpRead(imgBuffer)
-    const qr = new QrCode()
-    qr.callback = function(err, value) {
-      if (err) {
-        console.error('hej', err)
-        // TODO handle error
-        return
-      }
-      const receipt = {
-        img: imgPath,
-        receipt: JSON.parse(value.result)
-      }
-      receipts.push(receipt)
-      io.emit('receipt', receipt)
+  .on('add', async function (path) {
+    if (path.endsWith('.json')) {
+      readReceiptJson(path)
     }
-    qr.decode(image.bitmap)
   })
-  .on('change', function(path) {
+  .on('change', function (path) {
     console.log('File', path, 'has been changed')
   })
-  .on('unlink', function(path) {
+  .on('unlink', function (path) {
     console.log('File', path, 'has been removed')
   })
-  .on('error', function(error) {
+  .on('error', function (error) {
     console.error('Error happened', error)
   })
 
@@ -61,6 +80,8 @@ app.use(
   })
 )
 
+
+// Forwarded receipts
 app.post('/emails', (req, res) => {
   receipts.push({
     ...req.body,
@@ -74,18 +95,22 @@ app.get('/expenses', (_, res) => {
 })
 
 app.get('/report-receipt/:id', async (req, res) => {
-  const { id } = req.params
+  const {
+    id
+  } = req.params
   const imgBuffer = await readFile(`${__dirname}/receipts/${id}`)
   const image = await jimpRead(imgBuffer)
   const qr = new QrCode()
-  qr.callback = function(err, value) {
+  qr.callback = function (err, value) {
     if (err) {
       console.error(err)
       // TODO handle error
     }
 
     const digitalDeceipt = JSON.parse(value.result)
-    const { receipt } = digitalDeceipt
+    const {
+      receipt
+    } = digitalDeceipt
     const html = `
     <!DOCTYPE html>
     <html>
@@ -136,7 +161,9 @@ app.get('/report-receipt/:id', async (req, res) => {
 })
 
 app.post('/report-receipt/:hash', async (req, res) => {
-  const { hash } = req.params
+  const {
+    hash
+  } = req.params
   const body = req.body
   receipts = receipts.map(x => ({
     ...x,
