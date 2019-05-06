@@ -34,7 +34,7 @@ async function registerReceipt(req, res) {
     return res.status(500).send(message)
   }
 
-  const result = await r.table('receipts').insert({
+  const result = await r.table('registered-receipts').insert({
     hash,
     registerOrgId: organizationId
   })
