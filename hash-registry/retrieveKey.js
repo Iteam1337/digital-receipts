@@ -1,8 +1,8 @@
 const jwksClient = require('jwks-rsa')
 const got = require('got')
-const CA_URL = 'http://localhost:5700/endpoints' // TODO get CA_URL from config
 
 const clientCache = {}
+
 function getClient(jwksUri) {
   if (!clientCache[jwksUri]) {
     clientCache[jwksUri] = jwksClient({
@@ -15,7 +15,11 @@ function getClient(jwksUri) {
 }
 
 async function retrieveKey(kid, iss) {
-  const { body: { endpoint: jwksUri } = {} } = await got(`${CA_URL}/${iss}`, {
+  const {
+    body: {
+      endpoint: jwksUri
+    } = {}
+  } = await got(`${process.env.CA_URL}/${iss}`, {
     json: true
   })
 

@@ -3,6 +3,8 @@ const app = express()
 
 const port = 6900
 
+require('dotenv').config()
+
 app.use(require('body-parser').json())
 
 app.get('/', (_, res) => {
@@ -12,11 +14,11 @@ app.get('/', (_, res) => {
       <head></head>
       <body>
         <ul style="list-style-type: none;">
-          <li style="display: inline;"><iframe src="http://localhost:9000" width="500" height="700"></iframe></li>
-          <li style="display: inline;"><iframe src="http://localhost:7900/emails" width="992" height="700"></iframe></li>
-          <li style="display: inline;"><iframe src="http://localhost:8900/expenses" width="992" height="1500"></iframe></li>
-          <li style="display: inline;"><iframe src="http://localhost:5500/receipts" width="500" height="1500"></iframe></li>
-          <li style="display: inline;"><iframe src="http://localhost:5700" width="500" height="1500"></iframe></li>
+          <li style="display: inline;"><iframe src="${process.env.SHOP_URL}" width="500" height="700"></iframe></li>
+          <li style="display: inline;"><iframe src="${process.env.MAIL_URL}/emails" width="992" height="700"></iframe></li>
+          <li style="display: inline;"><iframe src="${process.env.USER_ACCOUNTING_URL}/expenses" width="992" height="1500"></iframe></li>
+          <li style="display: inline;"><iframe src="${process.env.HASH_REGISTRY_URL}/receipts" width="500" height="1500"></iframe></li>
+          <li style="display: inline;"><iframe src="${process.env.CA_URL}" width="500" height="1500"></iframe></li>
         </ul>
       </body>
     </html>

@@ -5,6 +5,9 @@ const moment = require('moment')
 const staticMails = require('./assets/staticMails')
 const qrcode = require('qrcode')
 const fs = require('fs')
+require('dotenv').config({
+  path: process.cwd() + '/../.env'
+});
 
 app.use(require('body-parser').json())
 let receipts = []

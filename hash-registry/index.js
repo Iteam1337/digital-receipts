@@ -10,6 +10,9 @@ const useReceipt = require('./useReceipt')
 const port = 5500
 app.use(bodyParser.json())
 app.use(bodyParser.text())
+require('dotenv').config({
+  path: process.cwd() + '/../.env'
+});
 
 app.get('/receipts', async (req, res) => {
   const registeredReceipts = await r.table('receipts')

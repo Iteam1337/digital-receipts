@@ -13,9 +13,13 @@ const util = require('util')
 const readFile = util.promisify(fs.readFile)
 const jimpRead = util.promisify(jimp.read)
 const moment = require('moment')
-const HASH_REGISTRY_URL = 'http://localhost:5500'
 const got = require('got')
 const USER_ACCOUNTING_ORG_ID = '987'
+
+require('dotenv').config({
+  path: process.cwd() + '/../.env'
+});
+
 
 const watcher = chokidar.watch(`${__dirname}/receipts`, {
   ignored: /^\./,
@@ -79,16 +83,6 @@ app.use(
     extended: true
   })
 )
-
-
-// Forwarded receipts
-app.post('/emails', (req, res) => {
-  receipts.push({
-    ...req.body,
-    date: moment().format('HH:MM')
-  })
-  res.sendStatus(200)
-})
 
 app.get('/expenses', (_, res) => {
   res.sendFile(`${__dirname}/index.html`)
@@ -170,7 +164,7 @@ app.post('/report-receipt/:hash', async (req, res) => {
     saved: x.saved || x.receipt.hash === hash
   }))
   try {
-    await got(`${HASH_REGISTRY_URL}/use-receipt`, {
+    await got(`${process.env.HASH_REGISTRY_URL}/use-receipt`, {
       method: 'POST',
       json: true,
       body: {

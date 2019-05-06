@@ -8,6 +8,9 @@ const r = require('rethinkdbdash')({
   port: 28016,
   db: 'ca'
 }) // TODO remove rethinkdbdash or use adapter for it
+require('dotenv').config({
+  path: process.cwd() + '/../.env'
+});
 
 app.use(bodyParser.json())
 

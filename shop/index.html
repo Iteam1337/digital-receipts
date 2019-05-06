@@ -1,68 +1,67 @@
 <!DOCTYPE html>
 <html>
-  <body>
-    <input type="button" value="Enrol" onclick="enrol()" />
-    <p>
-      Resa mellan Stockholm Malmö
-    </p>
 
-    <div style="display: table-cell;">
-      <div class="trains-row" style="display: table; width: 100;">
-        <div class="train">
-          <span>
-            <div class="train-row">
-              <span class="train-row-cell iata-from">
-                <span class="date-string date-string-short">Tor 9 Maj</span>
-                <span class="time-iata">20:35 <strong>ARN</strong></span
-                ><br />Stockholm
-              </span>
+<body>
+  <input type="button" value="Enrol" onclick="enrol()" />
+  <p>
+    Resa mellan Stockholm Malmö
+  </p>
 
-              <div class="train-row-cell stops">
-                <div class="iata-wait-time">
-                  1h 5m
-                </div>
+  <div style="display: table-cell;">
+    <div class="trains-row" style="display: table; width: 100;">
+      <div class="train">
+        <span>
+          <div class="train-row">
+            <span class="train-row-cell iata-from">
+              <span class="date-string date-string-short">Tor 9 Maj</span>
+              <span class="time-iata">20:35 <strong>Stockholm Central</strong></span><br />Stockholm
+            </span>
 
-                <div class="line"></div>
-
-                <div class="stop-count direct">direktanslutning</div>
+            <div class="train-row-cell stops">
+              <div class="iata-wait-time">
+                1h 5m
               </div>
 
-              <span class="train-row-cell iata-to">
-                <span class="date-string date-string-short">Tor 9 Maj</span>
-                <span class="time-iata">21:40 <strong>MMX</strong></span
-                ><br />
-                Malmö</span
-              >
+              <div class="line"></div>
+
+              <div class="stop-count direct">direktanslutning</div>
             </div>
-          </span>
-        </div>
+
+            <span class="train-row-cell iata-to">
+              <span class="date-string date-string-short">Tor 9 Maj</span>
+              <span class="time-iata">21:40 <strong>Malmö Centralstation</strong></span><br />
+              Malmö</span>
+          </div>
+        </span>
       </div>
     </div>
+  </div>
 
-    <div id="buy">
-      <button onclick="buy()">KÖP</button>
-    </div>
-    <script type="text/javascript">
-      async function buy() {
-        await fetch('http://localhost:9000/buy', {
-          method: 'POST'
-        })
+  <div id="buy">
+    <button onclick="buy()">KÖP</button>
+  </div>
+  <script type="text/javascript">
+    async function buy() {
+      await fetch('/buy', {
+        method: 'POST'
+      })
 
+      document.getElementById(
+        'buy'
+      ).innerHTML = `<div style="color: green; font-size:100px ">&#9989</div>`
+      setTimeout(() => {
         document.getElementById(
           'buy'
-        ).innerHTML = `<div style="color: green; font-size:100px ">&#9989</div>`
-        setTimeout(() => {
-          document.getElementById(
-            'buy'
-          ).innerHTML = `<button onclick="buy()">KÖP</button>`
-        }, 2500)
-      }
+        ).innerHTML = `<button onclick="buy()">KÖP</button>`
+      }, 2500)
+    }
 
-      async function enrol() {
-        await fetch('http://localhost:9000/enrol', {
-          method: 'POST'
-        })
-      }
-    </script>
-  </body>
+    async function enrol() {
+      await fetch('/enrol', {
+        method: 'POST'
+      })
+    }
+  </script>
+</body>
+
 </html>
