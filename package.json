@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm start --prefix shop & npm start --prefix user-email & npm start --prefix user-accounting & npm start --prefix hash-registry & npm start --prefix ca",
     "start:iframe": "npm run start & nodemon .",
-    "migrate": "npm run migrate --prefix hash-registry & npm run migrate --prefix ca"
+    "migrate": "npm run migrate --prefix hash-registry & npm run migrate --prefix ca",
+    "install-all": "cd ca && npm i && cd ../hash-registry && npm i && cd ../receipt-hash-generator && npm i && cd ../shop && npm i && cd ../user-accounting && npm i && cd ../user-email && npm i"
   },
   "repository": {
     "type": "git",
