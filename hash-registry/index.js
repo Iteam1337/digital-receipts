@@ -16,7 +16,7 @@ require('dotenv').config({
 
 app.get('/receipts', async (req, res) => {
   const registeredReceipts = await r.table('registered_receipts')
-  const usedReceipts = []
+  const usedReceipts = await r.table('used_receipts')
   res.send(`
     <h1>Hash Registry</h1>
     <h3>Registered receipts</h3>
