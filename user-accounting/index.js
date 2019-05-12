@@ -189,5 +189,5 @@ http.listen(port, () => console.log(`User accounting running on ${port}!`))
 
 io.on('connection', socket => {
   console.log('a socket connected!')
-  receipts.forEach(r => socket.emit('receipt', r))
+  socket.emit('receipts', receipts)
 })
