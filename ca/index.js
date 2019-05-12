@@ -1,6 +1,6 @@
 const bodyParser = require('body-parser')
 const express = require('express')
-const enrol = require('./enrol')
+const enroll = require('./enroll')
 const getEndpoint = require('./getEndpoint')
 const app = express()
 const port = 5700 // TODO get app PORT from config
@@ -23,7 +23,7 @@ app.get('/', async (_, res) => {
   `)
 })
 
-app.post('/enrol', enrol)
+app.post('/enroll', enroll)
 
 app.get('/endpoints/:organizationId', getEndpoint)
 

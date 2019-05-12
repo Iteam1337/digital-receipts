@@ -89,11 +89,11 @@ app.post('/buy', (_, res) => {
   res.sendStatus(200)
 })
 
-app.post('/enrol', async (_, res) => {
+app.post('/enroll', async (_, res) => {
   try {
     const {
       body
-    } = await got(`${process.env.CA_URL}/enrol`, {
+    } = await got(`${process.env.CA_URL}/enroll`, {
       method: 'POST',
       json: true,
       body: {
