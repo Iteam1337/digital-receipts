@@ -1,3 +1,7 @@
+#window-title {
+  color: rgb(135, 129, 211);
+}
+
 .email-actions,
 .ui-datagrid-data li {
   display: inline;
@@ -82,7 +86,7 @@ body {
   text-align: center;
 }
 
-.widget-size.no-data > div {
+.widget-size.no-data>div {
   font-family: 'Roboto', sans-serif;
   margin: 0 auto;
   padding-top: 139px;
@@ -107,11 +111,11 @@ body {
   opacity: 0;
 }
 
-.widget-container-blurred:hover + .widget-container-blurred-tooltip {
+.widget-container-blurred:hover+.widget-container-blurred-tooltip {
   opacity: 1;
 }
 
-.widget-container-fake-blurred + .widget-container-blurred-tooltip {
+.widget-container-fake-blurred+.widget-container-blurred-tooltip {
   opacity: 1;
 }
 
@@ -167,6 +171,7 @@ body {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -176,6 +181,7 @@ body {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -185,6 +191,7 @@ body {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -194,6 +201,7 @@ body {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -293,7 +301,7 @@ div.ui-selectonemenu.normalwrap label.ui-selectonemenu-label {
 }
 
 /* LÃ„GGER HÃ–GERPADDING PÃ… FÃ–RSTA IKONEN I IKONKOLUMNEN */
-.icon-column > *:not(:last-child) {
+.icon-column>*:not(:last-child) {
   padding-right: 0.2em;
 }
 
@@ -358,9 +366,12 @@ li {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   padding: 4px;
   color: #666666;
-  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-  -moz-box-sizing: border-box; /* Firefox, other Gecko */
-  box-sizing: border-box; /* Opera/IE 8+ */
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
+  box-sizing: border-box;
+  /* Opera/IE 8+ */
   min-height: 2em;
 }
 
@@ -377,9 +388,12 @@ body a {
 }
 
 .unselectable {
-  -webkit-user-select: none; /* Chrome all / Safari all */
-  -moz-user-select: none; /* Firefox all */
-  -ms-user-select: none; /* IE 10+ */
+  -webkit-user-select: none;
+  /* Chrome all / Safari all */
+  -moz-user-select: none;
+  /* Firefox all */
+  -ms-user-select: none;
+  /* IE 10+ */
   -o-user-select: none;
   user-select: none;
 }
@@ -480,8 +494,7 @@ body a {
 
 /* Overlays */
 .ui-widget-overlay {
-  background: #aaaaaa url(../image/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50%
-    repeat-x;
+  background: #aaaaaa url(../image/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x;
   opacity: 0.3;
   filter: Alpha(Opacity=30);
 }
@@ -548,7 +561,7 @@ div.accountingyear-label {
 }
 
 /* RÃ–D BORDER RUNT TOPMENYN ADMIN */
-.adminmenu > button {
+.adminmenu>button {
   border: 1px solid palevioletred !important;
 }
 
@@ -856,7 +869,8 @@ div.wiki-div {
 .ui-datatable .ui-datatable-data td div.ui-dt-c,
 .ui-datatable .ui-datatable-data-empty td div.ui-dt-c,
 .ui-datatable tfoot td div.ui-dt-c {
-  overflow: visible; /* For the dotted-border-bottom-links in datatables */
+  overflow: visible;
+  /* For the dotted-border-bottom-links in datatables */
 }
 
 .ui-datatable .ui-datatable-data td,
@@ -1073,7 +1087,7 @@ div.wiki-div {
   margin: auto;
 }
 
-.ui-growl-message > p {
+.ui-growl-message>p {
   max-height: 0;
   line-height: 0;
   opacity: 0;
@@ -1081,7 +1095,7 @@ div.wiki-div {
   word-wrap: break-word;
 }
 
-.ui-growl-item-container:hover .ui-growl-item .ui-growl-message > p {
+.ui-growl-item-container:hover .ui-growl-item .ui-growl-message>p {
   max-height: 500px;
   line-height: 1.2;
   opacity: 1;
@@ -1375,7 +1389,7 @@ a.show-accounts {
   border: 1px #ff0000 solid !important;
 }
 
-.grant-calendar > input {
+.grant-calendar>input {
   border: 1px #ff0000 solid !important;
 }
 
@@ -1413,7 +1427,8 @@ a.show-accounts {
 }
 
 .grant-tab:before {
-  content: ''; /* you need something or it will be invisible at least on Chrome */
+  content: '';
+  /* you need something or it will be invisible at least on Chrome */
   color: transparent;
   position: absolute;
   top: 0px;
@@ -1433,7 +1448,7 @@ a.show-accounts {
   border-bottom: 0px !important;
 }
 
-.ui-tabs.ui-tabs-top > .ui-tabs-nav {
+.ui-tabs.ui-tabs-top>.ui-tabs-nav {
   padding: 0;
 }
 
@@ -1537,7 +1552,7 @@ a.show-accounts {
   color: #ffffff;
 }
 
-.ui-paginator-pages > .ui-state-active {
+.ui-paginator-pages>.ui-state-active {
   border: 1px solid #cccccc;
 }
 
@@ -1646,7 +1661,7 @@ ul.ulcircle {
   margin-left: 14px;
 }
 
-ul.ulcircle > li {
+ul.ulcircle>li {
   list-style: circle;
 }
 
@@ -1740,11 +1755,11 @@ div.login-dialog {
 
 /* Kalender */
 
-.ui-datepicker-calendar .ui-datepicker-current-day > a {
+.ui-datepicker-calendar .ui-datepicker-current-day>a {
   background: #d8f799;
 }
 
-.ui-datepicker-calendar .ui-datepicker-today > a {
+.ui-datepicker-calendar .ui-datepicker-today>a {
   background: #34a6ef;
 }
 
@@ -1985,7 +2000,7 @@ button:active {
 }
 
 .headermenu a.leftmenu-button,
-.headermenu > .leftmenu-summary {
+.headermenu>.leftmenu-summary {
   border: 0;
   color: #222222;
   display: block;
@@ -1995,7 +2010,7 @@ button:active {
   white-space: nowrap;
 }
 
-.headermenu > .leftmenu-summary {
+.headermenu>.leftmenu-summary {
   font-style: italic;
   font-weight: bold;
 }
@@ -2031,7 +2046,7 @@ button:active {
   box-sizing: border-box;
 }
 
-.headermenu a > img {
+.headermenu a>img {
   vertical-align: text-top;
 }
 
@@ -2051,7 +2066,7 @@ button:active {
   background: #2a2a2a;
 }
 
-.submenu a > img {
+.submenu a>img {
   vertical-align: text-top;
 }
 
@@ -2081,7 +2096,7 @@ button:active {
 }
 
 /* Remove the icon in a primefaces confirmation dialog */
-.confirmDialog .ui-dialog-content > .ui-icon {
+.confirmDialog .ui-dialog-content>.ui-icon {
   display: none;
 }
 
@@ -2266,8 +2281,10 @@ div.certifyExpenses {
 
 .ui-dialog-titlebar {
   width: auto !important;
-  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-  -moz-box-sizing: border-box; /* Firefox, other Gecko */
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
   box-sizing: border-box;
 }
 
@@ -2504,7 +2521,7 @@ td.datatable-header-left {
   vertical-align: top;
 }
 
-.datatable-header-buttons > *:not(:first-child) {
+.datatable-header-buttons>*:not(:first-child) {
   margin-left: 0.4em;
 }
 
@@ -2538,7 +2555,7 @@ div.exportContainer {
 }
 
 /* SÃ¤tt padding pÃ¥ andra div:en om det finns 2 div:ar i datatable-header-right */
-.datatable-header-right div + div {
+.datatable-header-right div+div {
   padding-top: 0.5em;
 }
 
@@ -2617,7 +2634,7 @@ table.inputForm {
   white-space: nowrap;
 }
 
-.ui-autocomplete-multiple > button {
+.ui-autocomplete-multiple>button {
   height: 23px;
 }
 
@@ -2802,13 +2819,15 @@ a.mtz-monthpicker {
 .ui-selectonemenu-panel .ui-selectonemenu-filter-container {
   width: 100%;
   box-sizing: border-box;
-  -moz-box-sizing: border-box; /* Firefox */
+  -moz-box-sizing: border-box;
+  /* Firefox */
 }
 
 .ui-selectonemenu-panel .ui-selectonemenu-filter {
   width: 85%;
   box-sizing: border-box;
-  -moz-box-sizing: border-box; /* Firefox */
+  -moz-box-sizing: border-box;
+  /* Firefox */
 }
 
 .ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-icon {
@@ -2871,7 +2890,7 @@ a.mtz-monthpicker {
   color: #00abf4;
 }
 
-table.ui-selectoneradio td > label {
+table.ui-selectoneradio td>label {
   margin: 0 5px;
 }
 
@@ -2938,12 +2957,12 @@ td.content-width,
   line-height: 19px;
 }
 
-.progressbar-green > .ui-progressbar-value.ui-widget-header {
+.progressbar-green>.ui-progressbar-value.ui-widget-header {
   background: #00d4c3;
   background-image: none;
 }
 
-.progressbar-blue > .ui-progressbar-value.ui-widget-header {
+.progressbar-blue>.ui-progressbar-value.ui-widget-header {
   background: #00abf4;
   background-image: none;
 }
@@ -3413,14 +3432,17 @@ textarea.ui-inputtextarea-resizable {
 .taller-line-height {
   line-height: 1.8em;
 }
+
 /* paginator */
 .ui-paginator {
   margin-top: 0.5em;
 }
+
 .paginator-link {
   height: 15px;
   line-height: 1em;
 }
+
 .pager {
   height: 20px;
   vertical-align: bottom;
@@ -3430,6 +3452,7 @@ textarea.ui-inputtextarea-resizable {
   font-weight: bold;
   font-family: tahoma, verdana, arial, sans-serif;
 }
+
 .paginglink {
   border: none;
 }

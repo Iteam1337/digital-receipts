@@ -18,7 +18,7 @@ app.get('/receipts', async (req, res) => {
   const registeredReceipts = await r.table('registered_receipts')
   const usedReceipts = await r.table('used_receipts')
   res.send(`
-    <h1>Hash Registry</h1>
+    <h2 style="color: rgb(135, 129, 211)">Kvittomatchning</h2>
     <h3>Registered receipts</h3>
     <pre>${JSON.stringify(registeredReceipts, null, 2)}</pre>
     <h3>Used receipts</h3>
