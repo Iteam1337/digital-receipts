@@ -5,3 +5,7 @@
 ul {
     list-style-type: none;
 }
+
+#window-title {
+    color: rgb(135, 129, 211);
+}
