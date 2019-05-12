@@ -3,15 +3,16 @@ const r = require('rethinkdbdash')({
 })
 
 
-async function useReceipt(req, res) {
+async function useReceipt(req, res, next) {
   const {
     receipt
   } = req.body
-  if (isAlreadyInDb(receipt)) {
-    res.send(500, 'Trying to insert receipt-hash already present')
+  if (await isAlreadyInDb(receipt)) {
+    res.status(500).send('The receipt-hash has already been used in this context')
+    return next()
   }
   await r.table('used_receipts').insert(receipt)
-  res.send(200)
+  res.sendStatus(200)
 }
 
 async function isAlreadyInDb(receipt) {
