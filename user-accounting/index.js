@@ -207,13 +207,11 @@ app.post('/report-receipt/:hash', async (req, res) => {
     })
   } catch (error) {
     setReceiptAsNotSaved(hash)
-    return res.send(`
-      <h1>${error.body}</h1>
-      <button onclick="location.href='/expenses'"> Back </button>
-    `)
+    return res.redirect(`/expenses?error=${error.body ? error.body : error}`)
   }
+
   setReceiptAsSaved(hash)
-  res.redirect('/expenses')
+  res.redirect('/expenses?success=true')
 })
 
 app.use(express.static('receipts'))

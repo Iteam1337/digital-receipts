@@ -12,7 +12,7 @@ async function useReceipt(req, res, next) {
     return next()
   }
   await r.table('used_receipts').insert(receipt)
-  res.sendStatus(200)
+  res.send('')
 }
 
 async function isAlreadyInDb(receipt) {
