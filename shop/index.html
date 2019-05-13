@@ -2,7 +2,6 @@
 <html>
 
 <body>
-  <input type="button" value="Enroll" onclick="enroll()" />
   <p>
     Resa mellan Stockholm Malmö
   </p>
@@ -54,12 +53,6 @@
           'buy'
         ).innerHTML = `<button onclick="buy()">KÖP</button>`
       }, 2500)
-    }
-
-    async function enroll() {
-      await fetch('/enroll', {
-        method: 'POST'
-      })
     }
   </script>
 </body>

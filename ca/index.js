@@ -13,7 +13,11 @@ require('dotenv').config({
 });
 
 app.use(bodyParser.json())
-
+app.use(
+  require('body-parser').urlencoded({
+    extended: true
+  })
+)
 app.get('/', async (_, res) => {
   const keys = await r.table('keys')
   res.send(`
@@ -25,6 +29,25 @@ app.get('/', async (_, res) => {
 })
 
 app.post('/enroll', enroll)
+app.get('/enroll', (req, res) => {
+  res.send(`
+  <form action="/enroll" method="POST">
+
+  <label for="publisher-org-id"> Org Id utgivare </label>
+  <br>
+  <input id="publisher-org-id" type="input" value="${process.env.lisherLISHER_ORGANIZATION_ID}"/>
+  <br>
+
+  <label for="publisher-public-key-route"> Org Id utgivare </label>
+  <br>
+  <input id="publisher-public-key-route"="input" value="${process.env.SHOP_URL}/jwks"  />
+
+  <br>
+  <input type="submit" value="Enroll"/>
+  </form>
+
+  `)
+})
 
 app.get('/endpoints/:organizationId', getEndpoint)
 

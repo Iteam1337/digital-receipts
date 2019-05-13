@@ -4,6 +4,8 @@ const r = require('rethinkdbdash')({
 }) // TODO remove rethinkdb or move to adapter
 
 async function enroll(req, res) {
+  console.log('ennrr', req.body);
+
   const {
     endpoint,
     organizationId
