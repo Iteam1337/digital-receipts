@@ -5,26 +5,25 @@ const r = require('rethinkdbdash')({
 
 async function enroll(req, res) {
   console.log('ennrr', req.body);
+  console.log('ennrr', req.body.publisherOrganizationId);
 
   const {
-    endpoint,
-    organizationId
+    publisherEndpoint,
+    publisherOrganizationId
   } = req.body
   const results = await r.table('keys').filter({
-    organizationId
+    organizationId: publisherOrganizationId
   })
 
   if (!results.length) {
     const result = await r.table('keys').insert({
-      endpoint,
-      organizationId
+      publisherEndpoint,
+      organizationId: publisherOrganizationId
     })
-    return res.send(result)
+    return res.redirect('/enroll?success=true')
   }
 
-  return res
-    .status(500)
-    .send('you are already enrolled. you should try using the update endpoint')
+  return res.redirect('/enroll?success=false')
 }
 
 module.exports = enroll

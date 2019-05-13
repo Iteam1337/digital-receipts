@@ -12,7 +12,6 @@ require('dotenv').config({
   path: process.cwd() + '/../.env'
 });
 
-app.use(bodyParser.json())
 app.use(
   require('body-parser').urlencoded({
     extended: true
@@ -30,22 +29,33 @@ app.get('/', async (_, res) => {
 
 app.post('/enroll', enroll)
 app.get('/enroll', (req, res) => {
-  res.send(`
-  <form action="/enroll" method="POST">
+  const {
+    success
+  } = req.query
 
+  res.send(`
+  <h2 style="color: rgb(135, 129, 211)">Registrera mig som kvittoutgivare</h2>
+  <form action="/enroll" method="POST">
   <label for="publisher-org-id"> Org Id utgivare </label>
   <br>
-  <input id="publisher-org-id" type="input" value="${process.env.lisherLISHER_ORGANIZATION_ID}"/>
+  <input name="publisherOrganizationId" id="publisher-org-id" type="input" value="${process.env.PUBLISHER_ORG_ID}"/>
   <br>
 
-  <label for="publisher-public-key-route"> Org Id utgivare </label>
+  <label for="publisher-endpoint"> Webaddress för publika nycklar</label>
   <br>
-  <input id="publisher-public-key-route"="input" value="${process.env.SHOP_URL}/jwks"  />
+  <input name="publisherEndpoint" id="publisher-endpoint"="input" value="${process.env.SHOP_URL}/jwks"  />
 
   <br>
   <input type="submit" value="Enroll"/>
   </form>
-
+  ${success === undefined ? `` : success === 'true' ? `<div style="color: green; font-size:30px; top:16px; left: 25px; z-index: 11;"> Successfully enrolled &#9989</div>` : `<div style="color: red" id="success-msg"> You are already enrolled. You should try using the update endpoint`}
+  <script>
+    setTimeout(() => {
+      document.getElementById(
+        'success-msg'
+      ).innerHTML = ''
+    }, 2500)
+  </script>
   `)
 })
 
