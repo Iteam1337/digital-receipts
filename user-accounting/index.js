@@ -14,11 +14,11 @@ const readFile = util.promisify(fs.readFile)
 const jimpRead = util.promisify(jimp.read)
 const moment = require('moment')
 const got = require('got')
-const USER_ACCOUNTING_ORG_ID = '987'
+const USER_ACCOUNTING_ORG_ID = process.env.USER_ACCOUNTING_ORG_ID
 
 require('dotenv').config({
   path: process.cwd() + '/../.env'
-});
+})
 
 fs.mkdir(`${__dirname}/receipts`, () => {})
 
@@ -32,7 +32,7 @@ async function readReceiptQR(path) {
   const imgBuffer = await readFile(`${__dirname}/receipts/${imgPath}`)
   const image = await jimpRead(imgBuffer)
   const qr = new QrCode()
-  qr.callback = function (err, value) {
+  qr.callback = function(err, value) {
     if (err) {
       console.error('Error reading receipt', err)
       // TODO handle error
@@ -60,22 +60,24 @@ function readReceiptJson(receiptName) {
 }
 
 watcher
-  .on('add', async function (path) {
+  .on('add', async function(path) {
     if (path.endsWith('.json')) {
-      console.log('new receipt');
-      const receiptName = path.replace(`${__dirname}/receipts/`, '').replace('.json', '')
+      console.log('new receipt')
+      const receiptName = path
+        .replace(`${__dirname}/receipts/`, '')
+        .replace('.json', '')
       const receipt = readReceiptJson(receiptName)
       receipts.push(receipt)
       io.emit('receipt', receipt)
     }
   })
-  .on('change', function (path) {
+  .on('change', function(path) {
     console.log('File', path, 'has been changed')
   })
-  .on('unlink', function (path) {
+  .on('unlink', function(path) {
     console.log('File', path, 'has been removed')
   })
-  .on('error', function (error) {
+  .on('error', function(error) {
     console.error('Error happened', error)
   })
 
@@ -95,14 +97,10 @@ app.get('/attestation', (_, res) => {
 })
 
 app.get('/report-receipt/:receiptName', async (req, res) => {
-  const {
-    receiptName
-  } = req.params
+  const { receiptName } = req.params
 
   const digitalDeceipt = readReceiptJson(receiptName).receipt
-  const {
-    receipt
-  } = digitalDeceipt
+  const { receipt } = digitalDeceipt
 
   const html = `
     <!DOCTYPE html>
@@ -152,52 +150,48 @@ app.get('/report-receipt/:receiptName', async (req, res) => {
 })
 
 function setReceiptAsSaved(hash) {
-  receipts = receipts
-    .map(r => ({
-      ...r,
-      receipt: {
-        ...r.receipt,
-        saved: r.receipt.hash === hash || r.receipt.saved
-      }
-    }))
-  receipts
-    .forEach(r => {
-      if (r.receipt.hash === hash) {
-        fs.writeFileSync(`${__dirname}/receipts/${r.img.replace('.png', '.json')}`,
-          JSON.stringify(r.receipt)
-        )
-      }
-    })
+  receipts = receipts.map(r => ({
+    ...r,
+    receipt: {
+      ...r.receipt,
+      saved: r.receipt.hash === hash || r.receipt.saved
+    }
+  }))
+  receipts.forEach(r => {
+    if (r.receipt.hash === hash) {
+      fs.writeFileSync(
+        `${__dirname}/receipts/${r.img.replace('.png', '.json')}`,
+        JSON.stringify(r.receipt)
+      )
+    }
+  })
 }
 
 function setReceiptAsNotSaved(hash) {
-  receipts = receipts
-    .map(r => {
-      if (r.receipt.hash !== hash) {
-        return r
+  receipts = receipts.map(r => {
+    if (r.receipt.hash !== hash) {
+      return r
+    }
+    return {
+      ...r,
+      receipt: {
+        ...r.receipt,
+        saved: false
       }
-      return {
-        ...r,
-        receipt: {
-          ...r.receipt,
-          saved: false
-        }
-      }
-    })
-  receipts
-    .forEach(r => {
-      if (r.receipt.hash === hash) {
-        fs.writeFileSync(`${__dirname}/receipts/${r.img.replace('.png', '.json')}`,
-          JSON.stringify(r.receipt)
-        )
-      }
-    })
+    }
+  })
+  receipts.forEach(r => {
+    if (r.receipt.hash === hash) {
+      fs.writeFileSync(
+        `${__dirname}/receipts/${r.img.replace('.png', '.json')}`,
+        JSON.stringify(r.receipt)
+      )
+    }
+  })
 }
 
 app.post('/report-receipt/:hash', async (req, res) => {
-  const {
-    hash
-  } = req.params
+  const { hash } = req.params
   try {
     await got(`${process.env.HASH_REGISTRY_URL}/use-receipt`, {
       method: 'POST',

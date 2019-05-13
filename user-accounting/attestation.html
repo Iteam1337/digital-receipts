@@ -1,5 +1,104 @@
-<head>
+<!DOCTYPE html>
+<html>
+  <head>
     <h2 id="window-title">Attestering i Affärssystemet</h2>
     <link rel="stylesheet" type="text/css" href="css.css" />
     <script src="/socket.io-client/dist/socket.io.js"></script>
-</head>
+  </head>
+  <body>
+    <div class="content">
+      <h2>Nya kvitton</h2>
+    </div>
+    <div id="expenseForm:files" class="ui-outputpanel ui-widget">
+      <div
+        id="expenseForm:j_idt506"
+        class="ui-outputpanel ui-widget information-box"
+      >
+        <span id="expenseForm:j_idt507" class="translation"
+          >Det finns inga fler kvitton att sortera.<br />Nya kvitton kan du
+          maila till
+          <a href="mailto:kvitton@expense.pe">kvitton@expense.pe</a> så dyker de
+          automatiskt upp här.</span
+        >
+      </div>
+    </div>
+    <div
+      id="expenseForm:j_idt515"
+      class="ui-outputpanel ui-widget form-panel clearfix "
+    ></div>
+    <input type="button" value="Attestera" onclick="attest()" />
+  </body>
+  <script type="text/javascript">
+    ;(async () => {
+      var socket = io()
+      let receipts = []
+
+      async function setReceiptsHtml(incomingReceipts) {
+        receipts = incomingReceipts
+        const response = await fetch('/receiptsList.html')
+        const receiptsTemplate = await response.text()
+        const receiptsHtml = incomingReceipts
+          .filter(r => r.receipt.saved)
+          .map(r => {
+            return `
+              <li style="position: relative;">
+                ${
+                  r.receipt.saved
+                    ? `
+                <div style="color: green; font-size:100px; position: absolute; top:16px; left: 25px; z-index: 11;">&#9989</div>
+                `
+                    : r.receipt.saved === undefined
+                    ? ``
+                    : `<div style="color: green; font-size:100px; position: absolute; top:16px; left: 25px; z-index: 11;">&#10060</div>`
+                }
+                <a style="position: absolute; top:0; left: 0; z-index:10;"
+                  href="/report-receipt/${r.img
+                    .replace('/', '')
+                    .replace('.png', '')}"> <img src="${
+              r.img
+            }" alt="" border="1"
+                    class="expense-file-preview" /></a>
+                <pre style="left: 160px; position: relative;">${JSON.stringify(
+                  r.receipt,
+                  null,
+                  2
+                )}</pre>
+              </li>
+              `
+          })
+          .join('')
+        document.getElementById(
+          'expenseForm:files'
+        ).innerHTML = receiptsTemplate
+        document.getElementById(
+          'expenseForm:j_idt510:table'
+        ).innerHTML = receiptsHtml
+        document.getElementById('expenseForm:j_idt335:j_idt337').innerText = `${
+          receipts.length
+        } kvitton/bilder kvar att sortera`
+      }
+
+      socket.on('receipts', setReceiptsHtml)
+      socket.on('receipt', async r => {
+        receipts.push(r)
+        setReceiptsHtml(receipts)
+      })
+
+      const urlParams = new URLSearchParams(window.location.search)
+      const successfulReport =
+        urlParams.has('success') && urlParams.get('success') === 'true'
+      const failedReport = urlParams.has('error') && urlParams.get('error')
+      if (successfulReport) {
+        alert('it w0rked!')
+      }
+
+      if (failedReport) {
+        alert(failedReport)
+      }
+
+      function attest() {
+        alert('hej')
+      }
+    })()
+  </script>
+</html>
