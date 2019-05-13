@@ -4,18 +4,15 @@ const r = require('rethinkdbdash')({
 }) // TODO remove rethinkdb or move to adapter
 
 async function enrollPublisher(req, res) {
-  const {
-    publisherEndpoint,
-    publisherOrganizationId
-  } = req.body
+  const { endpoint, organizationId } = req.body
   const results = await r.table('keys').filter({
-    organizationId: publisherOrganizationId
+    organizationId
   })
 
   if (!results.length) {
-    const result = await r.table('keys').insert({
-      publisherEndpoint,
-      organizationId: publisherOrganizationId,
+    await r.table('keys').insert({
+      endpoint,
+      organizationId,
       type: 'publisher'
     })
     return res.redirect('/enroll?success=true')
@@ -25,18 +22,15 @@ async function enrollPublisher(req, res) {
 }
 
 async function enrollReporter(req, res) {
-  const {
-    publisherEndpoint,
-    publisherOrganizationId
-  } = req.body
+  const { endpoint, organizationId } = req.body
   const results = await r.table('keys').filter({
-    organizationId: publisherOrganizationId
+    organizationId
   })
 
   if (!results.length) {
-    const result = await r.table('keys').insert({
-      publisherEndpoint,
-      organizationId: publisherOrganizationId,
+    await r.table('keys').insert({
+      endpoint,
+      organizationId,
       type: 'reporter'
     })
     return res.redirect('/enroll?success=true')

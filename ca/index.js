@@ -1,9 +1,6 @@
 const bodyParser = require('body-parser')
 const express = require('express')
-const {
-  enrollPublisher,
-  enrollReporter
-} = require('./enroll')
+const { enrollPublisher, enrollReporter } = require('./enroll')
 const getEndpoint = require('./getEndpoint')
 const app = express()
 const port = 5700 // TODO get app PORT from config
@@ -13,7 +10,7 @@ const r = require('rethinkdbdash')({
 }) // TODO remove rethinkdbdash or use adapter for it
 require('dotenv').config({
   path: process.cwd() + '/../.env'
-});
+})
 
 app.use(
   require('body-parser').urlencoded({
@@ -33,26 +30,54 @@ app.get('/', async (_, res) => {
 app.post('/enroll-publisher', enrollPublisher)
 app.post('/enroll-reporter', enrollReporter)
 app.get('/enroll', (req, res) => {
-  const {
-    success
-  } = req.query
+  const { success } = req.query
 
   res.send(`
-  <h2 style="color: rgb(135, 129, 211)">Registrera mig som kvittoutgivare/konterare</h2>
+  <h2 style="color: rgb(135, 129, 211)">Registrera mig som kvittoutgivare</h2>
   <form action="/enroll-publisher" method="POST">
   <label for="publisher-org-id"> Org Id utgivare </label>
   <br>
-  <input name="publisherOrganizationId" id="publisher-org-id" type="input" value="${process.env.PUBLISHER_ORG_ID}"/>
+  <input name="organizationId" id="publisher-org-id" type="input" value="${
+    process.env.PUBLISHER_ORG_ID
+  }"/>
   <br>
 
   <label for="publisher-endpoint"> Webaddress för publika nycklar</label>
   <br>
-  <input name="publisherEndpoint" id="publisher-endpoint"="input" value="${process.env.SHOP_URL}/jwks"  />
+  <input name="endpoint" id="publisher-endpoint"="input" value="${
+    process.env.SHOP_URL
+  }/jwks"  />
 
   <br>
   <input type="submit" value="Registrera"/>
   </form>
-  ${success === undefined ? `` : success === 'true' ? `<div id="success-msg" style="color: green; font-size:30px; top:16px; left: 25px; z-index: 11;"> Successfully enrolled &#9989</div>` : `<div style="color: red" id="success-msg"> You are already enrolled. You should try using the update endpoint`}
+
+  <h2 style="color: rgb(135, 129, 211)">Registrera mig som konterare</h2>
+  <form action="/enroll-reporter" method="POST">
+  <label for="reporter-org-id"> Org Id utgivare </label>
+  <br>
+  <input name="organizationId" id="reporter-org-id" type="input" value="${
+    process.env.USER_ACCOUNTING_ORG_ID
+  }"/>
+  <br>
+
+  <label for="reporter-endpoint"> Webaddress för publika nycklar</label>
+  <br>
+  <input name="endpoint" id="reporter-endpoint"="input" value="${
+    process.env.USER_ACCOUNTING_URL
+  }/jwks"  />
+
+  <br>
+  <input type="submit" value="Registrera"/>
+  </form>
+
+  ${
+    success === undefined
+      ? ``
+      : success === 'true'
+      ? `<div id="success-msg" style="color: green; font-size:30px; top:16px; left: 25px; z-index: 11;"> Successfully enrolled &#9989</div>`
+      : `<div style="color: red" id="success-msg"> You are already enrolled. You should try using the update endpoint`
+  }
   <script>
     setTimeout(() => {
       document.getElementById(
