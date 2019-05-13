@@ -67,11 +67,13 @@ watcher
         .replace(`${__dirname}/receipts/`, '')
         .replace('.json', '')
       const receipt = readReceiptJson(receiptName)
+
       receipts.push(receipt)
       io.emit('receipt', receipt)
     }
   })
   .on('change', function(path) {
+    io.emit('receipts', receipts)
     console.log('File', path, 'has been changed')
   })
   .on('unlink', function(path) {
@@ -167,6 +169,24 @@ function setReceiptAsSaved(hash) {
   })
 }
 
+function setReceiptAsDone(hash) {
+  receipts = receipts.map(r => ({
+    ...r,
+    receipt: {
+      ...r.receipt,
+      done: r.receipt.hash === hash || r.receipt.done
+    }
+  }))
+  receipts.forEach(r => {
+    if (r.receipt.hash === hash) {
+      fs.writeFileSync(
+        `${__dirname}/receipts/${r.img.replace('.png', '.json')}`,
+        JSON.stringify(r.receipt)
+      )
+    }
+  })
+}
+
 function setReceiptAsNotSaved(hash) {
   receipts = receipts.map(r => {
     if (r.receipt.hash !== hash) {
@@ -193,7 +213,7 @@ function setReceiptAsNotSaved(hash) {
 app.post('/report-receipt/:hash', async (req, res) => {
   const { hash } = req.params
   try {
-    await got(`${process.env.HASH_REGISTRY_URL}/use-receipt`, {
+    await got(`${process.env.HASH_REGISTRY_URL}/check-receipt`, {
       method: 'POST',
       json: true,
       body: {
@@ -210,6 +230,31 @@ app.post('/report-receipt/:hash', async (req, res) => {
 
   setReceiptAsSaved(hash)
   res.redirect('/expenses?success=true')
+})
+
+app.post('/attest', async (req, res) => {
+  const savedReceipts = receipts.filter(r => r.receipt.saved)
+
+  console.log(savedReceipts.length)
+  try {
+    await Promise.all(
+      savedReceipts.map(({ receipt: { hash, receipt: { organizationId } } }) =>
+        got(`${process.env.HASH_REGISTRY_URL}/use-receipt`, {
+          method: 'POST',
+          json: true,
+          body: {
+            receipt: {
+              hash,
+              reporterOrgId: organizationId
+            }
+          }
+        }).then(() => setReceiptAsDone(hash))
+      )
+    )
+  } catch (ex) {
+    console.log('ex br0ke', ex)
+  }
+  res.redirect('/attestation')
 })
 
 app.use(express.static('receipts'))

@@ -6,13 +6,14 @@ const r = require('rethinkdbdash')({
 })
 const registerReceipt = require('./registerReceipt')
 const useReceipt = require('./useReceipt')
+const checkReceipt = require('./checkReceipt')
 
 const port = 5500
 app.use(bodyParser.json())
 app.use(bodyParser.text())
 require('dotenv').config({
   path: process.cwd() + '/../.env'
-});
+})
 
 app.get('/receipts', async (req, res) => {
   const registeredReceipts = await r.table('registered_receipts')
@@ -29,6 +30,7 @@ app.get('/receipts', async (req, res) => {
 
 app.post('/register-receipt', registerReceipt)
 app.post('/use-receipt', useReceipt)
+app.post('/check-receipt', checkReceipt)
 
 app.listen(port, () => {
   console.log('Hash-registry running on ', port)
