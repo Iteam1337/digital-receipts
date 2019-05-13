@@ -233,9 +233,8 @@ app.post('/report-receipt/:hash', async (req, res) => {
 })
 
 app.post('/attest', async (req, res) => {
-  const savedReceipts = receipts.filter(r => r.receipt.saved)
+  const savedReceipts = receipts.filter(r => r.receipt.saved && !r.receipt.done)
 
-  console.log(savedReceipts.length)
   try {
     await Promise.all(
       savedReceipts.map(({ receipt: { hash, receipt: { organizationId } } }) =>
@@ -251,10 +250,11 @@ app.post('/attest', async (req, res) => {
         }).then(() => setReceiptAsDone(hash))
       )
     )
-  } catch (ex) {
-    console.log('ex br0ke', ex)
+  } catch (error) {
+    console.log('ex br0ke', error)
+    return res.redirect(`/attestation?error=${error.body ? error.body : error}`)
   }
-  res.redirect('/attestation')
+  res.redirect('/attestation?success=true')
 })
 
 app.use(express.static('receipts'))
