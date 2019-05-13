@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm start --prefix shop & npm start --prefix user-email & npm start --prefix user-accounting & npm start --prefix hash-registry & npm start --prefix ca",
     "start:iframe": "npm run start & node index.js",
-    "migrate": "npm run migrate --prefix hash-registry & npm run migrate --prefix ca"
+    "migrate": "npm run migrate --prefix hash-registry & npm run migrate --prefix ca",
+    "install-all": "npm install --prefix ca & npm install --prefix hash-registry & npm install --prefix shop & npm install --prefix user-accounting & npm install --prefix user-email && npm i"
   },
   "repository": {
     "type": "git",
