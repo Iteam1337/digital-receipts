@@ -31,9 +31,7 @@ function openReceipt(r) {
         <h2>${receipt.shopName}</h2>
         <ul>
             ${Object.keys(receipt)
-              .map(k => {
-                return `<li>${k} : ${receipt[k]}</li>`
-              })
+              .map(k => `<li>${k} : ${receipt[k]}</li>`)
               .join('')}
         </ul>
         <pre>${JSON.stringify(r, null, 2)}</pre>
@@ -76,6 +74,7 @@ app.get('/emails', (req, res) => {
     <!DOCTYPE html>
     <html>
         <head>
+        <h2 id="window-title">Mottagar fönster för användaren</h2>
             <link rel="stylesheet" type="text/css" href="css.css"/>
             <script src="/qrcode/build/qrcode.min.js"></script>
         </head>

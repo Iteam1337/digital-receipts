@@ -1,6 +1,6 @@
 const bodyParser = require('body-parser')
 const express = require('express')
-const enrol = require('./enrol')
+const enroll = require('./enroll')
 const getEndpoint = require('./getEndpoint')
 const app = express()
 const port = 5700 // TODO get app PORT from config
@@ -17,13 +17,14 @@ app.use(bodyParser.json())
 app.get('/', async (_, res) => {
   const keys = await r.table('keys')
   res.send(`
-    <h1>CA</h1>
+    <h2 style="color: rgb(135, 129, 211)">Tillitslogik för avsändar- och mottagarvalidering</h2>
+
     <pre>${JSON.stringify(keys, null, 2)}</pre>
     <script type="text/javascript">setTimeout(() => { location.reload()}, 3000)</script>
   `)
 })
 
-app.post('/enrol', enrol)
+app.post('/enroll', enroll)
 
 app.get('/endpoints/:organizationId', getEndpoint)
 

@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" type="text/css" href="css.css" />
-    <!-- <script src="/socket.io-client/dist/socket.io.js"></script> -->
-  </head>
-  <body>
-    <div></div>
-  </body>
-  <script type="text/javascript">
-    ;(async () => {
-      var socket = io()
-      const response = await fetch('/receiptsList.html')
-      const receiptsTemplate = await response.text()
-      const receipts = []
 
-      socket.on('receipt', async r => {
-        receipts.push(r)
-        const receiptsHtml = receipts
-          .map(r => {
-            return `
+<head>
+  <link rel="stylesheet" type="text/css" href="css.css" />
+  <!-- <script src="/socket.io-client/dist/socket.io.js"></script> -->
+</head>
+
+<body>
+  <div></div>
+</body>
+<script type="text/javascript">
+  ;
+  (async () => {
+    var socket = io()
+    const response = await fetch('/receiptsList.html')
+    const receiptsTemplate = await response.text()
+    const receipts = []
+
+    socket.on('receipt', async r => {
+      receipts.push(r)
+      const receiptsHtml = receipts
+        .map(r => {
+          return `
           <li>
-            <a href="/report-receipt/${r.img.replace('/', '')}">
+            <a href="/report-receipt/${r.img.replace('/', '').replace('.png', '')}">
                 <img
                   src="${r.img}"
                   alt=""
@@ -30,19 +33,20 @@
               <pre>${JSON.stringify(JSON.parse(r.receipt), null, 2)}</pre>
               </li>
           `
-          })
-          .join('')
+        })
+        .join('')
 
-        document.getElementById(
-          'expenseForm:files'
-        ).innerHTML = receiptsTemplate
-        document.getElementById(
-          'expenseForm:j_idt510:table'
-        ).innerHTML = receiptsHtml
-        document.getElementById('expenseForm:j_idt335:j_idt337').innerText = `${
+      document.getElementById(
+        'expenseForm:files'
+      ).innerHTML = receiptsTemplate
+      document.getElementById(
+        'expenseForm:j_idt510:table'
+      ).innerHTML = receiptsHtml
+      document.getElementById('expenseForm:j_idt335:j_idt337').innerText = `${
           receipts.length
         } kvitton/bilder kvar att sortera`
-      })
-    })()
-  </script>
+    })
+  })()
+</script>
+
 </html>

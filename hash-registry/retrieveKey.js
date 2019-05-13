@@ -19,7 +19,7 @@ async function retrieveKey(kid, iss) {
     body: {
       endpoint: jwksUri
     } = {}
-  } = await got(`${process.env.CA_URL}/${iss}`, {
+  } = await got(`${process.env.CA_URL}/endpoints/${iss}`, {
     json: true
   })
 

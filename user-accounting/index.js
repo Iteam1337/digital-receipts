@@ -20,6 +20,7 @@ require('dotenv').config({
   path: process.cwd() + '/../.env'
 });
 
+fs.mkdir(`${__dirname}/receipts`, () => {})
 
 const watcher = chokidar.watch(`${__dirname}/receipts`, {
   ignored: /^\./,
@@ -47,24 +48,25 @@ async function readReceiptQR(path) {
   qr.decode(image.bitmap)
 }
 
-async function readReceiptJson(path) {
-  const imgPath = path.replace(`${__dirname}/receipts`, '').replace('json', 'png')
-  const receiptJsonPath = path.replace(`${__dirname}/receipts`, '')
-  const json = await fs.readFileSync(`${__dirname}/receipts/${receiptJsonPath}`)
+function readReceiptJson(receiptName) {
+  const imgPath = `${receiptName}.png`
+  const jsonPath = `${__dirname}/receipts/${receiptName}.json`
+  const json = fs.readFileSync(jsonPath)
   const data = JSON.parse(json)
-  const receipt = {
+  return {
     img: imgPath,
     receipt: data
   }
-  receipts.push(receipt)
-  io.emit('receipt', receipt)
 }
 
-fs.mkdir(`${__dirname}/receipts`, () => {})
 watcher
   .on('add', async function (path) {
     if (path.endsWith('.json')) {
-      readReceiptJson(path)
+      console.log('new receipt');
+      const receiptName = path.replace(`${__dirname}/receipts/`, '').replace('.json', '')
+      const receipt = readReceiptJson(receiptName)
+      receipts.push(receipt)
+      io.emit('receipt', receipt)
     }
   })
   .on('change', function (path) {
@@ -88,24 +90,17 @@ app.get('/expenses', (_, res) => {
   res.sendFile(`${__dirname}/index.html`)
 })
 
-app.get('/report-receipt/:id', async (req, res) => {
+app.get('/report-receipt/:receiptName', async (req, res) => {
   const {
-    id
+    receiptName
   } = req.params
-  const imgBuffer = await readFile(`${__dirname}/receipts/${id}`)
-  const image = await jimpRead(imgBuffer)
-  const qr = new QrCode()
-  qr.callback = function (err, value) {
-    if (err) {
-      console.error(err)
-      // TODO handle error
-    }
 
-    const digitalDeceipt = JSON.parse(value.result)
-    const {
-      receipt
-    } = digitalDeceipt
-    const html = `
+  const digitalDeceipt = readReceiptJson(receiptName).receipt
+  const {
+    receipt
+  } = digitalDeceipt
+
+  const html = `
     <!DOCTYPE html>
     <html>
       <head></head>
@@ -149,20 +144,56 @@ app.get('/report-receipt/:id', async (req, res) => {
       </body>
     </html>
     `
-    res.send(html)
-  }
-  qr.decode(image.bitmap)
+  res.send(html)
 })
+
+function setReceiptAsSaved(hash) {
+  receipts = receipts
+    .map(r => ({
+      ...r,
+      receipt: {
+        ...r.receipt,
+        saved: r.receipt.hash === hash || r.receipt.saved
+      }
+    }))
+  receipts
+    .forEach(r => {
+      if (r.receipt.hash === hash) {
+        fs.writeFileSync(`${__dirname}/receipts/${r.img.replace('.png', '.json')}`,
+          JSON.stringify(r.receipt)
+        )
+      }
+    })
+}
+
+function setReceiptAsNotSaved(hash) {
+  receipts = receipts
+    .map(r => {
+      if (r.receipt.hash !== hash) {
+        return r
+      }
+      return {
+        ...r,
+        receipt: {
+          ...r.receipt,
+          saved: false
+        }
+      }
+    })
+  receipts
+    .forEach(r => {
+      if (r.receipt.hash === hash) {
+        fs.writeFileSync(`${__dirname}/receipts/${r.img.replace('.png', '.json')}`,
+          JSON.stringify(r.receipt)
+        )
+      }
+    })
+}
 
 app.post('/report-receipt/:hash', async (req, res) => {
   const {
     hash
   } = req.params
-  const body = req.body
-  receipts = receipts.map(x => ({
-    ...x,
-    saved: x.saved || x.receipt.hash === hash
-  }))
   try {
     await got(`${process.env.HASH_REGISTRY_URL}/use-receipt`, {
       method: 'POST',
@@ -175,8 +206,13 @@ app.post('/report-receipt/:hash', async (req, res) => {
       }
     })
   } catch (error) {
-    console.log('erroh', error)
+    setReceiptAsNotSaved(hash)
+    return res.send(`
+      <h1>${error.body}</h1>
+      <button onclick="location.href='/expenses'"> Back </button>
+    `)
   }
+  setReceiptAsSaved(hash)
   res.redirect('/expenses')
 })
 
@@ -189,5 +225,5 @@ http.listen(port, () => console.log(`User accounting running on ${port}!`))
 
 io.on('connection', socket => {
   console.log('a socket connected!')
-  receipts.forEach(r => socket.emit('receipt', r))
+  socket.emit('receipts', receipts)
 })

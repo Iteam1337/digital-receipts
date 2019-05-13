@@ -2,7 +2,7 @@
 <html>
 
 <body>
-  <input type="button" value="Enrol" onclick="enrol()" />
+  <input type="button" value="Enroll" onclick="enroll()" />
   <p>
     Resa mellan Stockholm Malmö
   </p>
@@ -56,8 +56,8 @@
       }, 2500)
     }
 
-    async function enrol() {
-      await fetch('/enrol', {
+    async function enroll() {
+      await fetch('/enroll', {
         method: 'POST'
       })
     }
