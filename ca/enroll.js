@@ -3,10 +3,7 @@ const r = require('rethinkdbdash')({
   db: 'ca'
 }) // TODO remove rethinkdb or move to adapter
 
-async function enroll(req, res) {
-  console.log('ennrr', req.body);
-  console.log('ennrr', req.body.publisherOrganizationId);
-
+async function enrollPublisher(req, res) {
   const {
     publisherEndpoint,
     publisherOrganizationId
@@ -18,7 +15,8 @@ async function enroll(req, res) {
   if (!results.length) {
     const result = await r.table('keys').insert({
       publisherEndpoint,
-      organizationId: publisherOrganizationId
+      organizationId: publisherOrganizationId,
+      type: 'publisher'
     })
     return res.redirect('/enroll?success=true')
   }
@@ -26,4 +24,28 @@ async function enroll(req, res) {
   return res.redirect('/enroll?success=false')
 }
 
-module.exports = enroll
+async function enrollReporter(req, res) {
+  const {
+    publisherEndpoint,
+    publisherOrganizationId
+  } = req.body
+  const results = await r.table('keys').filter({
+    organizationId: publisherOrganizationId
+  })
+
+  if (!results.length) {
+    const result = await r.table('keys').insert({
+      publisherEndpoint,
+      organizationId: publisherOrganizationId,
+      type: 'reporter'
+    })
+    return res.redirect('/enroll?success=true')
+  }
+
+  return res.redirect('/enroll?success=false')
+}
+
+module.exports = {
+  enrollPublisher,
+  enrollReporter
+}

@@ -90,6 +90,10 @@ app.get('/expenses', (_, res) => {
   res.sendFile(`${__dirname}/index.html`)
 })
 
+app.get('/attestation', (_, res) => {
+  res.sendFile(`${__dirname}/attestation.html`)
+})
+
 app.get('/report-receipt/:receiptName', async (req, res) => {
   const {
     receiptName

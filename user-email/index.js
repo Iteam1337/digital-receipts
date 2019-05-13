@@ -74,7 +74,7 @@ app.get('/emails', (req, res) => {
     <!DOCTYPE html>
     <html>
         <head>
-        <h2 id="window-title">Mottagar fönster för användaren</h2>
+        <h2 id="window-title">Mottagar-fönster för användaren</h2>
             <link rel="stylesheet" type="text/css" href="css.css"/>
             <script src="/qrcode/build/qrcode.min.js"></script>
         </head>
