@@ -7,7 +7,8 @@ const qrcode = require('qrcode')
 const fs = require('fs')
 require('dotenv').config({
   path: process.cwd() + '/../.env'
-});
+})
+const got = require('got')
 
 app.use(require('body-parser').json())
 let receipts = []
@@ -23,9 +24,7 @@ function newReceipt(r) {
 }
 
 function openReceipt(r) {
-  const {
-    receipt
-  } = r
+  const { receipt } = r
   const receiptJson = JSON.stringify(r)
   const receiptHtml = `
         <h2>${receipt.shopName}</h2>
@@ -51,7 +50,7 @@ function openReceipt(r) {
 function forwardReceipt(r) {
   const result = prompt('To', 'kvitton@ekonomi.se')
   if (result) {
-    fetch('/forward', {
+    fetch(`${USER_ACCOUNTING_URL}/receipts`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -90,22 +89,13 @@ app.get('/emails', (req, res) => {
 
             <div id="email-container"></div>
             <script type="text/javascript">
+                var USER_ACCOUNTING_URL = '${process.env.USER_ACCOUNTING_URL}'
                 var openReceipt = ${eval(openReceipt)}
                 var forwardReceipt = ${eval(forwardReceipt)}
             </script>
         </body>
     </html>
     `)
-})
-
-app.post('/forward', (req, res) => {
-  const now = Date.now()
-  qrcode.toFile(
-    `../user-accounting/receipts/receipt-${now}.png`,
-    JSON.stringify(req.body)
-  )
-  fs.writeFileSync(`../user-accounting/receipts/receipt-${now}.json`, JSON.stringify(req.body))
-  res.sendStatus(200)
 })
 
 app.use(express.static('node_modules'))

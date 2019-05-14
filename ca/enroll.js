@@ -1,5 +1,6 @@
 const r = require('rethinkdbdash')({
-  port: 28016,
+  host: process.env.CA_DB_HOST || 'localhost',
+  port: process.env.CA_DB_PORT || 28016,
   db: 'ca'
 }) // TODO remove rethinkdb or move to adapter
 

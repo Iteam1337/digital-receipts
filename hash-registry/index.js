@@ -2,6 +2,8 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
 const r = require('rethinkdbdash')({
+  host: process.env.REGISTRY_DB_HOST,
+  port: process.env.REGISTRY_DB_PORT,
   db: 'hash_registry'
 })
 const registerReceipt = require('./registerReceipt')

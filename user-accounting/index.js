@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const fs = require('fs')
@@ -17,6 +18,7 @@ const got = require('got')
 const jwt = require('jsonwebtoken')
 const { serialize } = require('jwks-provider')
 const crypto = require('crypto')
+const qrcode = require('qrcode')
 const { readFileSync } = require('fs')
 const privateKey = readFileSync(`${__dirname}/keys/private_key.pem`)
 const publicKey = readFileSync(`${__dirname}/keys/public_key.pem`, 'utf8')
@@ -95,6 +97,7 @@ watcher
     console.error('Error happened', error)
   })
 
+app.use(cors())
 app.use(require('body-parser').json())
 app.use(
   require('body-parser').urlencoded({
@@ -292,6 +295,13 @@ app.post('/attest', async (req, res) => {
     return res.redirect(`/attestation?error=${error.body ? error.body : error}`)
   }
   res.redirect('/attestation?success=true')
+})
+
+app.post('/receipts', (req, res) => {
+  const now = Date.now()
+  qrcode.toFile(`./receipts/receipt-${now}.png`, JSON.stringify(req.body))
+  fs.writeFileSync(`./receipts/receipt-${now}.json`, JSON.stringify(req.body))
+  res.send({})
 })
 
 app.use(express.static('receipts'))

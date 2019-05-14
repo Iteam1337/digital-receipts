@@ -8,7 +8,9 @@
     "start": "npm start --prefix shop & npm start --prefix user-email & npm start --prefix user-accounting & npm start --prefix hash-registry & npm start --prefix ca",
     "start:iframe": "npm run start & node index.js",
     "migrate": "npm run migrate --prefix hash-registry & npm run migrate --prefix ca",
-    "install-all": "npm install --prefix ca & npm install --prefix hash-registry & npm install --prefix shop & npm install --prefix user-accounting & npm install --prefix user-email && npm i"
+    "install-all": "npm install --prefix ca & npm install --prefix hash-registry & npm install --prefix shop & npm install --prefix user-accounting & npm install --prefix user-email && npm i",
+    "stop-all-nodemon": "kill -9 $(ps aux | grep nodemon | egrep -v \"COMMAND PID USER\" | awk '{print $2}' | sort -n | uniq)",
+    "stop-all-node": "for p in 5500 5700 6900 7900 8900 9000; do kill -9 $(lsof -i :$p | grep node | egrep -v \"COMMAND PID USER\" | awk '{print $2}' | sort -n | uniq); done"
   },
   "repository": {
     "type": "git",

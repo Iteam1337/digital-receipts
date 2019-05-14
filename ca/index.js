@@ -5,7 +5,8 @@ const getEndpoint = require('./getEndpoint')
 const app = express()
 const port = 5700 // TODO get app PORT from config
 const r = require('rethinkdbdash')({
-  port: 28016,
+  host: process.env.CA_DB_HOST || 'localhost',
+  port: process.env.CA_DB_PORT || 28016,
   db: 'ca'
 }) // TODO remove rethinkdbdash or use adapter for it
 require('dotenv').config({
