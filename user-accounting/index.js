@@ -14,11 +14,23 @@ const readFile = util.promisify(fs.readFile)
 const jimpRead = util.promisify(jimp.read)
 const moment = require('moment')
 const got = require('got')
-const USER_ACCOUNTING_ORG_ID = process.env.USER_ACCOUNTING_ORG_ID
-
+const jwt = require('jsonwebtoken')
+const { serialize } = require('jwks-provider')
+const crypto = require('crypto')
+const { readFileSync } = require('fs')
+const privateKey = readFileSync(`${__dirname}/keys/private_key.pem`)
+const publicKey = readFileSync(`${__dirname}/keys/public_key.pem`, 'utf8')
 require('dotenv').config({
   path: process.cwd() + '/../.env'
 })
+
+const kid = crypto
+  .createHash('SHA256')
+  .update(publicKey)
+  .digest('hex')
+// TODO move keyid creation to a key provider
+
+const USER_ACCOUNTING_ORG_ID = process.env.USER_ACCOUNTING_ORG_ID
 
 fs.mkdir(`${__dirname}/receipts`, () => {})
 
@@ -89,6 +101,15 @@ app.use(
     extended: true
   })
 )
+
+app.get('/jwks', (_, res) => {
+  const key = {
+    publicKey,
+    use: 'sig',
+    kid
+  } // TODO this should be part of key provider
+  res.send(serialize([key]))
+})
 
 app.get('/expenses', (_, res) => {
   res.sendFile(`${__dirname}/index.html`)
@@ -212,16 +233,23 @@ function setReceiptAsNotSaved(hash) {
 
 app.post('/report-receipt/:hash', async (req, res) => {
   const { hash } = req.params
+  const token = jwt.sign(
+    {
+      hash,
+      reporterOrgId: USER_ACCOUNTING_ORG_ID
+    },
+    privateKey,
+    {
+      algorithm: 'RS256',
+      keyid: kid,
+      issuer: USER_ACCOUNTING_ORG_ID
+    }
+  )
   try {
     await got(`${process.env.HASH_REGISTRY_URL}/check-receipt`, {
       method: 'POST',
       json: true,
-      body: {
-        receipt: {
-          hash,
-          reporterOrgId: USER_ACCOUNTING_ORG_ID
-        }
-      }
+      body: { token }
     })
   } catch (error) {
     setReceiptAsNotSaved(hash)
@@ -237,18 +265,27 @@ app.post('/attest', async (req, res) => {
 
   try {
     await Promise.all(
-      savedReceipts.map(({ receipt: { hash, receipt: { organizationId } } }) =>
-        got(`${process.env.HASH_REGISTRY_URL}/use-receipt`, {
+      savedReceipts.map(({ receipt: { hash } }) => {
+        const token = jwt.sign(
+          {
+            hash,
+            reporterOrgId: USER_ACCOUNTING_ORG_ID
+          },
+          privateKey,
+          {
+            algorithm: 'RS256',
+            keyid: kid,
+            issuer: USER_ACCOUNTING_ORG_ID
+          }
+        )
+        return got(`${process.env.HASH_REGISTRY_URL}/use-receipt`, {
           method: 'POST',
           json: true,
           body: {
-            receipt: {
-              hash,
-              reporterOrgId: organizationId
-            }
+            token
           }
         }).then(() => setReceiptAsDone(hash))
-      )
+      })
     )
   } catch (error) {
     console.log('ex br0ke', error)

@@ -1,16 +1,10 @@
 const express = require('express')
 const got = require('got')
 const jwt = require('jsonwebtoken')
-const {
-  readFileSync
-} = require('fs')
-const {
-  serialize
-} = require('jwks-provider')
+const { readFileSync } = require('fs')
+const { serialize } = require('jwks-provider')
 const crypto = require('crypto')
-const {
-  createHash
-} = require('../receipt-hash-generator')
+const { createHash } = require('../receipt-hash-generator')
 const privateKey = readFileSync(`${__dirname}/keys/private_key.pem`)
 const publicKey = readFileSync(`${__dirname}/keys/public_key.pem`, 'utf8')
 const port = 9000 // TODO get PORT from config
@@ -18,7 +12,7 @@ const ORGANIZATION_ID = '123' // TODO get ORGANIZATION ID from config
 const app = express()
 require('dotenv').config({
   path: process.cwd() + '/../.env'
-});
+})
 
 const kid = crypto
   .createHash('SHA256')
@@ -40,7 +34,7 @@ app.get('/jwks', async (_, res) => {
 })
 
 app.post('/buy', (_, res) => {
-  console.log('found');
+  console.log('found')
 
   const receipt = {
     organizationId: ORGANIZATION_ID,
@@ -54,11 +48,13 @@ app.post('/buy', (_, res) => {
   }
   const hash = createHash(receipt)
 
-  const signedPayload = jwt.sign({
+  const token = jwt.sign(
+    {
       hash,
       organizationId: ORGANIZATION_ID
     },
-    privateKey, {
+    privateKey,
+    {
       algorithm: 'RS256',
       keyid: kid,
       issuer: ORGANIZATION_ID
@@ -79,11 +75,8 @@ app.post('/buy', (_, res) => {
 
   got(`${process.env.HASH_REGISTRY_URL}/register-receipt`, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'text/plain'
-    },
-    body: signedPayload
+    json: true,
+    body: { token }
   })
 
   res.sendStatus(200)
@@ -91,9 +84,7 @@ app.post('/buy', (_, res) => {
 
 app.post('/enroll', async (_, res) => {
   try {
-    const {
-      body
-    } = await got(`${process.env.CA_URL}/enroll`, {
+    const { body } = await got(`${process.env.CA_URL}/enroll`, {
       method: 'POST',
       json: true,
       body: {

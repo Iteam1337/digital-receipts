@@ -5,22 +5,16 @@ const jwt = require('jsonwebtoken')
 const retrieveKey = require('./retrieveKey')
 
 async function registerReceipt(req, res) {
+  const { token } = req.body
   const {
-    header: {
-      kid
-    },
-    payload: {
-      iss
-    }
-  } = jwt.decode(req.body, {
+    header: { kid },
+    payload: { iss }
+  } = jwt.decode(token, {
     complete: true
   })
 
   const key = await retrieveKey(kid, iss)
-  const {
-    hash,
-    organizationId
-  } = jwt.verify(req.body, key, {
+  const { hash, organizationId } = jwt.verify(token, key, {
     algorithms: ['RS256', 'RS512']
   })
 

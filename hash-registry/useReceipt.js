@@ -1,17 +1,29 @@
 const r = require('rethinkdbdash')({
   db: 'hash_registry'
 })
-
+const jwt = require('jsonwebtoken')
+const retrieveKey = require('./retrieveKey')
 
 async function useReceipt(req, res, next) {
+  const { token } = req.body
   const {
-    receipt
-  } = req.body
-  if (await isAlreadyInDb(receipt)) {
-    res.status(500).send('The receipt-hash has already been used in this context')
+    header: { kid },
+    payload: { iss }
+  } = jwt.decode(token, {
+    complete: true
+  })
+  const key = await retrieveKey(kid, iss)
+  const { hash, reporterOrgId } = jwt.verify(token, key, {
+    algorithms: ['RS256', 'RS512']
+  })
+
+  if (await isAlreadyInDb({ hash, reporterOrgId })) {
+    res
+      .status(500)
+      .send('The receipt-hash has already been used in this context')
     return next()
   }
-  await r.table('used_receipts').insert(receipt)
+  await r.table('used_receipts').insert({ hash, reporterOrgId })
   res.send('')
 }
 
