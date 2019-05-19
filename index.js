@@ -27,4 +27,21 @@ app.get('/', (_, res) => {
   `)
 })
 
+app.get('/simulators', (_, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+      <head></head>
+      <body>
+        <ul style="list-style-type: none;">
+          <li style="display: inline;"><iframe src="${process.env.USER_ACCOUNTING_URL}/attestation" width="1500" height="1500"></iframe></li>
+          <li style="display: inline;"><iframe src="${process.env.CA_URL}/enroll" width="498" height="1500"></iframe></li>
+          <li style="display: inline;"><iframe src="${process.env.CA_URL}" width="498" height="1500"></iframe></li>
+          <li style="display: inline;"><iframe src="${process.env.HASH_REGISTRY_URL}/receipts" width="498" height="1500"></iframe></li>
+        </ul>
+      </body>
+    </html>
+  `)
+})
+
 app.listen(port, () => console.log(`Everything running on ${port}!`))
