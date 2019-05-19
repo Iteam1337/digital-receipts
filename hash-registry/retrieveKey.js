@@ -15,15 +15,23 @@ function getClient(jwksUri) {
 }
 
 async function retrieveKey(kid, iss) {
-  const {
-    body: {
-      endpoint: jwksUri
-    } = {}
-  } = await got(`${process.env.CA_URL}/endpoints/${iss}`, {
-    json: true
-  })
+  let client
+  try {
+    const {
+      body: {
+        endpoint: jwksUri
+      } = {}
+    } = await got(`${process.env.CA_URL}/endpoints/${iss}`, {
+      json: true
+    })
+    client = getClient(jwksUri)
+  } catch (error) {
+    if (error.statusCode === 404) {
+      throw Error('Public key endpoint not found')
+    }
+    throw Error('Could not get public key', error)
+  }
 
-  const client = getClient(jwksUri)
 
   return new Promise((resolve, reject) => {
     client.getSigningKey(kid, (err, key) => {

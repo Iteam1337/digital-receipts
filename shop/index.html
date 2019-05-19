@@ -41,10 +41,20 @@
   </div>
   <script type="text/javascript">
     async function buy() {
-      await fetch('/buy', {
-        method: 'POST'
+      const payload = await fetch('/buy', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+      }).then(payload => {
+        if (payload.bodyUsed) {
+          return payload.json()
+        }
       })
-
+      if (payload) {
+        alert(payload)
+      }
       document.getElementById(
         'buy'
       ).innerHTML = `<div style="color: green; font-size:100px ">&#9989</div>`

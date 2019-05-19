@@ -5,10 +5,15 @@ const r = require('rethinkdbdash')({
 }) // TODO remove rethinkdb or move to adapter
 
 async function getEndpoint(req, res) {
-  const { organizationId } = req.params
+  const {
+    organizationId
+  } = req.params
   const results = await r.table('keys').filter({
     organizationId
   })
+  if (!results.length) {
+    return res.sendStatus(404)
+  }
   res.send(results[0])
 }
 module.exports = getEndpoint

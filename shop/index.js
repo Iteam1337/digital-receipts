@@ -1,10 +1,16 @@
 const express = require('express')
 const got = require('got')
 const jwt = require('jsonwebtoken')
-const { readFileSync } = require('fs')
-const { serialize } = require('jwks-provider')
+const {
+  readFileSync
+} = require('fs')
+const {
+  serialize
+} = require('jwks-provider')
 const crypto = require('crypto')
-const { createHash } = require('./receipt-hash-generator')
+const {
+  createHash
+} = require('./receipt-hash-generator')
 const privateKey = readFileSync(`${__dirname}/keys/private_key.pem`)
 const publicKey = readFileSync(`${__dirname}/keys/public_key.pem`, 'utf8')
 const port = 9000 // TODO get PORT from config
@@ -33,7 +39,7 @@ app.get('/jwks', async (_, res) => {
   res.send(serialize([key]))
 })
 
-app.post('/buy', (_, res) => {
+app.post('/buy', async (_, res) => {
   console.log('found')
 
   const receipt = {
@@ -48,13 +54,11 @@ app.post('/buy', (_, res) => {
   }
   const hash = createHash(receipt)
 
-  const token = jwt.sign(
-    {
+  const token = jwt.sign({
       hash,
       organizationId: ORGANIZATION_ID
     },
-    privateKey,
-    {
+    privateKey, {
       algorithm: 'RS256',
       keyid: kid,
       issuer: ORGANIZATION_ID
@@ -72,19 +76,26 @@ app.post('/buy', (_, res) => {
       receipt
     })
   })
-
-  got(`${process.env.HASH_REGISTRY_URL}/register-receipt`, {
-    method: 'POST',
-    json: true,
-    body: { token }
-  })
-
+  try {
+    await got(`${process.env.HASH_REGISTRY_URL}/register-receipt`, {
+      method: 'POST',
+      json: true,
+      body: {
+        token
+      }
+    })
+  } catch (error) {
+    console.log('Error registering receipt', error.body);
+    return res.status(500).send(JSON.stringify('Could not register receipt, are you enrolled?'))
+  }
   res.sendStatus(200)
 })
 
 app.post('/enroll', async (_, res) => {
   try {
-    const { body } = await got(`${process.env.CA_URL}/enroll`, {
+    const {
+      body
+    } = await got(`${process.env.CA_URL}/enroll`, {
       method: 'POST',
       json: true,
       body: {
