@@ -6,6 +6,16 @@
     width: 100%;
 }
 
+.container {
+    width: 100%;
+    padding: 0px;
+}
+
+#window-title {
+    color: rgb(135, 129, 211);
+    font-size: 24px;
+}
+
 .mail-box aside {
     display: table-cell;
     float: none;

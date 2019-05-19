@@ -1,49 +1,45 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <h2 id="window-title">Attestering i Affärssystemet</h2>
-    <link rel="stylesheet" type="text/css" href="css.css" />
-    <script src="/socket.io-client/dist/socket.io.js"></script>
-  </head>
-  <body>
-    <div class="content">
-      <h2>Nya kvitton</h2>
-    </div>
-    <div id="expenseForm:files" class="ui-outputpanel ui-widget">
-      <div
-        id="expenseForm:j_idt506"
-        class="ui-outputpanel ui-widget information-box"
-      >
-        <span id="expenseForm:j_idt507" class="translation"
-          >Det finns inga fler kvitton att sortera.<br />Nya kvitton kan du
-          maila till
-          <a href="mailto:kvitton@expense.pe">kvitton@expense.pe</a> så dyker de
-          automatiskt upp här.</span
-        >
-      </div>
-    </div>
-    <div
-      id="expenseForm:j_idt515"
-      class="ui-outputpanel ui-widget form-panel clearfix "
-    ></div>
-    <form method="POST" action="/attest">
-      <input type="submit" value="Attestera" />
-    </form>
-  </body>
-  <script type="text/javascript">
-    ;(async () => {
-      var socket = io()
-      let receipts = []
 
-      async function setReceiptsHtml(incomingReceipts) {
-        receipts = incomingReceipts
-        const response = await fetch('/receiptsList.html')
-        const receiptsTemplate = await response.text()
-        const receiptsHtml = incomingReceipts
-          .filter(r => r.receipt.saved)
-          .filter(r => !r.receipt.done)
-          .map(r => {
-            return `
+<head>
+  <h2 style="font-size: 24px;" id="window-title">Attestering i Affärssystemet</h2>
+  <link rel="stylesheet" type="text/css" href="css.css" />
+  <script src="/socket.io-client/dist/socket.io.js"></script>
+</head>
+
+<body>
+  <div class="content">
+    <h2>Nya kvitton</h2>
+  </div>
+  <div id="expenseForm:files" class="ui-outputpanel ui-widget">
+    <div id="expenseForm:j_idt506" class="ui-outputpanel ui-widget information-box">
+      <span id="expenseForm:j_idt507" class="translation">Det finns inga fler kvitton att sortera.<br />Nya kvitton kan
+        du
+        maila till
+        <a href="mailto:kvitton@expense.pe">kvitton@expense.pe</a> så dyker de
+        automatiskt upp här.</span>
+    </div>
+  </div>
+  <div id="expenseForm:j_idt515" class="ui-outputpanel ui-widget form-panel clearfix "></div>
+  <form method="POST" action="/attest">
+    <input type="submit" value="Attestera" />
+  </form>
+</body>
+<script type="text/javascript">
+  ;
+  (async () => {
+    var socket = io()
+    let receipts = []
+
+    async function setReceiptsHtml(incomingReceipts) {
+      receipts = incomingReceipts
+      const response = await fetch('/receiptsList.html')
+      const receiptsTemplate = await response.text()
+      const receiptsHtml = incomingReceipts
+        .filter(r => r.receipt.saved)
+        .filter(r => !r.receipt.done)
+        .map(r => {
+          return `
               <li style="position: relative;">
                 ${
                   r.receipt.saved
@@ -68,33 +64,34 @@
                 )}</pre>
               </li>
               `
-          })
-          .join('')
-        document.getElementById(
-          'expenseForm:files'
-        ).innerHTML = receiptsTemplate
-        document.getElementById(
-          'expenseForm:j_idt510:table'
-        ).innerHTML = receiptsHtml
-      }
+        })
+        .join('')
+      document.getElementById(
+        'expenseForm:files'
+      ).innerHTML = receiptsTemplate
+      document.getElementById(
+        'expenseForm:j_idt510:table'
+      ).innerHTML = receiptsHtml
+    }
 
-      socket.on('receipts', setReceiptsHtml)
-      socket.on('receipt', async r => {
-        receipts.push(r)
-        setReceiptsHtml(receipts)
-      })
+    socket.on('receipts', setReceiptsHtml)
+    socket.on('receipt', async r => {
+      receipts.push(r)
+      setReceiptsHtml(receipts)
+    })
 
-      const urlParams = new URLSearchParams(window.location.search)
-      const successfulReport =
-        urlParams.has('success') && urlParams.get('success') === 'true'
-      const failedReport = urlParams.has('error') && urlParams.get('error')
-      if (successfulReport) {
-        alert('det gick att attestera!')
-      }
+    const urlParams = new URLSearchParams(window.location.search)
+    const successfulReport =
+      urlParams.has('success') && urlParams.get('success') === 'true'
+    const failedReport = urlParams.has('error') && urlParams.get('error')
+    if (successfulReport) {
+      alert('det gick att attestera!')
+    }
 
-      if (failedReport) {
-        alert(failedReport)
-      }
-    })()
-  </script>
+    if (failedReport) {
+      alert(failedReport)
+    }
+  })()
+</script>
+
 </html>
