@@ -1,11 +1,14 @@
 # digital-receipts
 
+## Frequently asked questions
+
 ## Getting Started
 ```
 docker-compose up -d
 npm run migrate
 npm run install-all
 npm run start:iframe
+open your browser and go to http://localhost:6900
 ```
 
 ## Trello
