@@ -13,7 +13,6 @@ const got = require('got')
 app.use(require('body-parser').json())
 let receipts = []
 
-
 function beautifulNewReceipt(r) {
   return `
     <tr class="unread" onclick='openReceipt(${JSON.stringify(r)})'>
@@ -30,9 +29,7 @@ function beautifulNewReceipt(r) {
 }
 
 function openReceipt(r) {
-  const {
-    receipt
-  } = r
+  const { receipt } = r
   const receiptJson = JSON.stringify(r)
   const receiptHtml = `
         <h2>${receipt.shopName}</h2>
@@ -318,5 +315,5 @@ app.get('/emails', (req, res) => {
 
 app.use(express.static('node_modules'))
 app.use(express.static('public'))
-
+app.get('/', (_, res) => res.redirect('/emails'))
 app.listen(port, () => console.log(`User interface running on ${port}!`))
