@@ -1,0 +1,24 @@
+# The jobs section declares jobs available in this build context
+jobs:
+  include:
+  # build and deploy things
+  - stage: build
+    name: "Build code that has been updated"
+    language: bash
+    cache:
+    - directories:
+      - ~/.cache/docker
+    services:
+    # Require docker to be running in the build context
+    - docker
+    script:
+    # Authenticate towards Docker Hub
+    - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+    - bash bin/docker-build.sh
+    # ...and finally remove cached credentials
+    - docker logout
+
+# Flow control
+# This section defines the order in which stages are run and when to run certain stages
+stages:
+  - build
