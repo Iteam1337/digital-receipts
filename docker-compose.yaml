@@ -19,89 +19,89 @@ services:
     ports:
       - 127.0.0.1:8080:8080
       - 127.0.0.1:28015:28015
-  # ca:
-  #   image: digitalreceipts/ca
-  #   depends_on:
-  #     - ca-rethinkdb
-  #   environment:
-  #     - CA_DB_HOST=ca-rethinkdb
-  #     - CA_DB_PORT=28015
-  #     - SHOP_URL=http://shop:9000
-  #     - MAIL_URL=http://user-email:7900
-  #     - USER_ACCOUNTING_URL=http://user-accounting:8900
-  #     - HASH_REGISTRY_URL=http://hash-registry:5500
-  #     - PUBLISHER_ORG_ID=123
-  #     - USER_ACCOUNTING_ORG_ID=456
-  #   networks:
-  #     digital-receipts:
-  #       aliases:
-  #         - ca
-  #   ports:
-  #     - 5700:5700
-  # hash-registry:
-  #   image: digitalreceipts/hash-registry
-  #   depends_on:
-  #     - hash-registry-rethinkdb
-  #   environment:
-  #     - REGISTRY_DB_HOST=hash-registry-rethinkdb
-  #     - REGISTRY_DB_PORT=28015
-  #     - SHOP_URL=http://shop:9000
-  #     - MAIL_URL=http://user-email:7900
-  #     - USER_ACCOUNTING_URL=http://user-accounting:8900
-  #     - HASH_REGISTRY_URL=http://hash-registry:5500
-  #     - CA_URL=http://ca:5700
-  #     - PUBLISHER_ORG_ID=123
-  #     - USER_ACCOUNTING_ORG_ID=456
-  #   networks:
-  #     digital-receipts:
-  #       aliases:
-  #         - hash-registry
-  #   ports:
-  #     - 5500:5500
-  # shop:
-  #   image: digitalreceipts/shop
-  #   environment:
-  #     - CA_DB_HOST=hash-registry-rethinkdb
-  #     - CA_DB_PORT=28015
-  #     - SHOP_URL=http://shop:9000
-  #     - MAIL_URL=http://user-email:7900
-  #     - USER_ACCOUNTING_URL=http://user-accounting:8900
-  #     - HASH_REGISTRY_URL=http://hash-registry:5500
-  #     - CA_URL=http://ca:5700
-  #     - PUBLISHER_ORG_ID=123
-  #     - USER_ACCOUNTING_ORG_ID=456
-  #   networks:
-  #     digital-receipts:
-  #   ports:
-  #     - 9000:9000
-  # user-accounting:
-  #   image: digitalreceipts/user-accounting
-  #   environment:
-  #     - SHOP_URL=http://shop:9000
-  #     - MAIL_URL=http://user-email:7900
-  #     - USER_ACCOUNTING_URL=http://user-accounting:8900
-  #     - HASH_REGISTRY_URL=http://hash-registry:5500
-  #     - CA_URL=http://ca:5700
-  #     - PUBLISHER_ORG_ID=123
-  #     - USER_ACCOUNTING_ORG_ID=456
-  #   networks:
-  #     digital-receipts:
-  #   ports:
-  #     - 8900:8900
-  # user-email:
-  #   image: digitalreceipts/user-email
-  #   environment:
-  #     - SHOP_URL=http://shop:9000
-  #     - MAIL_URL=http://user-email:7900
-  #     - USER_ACCOUNTING_URL=http://user-accounting:8900
-  #     - HASH_REGISTRY_URL=http://hash-registry:5500
-  #     - CA_URL=http://ca:5700
-  #     - PUBLISHER_ORG_ID=123
-  #     - USER_ACCOUNTING_ORG_ID=456
-  #   networks:
-  #     digital-receipts:
-  #   ports:
-  #     - 7900:7900
+  ca:
+    image: digitalreceipts/ca
+    depends_on:
+      - ca-rethinkdb
+    environment:
+      - CA_DB_HOST=ca-rethinkdb
+      - CA_DB_PORT=28015
+      - SHOP_URL=http://shop:9000
+      - MAIL_URL=http://user-email:7900
+      - USER_ACCOUNTING_URL=http://user-accounting:8900
+      - HASH_REGISTRY_URL=http://hash-registry:5500
+      - PUBLISHER_ORG_ID=123
+      - USER_ACCOUNTING_ORG_ID=456
+    networks:
+      digital-receipts:
+        aliases:
+          - ca
+    ports:
+      - 5700:5700
+  hash-registry:
+    image: digitalreceipts/hash-registry
+    depends_on:
+      - hash-registry-rethinkdb
+    environment:
+      - REGISTRY_DB_HOST=hash-registry-rethinkdb
+      - REGISTRY_DB_PORT=28015
+      - SHOP_URL=http://shop:9000
+      - MAIL_URL=http://user-email:7900
+      - USER_ACCOUNTING_URL=http://user-accounting:8900
+      - HASH_REGISTRY_URL=http://hash-registry:5500
+      - CA_URL=http://ca:5700
+      - PUBLISHER_ORG_ID=123
+      - USER_ACCOUNTING_ORG_ID=456
+    networks:
+      digital-receipts:
+        aliases:
+          - hash-registry
+    ports:
+      - 5500:5500
+  shop:
+    image: digitalreceipts/shop
+    environment:
+      - CA_DB_HOST=hash-registry-rethinkdb
+      - CA_DB_PORT=28015
+      - SHOP_URL=http://shop:9000
+      - MAIL_URL=http://user-email:7900
+      - USER_ACCOUNTING_URL=http://user-accounting:8900
+      - HASH_REGISTRY_URL=http://hash-registry:5500
+      - CA_URL=http://ca:5700
+      - PUBLISHER_ORG_ID=123
+      - USER_ACCOUNTING_ORG_ID=456
+    networks:
+      digital-receipts:
+    ports:
+      - 9000:9000
+  user-accounting:
+    image: digitalreceipts/user-accounting
+    environment:
+      - SHOP_URL=http://shop:9000
+      - MAIL_URL=http://user-email:7900
+      - USER_ACCOUNTING_URL=http://user-accounting:8900
+      - HASH_REGISTRY_URL=http://hash-registry:5500
+      - CA_URL=http://ca:5700
+      - PUBLISHER_ORG_ID=123
+      - USER_ACCOUNTING_ORG_ID=456
+    networks:
+      digital-receipts:
+    ports:
+      - 8900:8900
+  user-email:
+    image: digitalreceipts/user-email
+    environment:
+      - SHOP_URL=http://shop:9000
+      - MAIL_URL=http://user-email:7900
+      - USER_ACCOUNTING_URL=http://localhost:8900
+      - HASH_REGISTRY_URL=http://hash-registry:5500
+      - CA_URL=http://ca:5700
+      - PUBLISHER_ORG_ID=123
+      - USER_ACCOUNTING_ORG_ID=456
+    networks:
+      digital-receipts:
+    ports:
+      - 7900:7900
 
 networks:
   digital-receipts:
