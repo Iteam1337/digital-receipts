@@ -37,7 +37,6 @@ const USER_ACCOUNTING_ORG_ID = process.env.USER_ACCOUNTING_ORG_ID
 fs.mkdir(`${__dirname}/receipts`, () => {})
 
 const watcher = chokidar.watch(`${__dirname}/receipts`, {
-  ignored: /^\./,
   persistent: true
 })
 
