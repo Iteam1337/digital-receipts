@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hash-registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: hash-registry
+  template:
+    metadata:
+      labels:
+        io.kompose.service: hash-registry
+    spec:
+      containers:
+        - name: hash-registry
+          image: digitalreceipts/hash-registry
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5500
+              protocol: TCP
+          resources: {}
+          env:
+          - name: REGISTRY_DB_HOST
+            value: hash-registry-db
+          - name: REGISTRY_DB_PORT
+            value: "28015"
+          - name: SHOP_URL
+            value: http://shop
+          - name: MAIL_URL
+            value: http://user-email
+          - name: USER_ACCOUNTING_URL
+            value: http://user-accounting
+          - name: HASH_REGISTRY_URL
+            value: http://hash-registry
+          - name: CA_URL
+            value: http://ca
+          - name: PUBLISHER_ORG_ID
+            value: "123"
+          - name: USER_ACCOUNTING_ORG_ID
+            value: "456"
+      initContainers:
+        - name: migrate-hash-registry
+          image: digitalreceipts/hash-registry
+          env:
+          - name: host
+            value: hash-registry-db
+          - name: port
+            value: "28015"
+          - name: db
+            value: hash_registry
+          command: ['sh', '-c', 'npm run migrate']
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hash-registry
+  labels:
+    io.kompose.service: hash-registry
+spec:
+  ports:
+    - name: "80"
+      protocol: TCP
+      port: 80
+      targetPort: 5500
+  selector:
+    io.kompose.service: hash-registry
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hash-registry
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+    - host: hash-registry.digitala-kvitton.se
+      http:
+        paths:
+          - backend:
+              serviceName: hash-registry
+              servicePort: 80
+status:
+  loadBalancer: {}

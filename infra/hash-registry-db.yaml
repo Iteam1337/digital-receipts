@@ -1,0 +1,62 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: hash-registry-db
+spec:
+  serviceName: hash-registry-db
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: hash-registry-db
+  template:
+    metadata:
+      labels:
+        io.kompose.service: hash-registry-db
+    spec:
+      containers:
+      - image: rethinkdb:2.3.6
+        name: hash-registry-db
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 28015
+          protocol: TCP
+        resources: {}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: datadir
+          mountPath: "/data"
+      restartPolicy: Always
+  volumeClaimTemplates:
+    - metadata:
+        name: datadir
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: "do-block-storage"
+        resources:
+          requests:
+            storage: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hash-registry-db
+  labels:
+    io.kompose.service: hash-registry-db
+spec:
+  ports:
+    - name: "8080"
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: "28015"
+      protocol: TCP
+      port: 28015
+      targetPort: 28015
+  selector:
+    io.kompose.service: hash-registry-db
+  type: ClusterIP
+status:
+  loadBalancer: {}

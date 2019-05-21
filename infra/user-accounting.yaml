@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-accounting
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: user-accounting
+  template:
+    metadata:
+      labels:
+        io.kompose.service: user-accounting
+    spec:
+      containers:
+        - name: user-accounting
+          image: digitalreceipts/user-accounting
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8900
+              protocol: TCP
+          resources: {}
+          env:
+          - name: SHOP_URL
+            value: http://shop
+          - name: MAIL_URL
+            value: http://user-email
+          - name: USER_ACCOUNTING_URL
+            value: http://user-accounting
+          - name: HASH_REGISTRY_URL
+            value: http://hash-registry
+          - name: CA_URL
+            value: http://ca
+          - name: PUBLISHER_ORG_ID
+            value: "123"
+          - name: USER_ACCOUNTING_ORG_ID
+            value: "456"
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-accounting
+  labels:
+    io.kompose.service: user-accounting
+spec:
+  ports:
+    - name: "80"
+      protocol: TCP
+      port: 80
+      targetPort: 8900
+  selector:
+    io.kompose.service: user-accounting
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: user-accounting
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+    - host: user-accounting.digitala-kvitton.se
+      http:
+        paths:
+          - backend:
+              serviceName: user-accounting
+              servicePort: 80
+status:
+  loadBalancer: {}

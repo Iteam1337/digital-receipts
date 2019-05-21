@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ca
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ca
+  template:
+    metadata:
+      labels:
+        io.kompose.service: ca
+    spec:
+      containers:
+        - name: ca
+          image: digitalreceipts/ca
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5700
+              protocol: TCP
+          resources: {}
+          env:
+          - name: CA_DB_HOST
+            value: ca-db
+          - name: CA_DB_PORT
+            value: "28015"
+          - name: SHOP_URL
+            value: http://shop
+          - name: MAIL_URL
+            value: http://user-email
+          - name: USER_ACCOUNTING_URL
+            value: http://user-accounting
+          - name: HASH_REGISTRY_URL
+            value: http://hash-registry
+          - name: CA_URL
+            value: http://ca
+          - name: PUBLISHER_ORG_ID
+            value: "123"
+          - name: USER_ACCOUNTING_ORG_ID
+            value: "456"
+      initContainers:
+        - name: migrate-ca
+          image: digitalreceipts/ca
+          env:
+          - name: host
+            value: ca-db
+          - name: port
+            value: "28015"
+          - name: db
+            value: ca
+          command: ['sh', '-c', 'npm run migrate']
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ca
+  labels:
+    io.kompose.service: ca
+spec:
+  ports:
+    - name: "80"
+      protocol: TCP
+      port: 80
+      targetPort: 5700
+  selector:
+    io.kompose.service: ca
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ca
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+    - host: ca.digitala-kvitton.se
+      http:
+        paths:
+          - backend:
+              serviceName: ca
+              servicePort: 80
+status:
+  loadBalancer: {}
