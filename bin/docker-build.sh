@@ -1,16 +1,16 @@
 #!/bin/env bash
-cd ca
-docker build -t digitalreceipts/ca .
+cd ..
+docker build -f ca/Dockerfile -t digitalreceipts/ca .
 docker push digitalreceipts/ca
-cd ../hash-registry
-docker build -t digitalreceipts/hash-registry .
+
+docker build -f hash-registry/Dockerfile -t digitalreceipts/hash-registry .
 docker push digitalreceipts/hash-registry
-cd ../shop
-docker build -t digitalreceipts/shop .
+
+docker build -f shop/Dockerfile -t digitalreceipts/shop .
 docker push digitalreceipts/shop
-cd ../user-accounting
-docker build -t digitalreceipts/user-accounting .
+
+docker build -f user-accounting/Dockerfile -t digitalreceipts/user-accounting .
 docker push digitalreceipts/user-accounting
-cd ../user-email
-docker build -t digitalreceipts/user-email .
+
+docker build -f user-email/Dockerfile -t digitalreceipts/user-email .
 docker push digitalreceipts/user-email

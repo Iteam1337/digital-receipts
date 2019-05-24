@@ -2,7 +2,8 @@ FROM node:10.15
 
 WORKDIR /app
 
-COPY . ./
+COPY ./hash-registry ./
+COPY .env ../
 RUN npm ci --only=production
 
 CMD node .

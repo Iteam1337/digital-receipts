@@ -1,4 +1,9 @@
+require('dotenv').config({
+  path: process.cwd() + '/../.env'
+})
 const express = require('express')
+const app = express()
+
 const got = require('got')
 const jwt = require('jsonwebtoken')
 const {
@@ -13,12 +18,8 @@ const {
 } = require('./receipt-hash-generator')
 const privateKey = readFileSync(`${__dirname}/keys/private_key.pem`)
 const publicKey = readFileSync(`${__dirname}/keys/public_key.pem`, 'utf8')
-const port = 9000 // TODO get PORT from config
-const ORGANIZATION_ID = '123' // TODO get ORGANIZATION ID from config
-const app = express()
-require('dotenv').config({
-  path: process.cwd() + '/../.env'
-})
+const port = process.env.SHOP_PORT
+const ORGANIZATION_ID = process.env.PUBLISHER_ORG_ID
 
 const kid = crypto
   .createHash('SHA256')
@@ -40,8 +41,6 @@ app.get('/jwks', async (_, res) => {
 })
 
 app.post('/buy', async (_, res) => {
-  console.log('found')
-
   const receipt = {
     organizationId: ORGANIZATION_ID,
     shopName: 'tågresor.se',

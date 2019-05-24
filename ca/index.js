@@ -1,9 +1,12 @@
 const bodyParser = require('body-parser')
 const express = require('express')
-const { enrollPublisher, enrollReporter } = require('./enroll')
+const {
+  enrollPublisher,
+  enrollReporter
+} = require('./enroll')
 const getEndpoint = require('./getEndpoint')
 const app = express()
-const port = 5700 // TODO get app PORT from config
+const port = process.env.CA_PORT
 const r = require('rethinkdbdash')({
   host: process.env.CA_DB_HOST || 'localhost',
   port: process.env.CA_DB_PORT || 28016,
@@ -31,7 +34,9 @@ app.get('/', async (_, res) => {
 app.post('/enroll-publisher', enrollPublisher)
 app.post('/enroll-reporter', enrollReporter)
 app.get('/enroll', (req, res) => {
-  const { success } = req.query
+  const {
+    success
+  } = req.query
 
   res.send(`
   <h2 style="color: rgb(135, 129, 211)">Registrera mig som kvittoutgivare</h2>
