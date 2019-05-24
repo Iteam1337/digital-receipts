@@ -56,7 +56,6 @@ app.post('/buy', async (_, res) => {
 
   const token = jwt.sign({
       hash,
-      organizationId: ORGANIZATION_ID
     },
     privateKey, {
       algorithm: 'RS256',
