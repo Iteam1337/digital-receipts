@@ -6,7 +6,7 @@ const staticMails = require('./assets/staticMails')
 const qrcode = require('qrcode')
 const fs = require('fs')
 require('dotenv').config({
-  path: process.cwd() + '/../.env'
+    path: process.cwd() + '/../.env'
 })
 const got = require('got')
 
@@ -14,7 +14,7 @@ app.use(require('body-parser').json())
 let receipts = []
 
 function beautifulNewReceipt(r) {
-  return `
+    return `
     <tr class="unread" onclick='openReceipt(${JSON.stringify(r)})'>
       <td class="inbox-small-cells">
           <input type="checkbox" class="mail-checkbox">
@@ -29,9 +29,11 @@ function beautifulNewReceipt(r) {
 }
 
 function openReceipt(r) {
-  const { receipt } = r
-  const receiptJson = JSON.stringify(r)
-  const receiptHtml = `
+    const {
+        receipt
+    } = r
+    const receiptJson = JSON.stringify(r)
+    const receiptHtml = `
         <h2>${receipt.shopName}</h2>
         <ul>
             ${Object.keys(receipt)
@@ -50,33 +52,48 @@ function openReceipt(r) {
             </a></li>
         </ul>
     `
-  document.getElementById('email-container').innerHTML = receiptHtml
-  QRCode.toCanvas(document.getElementById('canvas'), receiptJson)
+    document.getElementById('email-container').innerHTML = receiptHtml
+    QRCode.toCanvas(document.getElementById('canvas'), receiptJson)
 }
 
 function forwardReceipt(r) {
-  const result = prompt('To', 'kvitton@ekonomi.se')
-  if (result) {
-    fetch(`${USER_ACCOUNTING_URL}/receipts`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(r)
-    })
-  }
+    const result = prompt('To', 'kvitton@ekonomi.se')
+    if (result) {
+        fetch(`/forward`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(r)
+        })
+    }
 }
 
+app.post('/forward', (req, res) => {
+    console.log(req.body);
+
+    got(`${process.env.USER_ACCOUNTING_URL}/receipts`, {
+        json: true,
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: {
+            ...req.body
+        }
+    })
+})
+
 app.post('/emails', (req, res) => {
-  receipts.unshift({
-    ...req.body,
-    date: moment().format('HH:mm')
-  })
-  res.sendStatus(200)
+    receipts.unshift({
+        ...req.body,
+        date: moment().format('HH:mm')
+    })
+    res.sendStatus(200)
 })
 app.get('/emails', (req, res) => {
-  res.send(`
+    res.send(`
 <head>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
@@ -85,7 +102,6 @@ app.get('/emails', (req, res) => {
     <link rel="stylesheet" type="text/css" href="newcss.css" />
     <script src="/qrcode/build/qrcode.min.js"></script>
     <script type="text/javascript">
-      var USER_ACCOUNTING_URL = '${process.env.USER_ACCOUNTING_URL}'
       var openReceipt = ${eval(openReceipt)}
       var forwardReceipt = ${eval(forwardReceipt)}
     </script>

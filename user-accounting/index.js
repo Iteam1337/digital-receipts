@@ -254,6 +254,8 @@ app.post('/report-receipt/:hash', async (req, res) => {
       issuer: USER_ACCOUNTING_ORG_ID
     }
   )
+  console.log(process.env.HASH_REGISTRY_URL);
+
   try {
     await got(`${process.env.HASH_REGISTRY_URL}/check-receipt`, {
       method: 'POST',
@@ -277,6 +279,7 @@ app.post('/report-receipt/:hash', async (req, res) => {
 
     return res.redirect(`/expenses?error=${message}`)
   }
+  console.log('set it');
 
   setReceiptAsSaved(hash)
   res.redirect('/expenses?success=true')

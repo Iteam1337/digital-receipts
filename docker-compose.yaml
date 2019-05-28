@@ -1,12 +1,21 @@
 version: '3'
 
 services:
+  combiner:
+    build: .
+    ports:
+      - 6900:6900
+    environment:
+      - SHOP_URL=http://localhost:9000
+      - MAIL_URL=http://localhost:7900
+      - USER_ACCOUNTING_URL=http://localhost:8900
+      - HASH_REGISTRY_URL=http://localhost:5500
+      - CA_URL=http://localhost:5700
+
   ca-rethinkdb:
     image: rethinkdb:2.3.6
     networks:
       digital-receipts:
-        aliases:
-          - ca-rethinkdb
     ports:
       - 127.0.0.1:8081:8080
       - 127.0.0.1:28016:28015
@@ -14,90 +23,70 @@ services:
     image: rethinkdb:2.3.6
     networks:
       digital-receipts:
-        aliases:
-          - hash-registry-rethinkdb
     ports:
       - 127.0.0.1:8080:8080
       - 127.0.0.1:28015:28015
   ca:
-    image: digitalreceipts/ca
+    build:
+      context: .
+      dockerfile: ./ca/Dockerfile
     depends_on:
       - ca-rethinkdb
+    networks:
+      digital-receipts:
     environment:
       - CA_DB_HOST=ca-rethinkdb
       - CA_DB_PORT=28015
-      - SHOP_URL=http://shop:9000
-      - MAIL_URL=http://user-email:7900
-      - USER_ACCOUNTING_URL=http://user-accounting:8900
-      - HASH_REGISTRY_URL=http://hash-registry:5500
-      - PUBLISHER_ORG_ID=123
-      - USER_ACCOUNTING_ORG_ID=456
-    networks:
-      digital-receipts:
-        aliases:
-          - ca
+    volumes:
+      - ./ca:/app
+
     ports:
       - 5700:5700
+
   hash-registry:
-    image: digitalreceipts/hash-registry
+    build:
+      context: .
+      dockerfile: ./hash-registry/Dockerfile
     depends_on:
       - hash-registry-rethinkdb
+    networks:
+      digital-receipts:
+    volumes:
+      - ./hash-registry:/app
     environment:
       - REGISTRY_DB_HOST=hash-registry-rethinkdb
       - REGISTRY_DB_PORT=28015
-      - SHOP_URL=http://shop:9000
-      - MAIL_URL=http://user-email:7900
-      - USER_ACCOUNTING_URL=http://user-accounting:8900
-      - HASH_REGISTRY_URL=http://hash-registry:5500
-      - CA_URL=http://ca:5700
-      - PUBLISHER_ORG_ID=123
-      - USER_ACCOUNTING_ORG_ID=456
-    networks:
-      digital-receipts:
-        aliases:
-          - hash-registry
     ports:
       - 5500:5500
+
   shop:
-    image: digitalreceipts/shop
-    environment:
-      - CA_DB_HOST=hash-registry-rethinkdb
-      - CA_DB_PORT=28015
-      - SHOP_URL=http://shop:9000
-      - MAIL_URL=http://user-email:7900
-      - USER_ACCOUNTING_URL=http://user-accounting:8900
-      - HASH_REGISTRY_URL=http://hash-registry:5500
-      - CA_URL=http://ca:5700
-      - PUBLISHER_ORG_ID=123
-      - USER_ACCOUNTING_ORG_ID=456
+    build:
+      context: .
+      dockerfile: ./shop/Dockerfile
     networks:
       digital-receipts:
+    volumes:
+      - ./shop:/app
     ports:
       - 9000:9000
+
   user-accounting:
-    image: digitalreceipts/user-accounting
-    environment:
-      - SHOP_URL=http://shop:9000
-      - MAIL_URL=http://user-email:7900
-      - USER_ACCOUNTING_URL=http://user-accounting:8900
-      - HASH_REGISTRY_URL=http://hash-registry:5500
-      - CA_URL=http://ca:5700
-      - PUBLISHER_ORG_ID=123
-      - USER_ACCOUNTING_ORG_ID=456
+    build:
+      context: .
+      dockerfile: ./user-accounting/Dockerfile
     networks:
       digital-receipts:
     ports:
       - 8900:8900
+    volumes:
+      - ./user-accounting:/app
+
   user-email:
-    image: digitalreceipts/user-email
-    environment:
-      - SHOP_URL=http://shop:9000
-      - MAIL_URL=http://user-email:7900
-      - USER_ACCOUNTING_URL=http://localhost:8900
-      - HASH_REGISTRY_URL=http://hash-registry:5500
-      - CA_URL=http://ca:5700
-      - PUBLISHER_ORG_ID=123
-      - USER_ACCOUNTING_ORG_ID=456
+    build:
+      context: .
+      dockerfile: ./user-email/Dockerfile
+    volumes:
+      - ./user-email:/app
     networks:
       digital-receipts:
     ports:

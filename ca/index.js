@@ -1,4 +1,6 @@
-const bodyParser = require('body-parser')
+require('dotenv').config({
+  path: process.cwd() + '/../.env'
+})
 const express = require('express')
 const {
   enrollPublisher,
@@ -12,9 +14,7 @@ const r = require('rethinkdbdash')({
   port: process.env.CA_DB_PORT || 28016,
   db: 'ca'
 }) // TODO remove rethinkdbdash or use adapter for it
-require('dotenv').config({
-  path: process.cwd() + '/../.env'
-})
+
 
 app.use(
   require('body-parser').urlencoded({
