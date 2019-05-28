@@ -7,8 +7,6 @@ const jwt = require('jsonwebtoken')
 const retrieveKey = require('./retrieveKey')
 
 async function useReceipt(req, res, next) {
-  console.log('lol');
-
   let key
   const {
     token

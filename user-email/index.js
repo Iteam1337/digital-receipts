@@ -70,10 +70,8 @@ function forwardReceipt(r) {
     }
 }
 
-app.post('/forward', (req, res) => {
-    console.log(req.body);
-
-    got(`${process.env.USER_ACCOUNTING_URL}/receipts`, {
+app.post('/forward', async (req, res) => {
+    await got(`${process.env.USER_ACCOUNTING_URL}/receipts`, {
         json: true,
         headers: {
             Accept: 'application/json',
@@ -83,6 +81,7 @@ app.post('/forward', (req, res) => {
             ...req.body
         }
     })
+    res.send(200)
 })
 
 app.post('/emails', (req, res) => {
