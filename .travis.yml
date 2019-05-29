@@ -14,7 +14,7 @@ jobs:
     script:
     # Authenticate towards Docker Hub
     - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
-    - bash bin/docker-build.sh
+    - bash examples/poc/bin/docker-build.sh
     # ...and finally remove cached credentials
     - docker logout
 
