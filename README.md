@@ -1,7 +1,22 @@
 # digital-receipts
+This a repo for code relating to a new way of generating and handling digital receipts in Sweden.
+
+Code and instructions to start the Proof of Concept on your local machine lies in the /examples/poc folder.
+Instructions to integrate as an entity (receipt-publisher / -reporter) in this flow, follow the instructions in Swedish below.
+
+
+# Instruktioner på svenska
+Här följer en icke-teknisk beskriverning av projektet och dess olika komponenter.
+
+## Hash-register
+
+## CA
+
+## Integrera som kvittoutgivare
+
+## Integrera som kostnadsförare
 
 ## Frequently asked questions
-
 ## Getting Started
 ```
 The easiest way to start the repo is to go into the examples/poc folder and 
