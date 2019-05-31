@@ -1,0 +1,12 @@
+{
+  "name": "Hash Generator API",
+  "version": "1.0.0",
+  "description": "apidoc example project",
+  "title": "Hash Generator API",
+  "url" : "http://hash-generator.digitala-kvitton.se",
+  "sampleUrl": "http://hash-generator.digitala-kvitton.se",
+  "template": {
+  	"withCompare": false,
+  	"withGenerator": true
+  }
+}
