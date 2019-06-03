@@ -39,6 +39,8 @@ spec:
             value: "123"
           - name: USER_ACCOUNTING_ORG_ID
             value: "456"
+          - name: SHOP_PORT
+            value: "9000"
       restartPolicy: Always
 ---
 apiVersion: v1

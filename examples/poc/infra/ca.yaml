@@ -25,6 +25,8 @@ spec:
             value: ca-db
           - name: CA_DB_PORT
             value: "28015"
+          - name: CA_PORT
+            value: "5700"
           - name: SHOP_URL
             value: http://shop
           - name: MAIL_URL
