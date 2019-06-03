@@ -27,7 +27,7 @@
 
 language: bash
 
-sudo: false
+# sudo: false
 
 matrix:
     include:
