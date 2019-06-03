@@ -27,7 +27,9 @@
 
 language: bash
 
-# sudo: false
+cache:
+    - directories:
+      - ~/.cache/docker
 
 services:
 # Require docker to be running in the build context

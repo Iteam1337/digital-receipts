@@ -1,5 +1,7 @@
 #!/bin/env bash
 
+docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+
 if [[ $1 == *"examples/poc"* ]]; then
   PROJECT_PATH="${1/examples\/poc\//}"
   DOCKER_REPO="digitalreceipts/${PROJECT_PATH/examples\/poc\//}";
@@ -14,3 +16,4 @@ else
 fi
 
 docker push $DOCKER_REPO
+docker logout

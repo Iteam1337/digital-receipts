@@ -1,7 +1,7 @@
 {
   "name": "hash-generator",
   "version": "1.0.0",
-  "description": "",
+  "description": "Hash-Generator API",
   "main": "lib/app.js",
   "scripts": {
     "start": "node lib/app.js",
