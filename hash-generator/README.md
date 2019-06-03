@@ -1,4 +1,4 @@
 # Hash Generator API
 
-## Base URL
-http://hash-generator.digitala-kvitton.se
+## Base URL and Documentation
+https://hash-generator.digitala-kvitton.se
