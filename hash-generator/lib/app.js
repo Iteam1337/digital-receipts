@@ -5,6 +5,11 @@ const validatePayload = require('./validatePayload')
 const generateHash = require('./generateHash')
 const port = 3000
 
+server.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+)
 server.use(bodyParser.json())
 
 /**
