@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontpage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: frontpage
+  template:
+    metadata:
+      labels:
+        io.kompose.service: frontpage
+    spec:
+      containers:
+        - name: frontpage
+          image: digitalreceipts/frontpage
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 6900
+              protocol: TCP
+          resources: {}
+          env:
+          - name: CA_DB_HOST
+            value: hash-registry-rethinkdb
+          - name: CA_DB_PORT
+            value: "28015"
+          - name: SHOP_URL
+            value: https://shop.digitala-kvitton.se
+          - name: MAIL_URL
+            value: https://user-email.digitala-kvitton.se
+          - name: USER_ACCOUNTING_URL
+            value: https://user-accounting.digitala-kvitton.se
+          - name: HASH_REGISTRY_URL
+            value: https://hash-registry.digitala-kvitton.se
+          - name: CA_URL
+            value: https://ca.digitala-kvitton.se
+          - name: PUBLISHER_ORG_ID
+            value: "123"
+          - name: USER_ACCOUNTING_ORG_ID
+            value: "456"
+          - name: SHOP_PORT
+            value: "9000"
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontpage
+  labels:
+    io.kompose.service: frontpage
+spec:
+  ports:
+    - name: "80"
+      protocol: TCP
+      port: 80
+      targetPort: 6900
+  selector:
+    io.kompose.service: frontpage
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: frontpage
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+    - host: www.digitala-kvitton.se
+      http:
+        paths:
+          - backend:
+              serviceName: frontpage
+              servicePort: 80
+status:
+  loadBalancer: {}
