@@ -16,4 +16,11 @@
 # docker push digitalreceipts/user-email
 
 
-echo $1
+PROJECT_PATH=$1
+PROJECT="digitalreceipts/${PROJECT_PATH/examples\/poc\//}"
+echo "$PROJECT is being built"
+echo "Path $PROJECT_PATH is being built"
+cd $PROJECT_PATH
+
+docker build -t $PROJECT .
+docker push $PROJECT
