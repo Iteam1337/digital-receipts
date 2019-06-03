@@ -1,0 +1,11 @@
+{
+  "name": "hash-registry",
+  "version": "1.0.0",
+  "description": "## Base URL and Documentation https://hash-registry.digitala-kvitton.se",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,26 +1,16 @@
 #!/bin/env bash
-# cd ..
-# docker build -f ca/Dockerfile -t digitalreceipts/ca .
-# docker push digitalreceipts/ca
 
-# docker build -f hash-registry/Dockerfile -t digitalreceipts/hash-registry .
-# docker push digitalreceipts/hash-registry
+if [[ $1 == *"examples/poc"* ]]; then
+  PROJECT_PATH="${1/examples\/poc\//}"
+  DOCKER_REPO="digitalreceipts/${PROJECT_PATH/examples\/poc\//}";
+  echo "$DOCKER_REPO is being built"
+  cd examples/poc
+  docker build -f $PROJECT_PATH/Dockerfile -t $DOCKER_REPO .
+else
+  cd $1
+  DOCKER_REPO="digitalreceipts/$1";
+  echo "$DOCKER_REPO is being built"
+  docker build -t $DOCKER_REPO .
+fi
 
-# docker build -f shop/Dockerfile -t digitalreceipts/shop .
-# docker push digitalreceipts/shop
-
-# docker build -f user-accounting/Dockerfile -t digitalreceipts/user-accounting .
-# docker push digitalreceipts/user-accounting
-
-# docker build -f user-email/Dockerfile -t digitalreceipts/user-email .
-# docker push digitalreceipts/user-email
-
-
-PROJECT_PATH=$1
-PROJECT="digitalreceipts/${PROJECT_PATH/examples\/poc\//}"
-echo "$PROJECT is being built"
-echo "Path $PROJECT_PATH is being built"
-cd $PROJECT_PATH
-
-docker build -t $PROJECT .
-docker push $PROJECT
+docker push $DOCKER_REPO
