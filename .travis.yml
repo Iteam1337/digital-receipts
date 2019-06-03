@@ -29,6 +29,10 @@ language: bash
 
 # sudo: false
 
+services:
+# Require docker to be running in the build context
+- docker
+
 matrix:
     include:
         - env: PROJECT=hash-generator
