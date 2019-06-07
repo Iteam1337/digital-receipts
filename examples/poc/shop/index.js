@@ -3,7 +3,9 @@ require('dotenv').config({
 })
 const express = require('express')
 const app = express()
-
+const moment = require('moment')
+const multer = require('multer');
+const formReader = multer();
 const got = require('got')
 const jwt = require('jsonwebtoken')
 const {
@@ -40,16 +42,33 @@ app.get('/jwks', async (_, res) => {
   res.send(serialize([key]))
 })
 
-app.post('/buy', async (_, res) => {
+app.post('/buy', formReader.none(), async (req, res) => {
+  const incommingReceipt = req.body
+
   const receipt = {
-    organizationId: ORGANIZATION_ID,
-    shopName: 'tågresor.se',
-    items: ['Stockholm Malmö resa'],
-    amount: 411,
-    currency: 'SEK',
-    vat: 24.66,
-    vatPercent: 6,
-    date: new Date()
+    organizationId: incommingReceipt.orgId,
+    shopName: incommingReceipt.businessName,
+    lineItems: [{
+      description: incommingReceipt.articleName,
+      tax: {
+        amount: incommingReceipt.tax,
+        percent: incommingReceipt.tax / incommingReceipt.amount * 100
+      },
+      quantity: 1,
+      unitCostPrice: incommingReceipt.amount,
+      discountAmount: 0
+      // sequenceNumber: 1
+      // actualSalesUnitPrice: amount - discount,
+      // ExtendedAmount,
+      // ExtendedDiscountAmount,
+      // Identifier by choice of supplier
+      // itemID
+    }],
+    receiptDateTime: moment(incommingReceipt.date + 'T' + incommingReceipt.time),
+    receiptCode: incommingReceipt.ref,
+    currencyCode: incommingReceipt.currency,
+    totalTax: incommingReceipt.tax,
+    totalAmount: incommingReceipt.amount // Not in standard..?
   }
   const hash = createHash(receipt)
 
@@ -106,5 +125,6 @@ app.post('/enroll', async (_, res) => {
     return res.status(err.statusCode).send(err.body)
   }
 })
+app.use(express.static('public'))
 
 app.listen(port, () => console.log(`Shop app listening on port ${port}!`))

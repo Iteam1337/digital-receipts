@@ -1,69 +1,115 @@
 <!DOCTYPE html>
 <html>
-<h2 style="color: rgb(135, 129, 211)">Affärsfönster</h2>
+
+<head>
+  <h2 style="color: rgb(135, 129, 211)">Affärsfönster</h2>
+  <link rel="stylesheet" type="text/css" href="css.css" />
+</head>
 
 <body>
-  <p>
-    Resa mellan Stockholm Malmö
-  </p>
+  <form action="/buy" method="POST" id="buyForm">
+    <label for="Företag"> Företag </label>
+    <br>
+    <input name="businessName" value="Tågresor.se" />
+    </input>
+    <br>
+    <label for="organisationsId"> OrganisationsId </label>
+    <br>
+    <input name="orgId" value="123" />
+    </input>
+    <h3>
+      Köp produkt
+    </h3>
 
-  <div style="display: table-cell;">
-    <div class="trains-row" style="display: table; width: 100;">
-      <div class="train">
-        <span>
-          <div class="train-row">
-            <span class="train-row-cell iata-from">
-              <span class="date-string date-string-short">Tor 9 Maj</span>
-              <span class="time-iata">20:35 <strong>Stockholm Central</strong></span><br />Stockholm
-            </span>
+    <div style="display: table-cell;">
+      <ul>
+        <li>
+          <label for="date"> Datum </label>
+          <label class="time" for="time"> tid </label>
+          <br>
+          <input name="date" type="date" id="date" value="YYYY-MM-DD" />
+          </input>
+          <input name="time" type="time" id="time" value="16:48" />
+          </input>
+        </li>
+        <li>
+          <label for="ref"> KvittoId </label>
+          <br>
+          <input name="ref" id="ref">
+          </input>
+        </li>
+        <li>
+          <label for="articleName"> Artikelnamn </label>
+          <br>
+          <input name="articleName" id="articleName" value="Tågbiljett">
+          </input>
+        </li>
+        <li>
+          <label for="amount"> Belopp </label>
+          <br>
+          <input name="amount" id="amount" value="100">
+          </input>
+        </li>
+        <li>
+          <label for="tax"> Moms </label>
+          <br>
+          <input name="tax" id="tax" value="25">
+          </input>
+        </li>
+        <li>
+          <label for="currency"> Valuta </label>
+          <br>
+          <input name="currency" id="currency" value="SEK">
+          </input>
+        </li>
 
-            <div class="train-row-cell stops">
-              <div class="iata-wait-time">
-                1h 5m
-              </div>
-
-              <div class="line"></div>
-
-              <div class="stop-count direct">direktanslutning</div>
-            </div>
-
-            <span class="train-row-cell iata-to">
-              <span class="date-string date-string-short">Tor 9 Maj</span>
-              <span class="time-iata">21:40 <strong>Malmö Centralstation</strong></span><br />
-              Malmö</span>
-          </div>
-        </span>
-      </div>
+      </ul>
     </div>
-  </div>
+  </form>
 
   <div id="buy">
     <button onclick="buy()">KÖP</button>
   </div>
   <script type="text/javascript">
+    function setId() {
+      var ref = document.querySelector(`#ref`);
+      ref.value = Date.now();
+    }
+    setId()
+
+    function setDate() {
+      const myDate = document.querySelector(`input[type="date"]`);
+      const myTime = document.querySelector(`input[type="time"]`);
+      const today = new Date();
+      today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+      myDate.value = today.toJSON().substring(0, 10)
+      myTime.value = today.toJSON().substring(11, 16)
+    }
+
+    setDate()
     async function buy() {
-      const payload = await fetch('/buy', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-      }).then(payload => {
-        if (payload.bodyUsed) {
-          return payload.json()
+      var form = document.querySelector('form');
+      var formData = new FormData(form);
+      var req = new XMLHttpRequest();
+      req.open('POST', '/buy')
+      req.onload = function (e) {
+        var code = req.status;
+        var text = req.statusText;
+
+        if (code === 200) {
+          document.getElementById(
+            'buy'
+          ).innerHTML = `<div style="color: green; font-size:100px ">&#9989</div>`
+          setTimeout(() => {
+            document.getElementById(
+              'buy'
+            ).innerHTML = `<button onclick="buy()">KÖP</button>`
+          }, 2500)
+        } else {
+          alert(req.responseText)
         }
-      })
-      if (payload) {
-        alert(payload)
       }
-      document.getElementById(
-        'buy'
-      ).innerHTML = `<div style="color: green; font-size:100px ">&#9989</div>`
-      setTimeout(() => {
-        document.getElementById(
-          'buy'
-        ).innerHTML = `<button onclick="buy()">KÖP</button>`
-      }, 2500)
+      req.send(formData)
     }
   </script>
 </body>

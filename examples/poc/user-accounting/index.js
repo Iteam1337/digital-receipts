@@ -156,17 +156,17 @@ app.get('/report-receipt/:receiptName', async (req, res) => {
 
         <label for="id_date">Datum</label>
         <input id="id_date" type="text" name="date" readonly="readonly" value='${moment(
-          receipt.date
+          receipt.receiptDateTime
         ).format('YYYY-MM-DD')}'/>
 
         <label for="id_amount">Belopp</label>
         <input id="id_amount" type="text" name="amount" readonly="readonly" value='${
-          receipt.amount
+          receipt.totalAmount
         }'/>
 
         <label for="id_vat">Moms</label>
         <input id="id_vat" type="text" name="vat" readonly="readonly" value='${
-          receipt.vat
+          receipt.totalTax
         }'/>
 
         <input type="hidden" id="id_organizationId" name="organizationId" value='${
