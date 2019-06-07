@@ -1,0 +1,12 @@
+{
+  "name": "Hash Registry API",
+  "version": "1.0.0",
+  "description": "apidoc example project",
+  "title": "Hash Registry API",
+  "url" : "https://hash-registry.digitala-kvitton.se",
+  "sampleUrl": "https://hash-registry.digitala-kvitton.se",
+  "template": {
+  	"withCompare": false,
+  	"withGenerator": true
+  }
+}
