@@ -52,11 +52,12 @@ app.post('/buy', formReader.none(), async (req, res) => {
       description: incommingReceipt.articleName,
       tax: {
         amount: incommingReceipt.tax,
-        percent: incommingReceipt.tax / incommingReceipt.amount
+        percent: incommingReceipt.tax / incommingReceipt.amount * 100
       },
       quantity: 1,
       unitCostPrice: incommingReceipt.amount,
       discountAmount: 0
+      // sequenceNumber: 1
       // actualSalesUnitPrice: amount - discount,
       // ExtendedAmount,
       // ExtendedDiscountAmount,
@@ -65,7 +66,9 @@ app.post('/buy', formReader.none(), async (req, res) => {
     }],
     receiptDateTime: moment(incommingReceipt.date + 'T' + incommingReceipt.time),
     receiptCode: incommingReceipt.ref,
-    currencyCode: incommingReceipt.currency
+    currencyCode: incommingReceipt.currency,
+    totalTax: incommingReceipt.tax,
+    totalAmount: incommingReceipt.amount // Not in standard..?
   }
   const hash = createHash(receipt)
 

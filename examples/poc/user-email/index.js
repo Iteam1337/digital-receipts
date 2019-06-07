@@ -23,7 +23,7 @@ function beautifulNewReceipt(r) {
       <td class="view-message dont-show">${r.receipt.shopName}</td>
       <td class="view-message">Tack för din beställning NULL NULL</td>
       <td class="view-message inbox-small-cells"></td>
-      <td class="view-message text-right">${r.date}</td>
+      <td class="view-message text-right">${moment(r.receipt.receiptDateTime).format('HH:mm')}</td>
   </tr>
   `
 }
@@ -37,7 +37,7 @@ function openReceipt(r) {
         <h2>${receipt.shopName}</h2>
         <ul>
             ${Object.keys(receipt)
-              .map(k => `<li>${k} : ${receipt[k]}</li>`)
+              .map(k => `<li>${k} : ${JSON.stringify(receipt[k])}</li>`)
               .join('')}
         </ul>
         <pre>${JSON.stringify(r, null, 2)}</pre>
