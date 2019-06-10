@@ -19,7 +19,9 @@ async function retrieveKey(kid, iss) {
   let client
   try {
     const { body: { endpoint: jwksUri } = {} } = await got(
-      `${process.env.CA_URL}/endpoints/${iss}`,
+      // `${process.env.CA_URL}/endpoints/${iss}`,
+      `http://localhost:5700/endpoints/${iss}`,
+
       {
         json: true
       }

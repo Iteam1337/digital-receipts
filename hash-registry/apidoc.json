@@ -1,12 +1,16 @@
 {
   "name": "Hash Registry API",
   "version": "1.0.0",
-  "description": "apidoc example project",
+  "description": "A registry for storing digital receipt hashes",
   "title": "Hash Registry API",
-  "url" : "https://hash-registry.digitala-kvitton.se",
+  "url": "https://hash-registry.digitala-kvitton.se",
   "sampleUrl": "https://hash-registry.digitala-kvitton.se",
   "template": {
-  	"withCompare": false,
-  	"withGenerator": true
+    "withCompare": false,
+    "withGenerator": true
+  },
+  "header": {
+    "title": "Signing the payload",
+    "filename": "apidoc_header.md"
   }
 }
