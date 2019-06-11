@@ -14,4 +14,15 @@ matrix:
     - env: PROJECT=examples/poc/ca
     - env: PROJECT=examples/poc/hash-registry
 
-script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
+# script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
+
+jobs:
+  include:
+    - stage: build
+      script: echo "building $PROJECT"
+    - stage: deploy
+      script: echo "deploying $PROJECT"
+
+stages:
+  - build
+  - deploy
