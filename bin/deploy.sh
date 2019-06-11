@@ -4,12 +4,15 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s htt
 chmod +x ./kubectl
 mv ./kubectl /usr/local/bin/kubectl
 
+deployment=$1
 if [[ $1 == *"examples/poc"* ]]; then
-  PROJECT_PATH="${1/examples\/poc\//}"
-  echo "$PROJECT_PATH is being deployed"
+  deployment="${1/examples\/poc\//}"
   if [[ $1 == *"examples/poc/hash-registry"* ]]; then
-  echo "hash-registry-poc is being deployed"
-  fi
-else
-  echo "$1 is being deployed"
+  deployment="hash-registry-poc"
+  fi;
 fi
+
+echo "$deployment is being deployed"
+
+kubectl --server=$KUBERNETES_SERVER --token=$KUBERNETES_TOKEN --insecure-skip-tls-verify=true scale deployment/$deployment --replicas=0
+kubectl --server=$KUBERNETES_SERVER --token=$KUBERNETES_TOKEN --insecure-skip-tls-verify=true scale deployment/$deployment --replicas=1
