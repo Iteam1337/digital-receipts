@@ -14,86 +14,51 @@ matrix:
     - env: PROJECT=examples/poc/ca
     - env: PROJECT=examples/poc/hash-registry
 
-# script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
-
-# env:
-#   matrix:
-#     - PROJECT=hash-generator
-#     - PROJECT=hash-registry
-#     - PROJECT=examples/poc/shop
-#     - PROJECT=examples/poc/user-accounting
-#     - PROJECT=examples/poc/user-email
-#     - PROJECT=examples/poc/ca
-#     - PROJECT=examples/poc/hash-registry
-
-# env:
-#   - PROJECT=hash-generator
-#   - PROJECT=hash-registry
-#   - PROJECT=examples/poc/shop
-#   - PROJECT=examples/poc/user-accounting
-#   - PROJECT=examples/poc/user-email
-#   - PROJECT=examples/poc/ca
-#   - PROJECT=examples/poc/hash-registry
-
 jobs:
   include:
     - stage: build
-      if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT = 0
       env: PROJECT=hash-generator
-      script: echo "building $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
     - stage: build
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT = 0
       env: PROJECT=hash-registry
-      script: echo "building $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
     - stage: build
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT = 0
       env: PROJECT=examples/poc/shop
-      script: echo "building $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
     - stage: build
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT = 0
       env: PROJECT=examples/poc/user-accounting
-      script: echo "building $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
     - stage: build
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT = 0
       env: PROJECT=examples/poc/user-email
-      script: echo "building $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
     - stage: build
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT = 0
       env: PROJECT=examples/poc/ca
-      script: echo "building $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
     - stage: build
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT = 0
       env: PROJECT=examples/poc/hash-registry
-      script: echo "building $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
 
     - stage: deploy
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT
       env: PROJECT=hash-generator
-      script: echo "deploying $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/deploy.sh $PROJECT; fi
     - stage: deploy
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT
       env: PROJECT=hash-registry
-      script: echo "deploying $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/deploy.sh $PROJECT; fi
     - stage: deploy
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT
       env: PROJECT=examples/poc/shop
-      script: echo "deploying $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/deploy.sh $PROJECT; fi
     - stage: deploy
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT
       env: PROJECT=examples/poc/user-accounting
-      script: echo "deploying $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/deploy.sh $PROJECT; fi
     - stage: deploy
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT
       env: PROJECT=examples/poc/user-email
-      script: echo "deploying $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/deploy.sh $PROJECT; fi
     - stage: deploy
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT
       env: PROJECT=examples/poc/ca
-      script: echo "deploying $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/deploy.sh $PROJECT; fi
     - stage: deploy
-      # if: .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT
       env: PROJECT=examples/poc/hash-registry
-      script: echo "deploying $PROJECT"
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/deploy.sh $PROJECT; fi
 
 stages:
   - build
