@@ -14,4 +14,52 @@ matrix:
     - env: PROJECT=examples/poc/ca
     - env: PROJECT=examples/poc/hash-registry
 
-script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
+jobs:
+  include:
+    - stage: build
+      env: PROJECT=hash-generator
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
+    - stage: build
+      env: PROJECT=hash-registry
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
+    - stage: build
+      env: PROJECT=examples/poc/shop
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
+    - stage: build
+      env: PROJECT=examples/poc/user-accounting
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
+    - stage: build
+      env: PROJECT=examples/poc/user-email
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
+    - stage: build
+      env: PROJECT=examples/poc/ca
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
+    - stage: build
+      env: PROJECT=examples/poc/hash-registry
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then bash bin/docker-build.sh $PROJECT; fi
+
+    - stage: deploy
+      env: PROJECT=hash-generator
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then sudo bash bin/deploy.sh $PROJECT; fi
+    - stage: deploy
+      env: PROJECT=hash-registry
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then sudo bash bin/deploy.sh $PROJECT; fi
+    - stage: deploy
+      env: PROJECT=examples/poc/shop
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then sudo bash bin/deploy.sh $PROJECT; fi
+    - stage: deploy
+      env: PROJECT=examples/poc/user-accounting
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then sudo bash bin/deploy.sh $PROJECT; fi
+    - stage: deploy
+      env: PROJECT=examples/poc/user-email
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then sudo bash bin/deploy.sh $PROJECT; fi
+    - stage: deploy
+      env: PROJECT=examples/poc/ca
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then sudo bash bin/deploy.sh $PROJECT; fi
+    - stage: deploy
+      env: PROJECT=examples/poc/hash-registry
+      script: if .travis/build-condition.sh $TRAVIS_COMMIT_RANGE $PROJECT; then sudo bash bin/deploy.sh $PROJECT; fi
+
+stages:
+  - build
+  - deploy
