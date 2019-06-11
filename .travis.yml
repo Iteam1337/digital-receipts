@@ -26,29 +26,59 @@ services:
 #     - PROJECT=examples/poc/ca
 #     - PROJECT=examples/poc/hash-registry
 
+env:
+  - PROJECT=hash-generator
+  - PROJECT=hash-registry
+  - PROJECT=examples/poc/shop
+  - PROJECT=examples/poc/user-accounting
+  - PROJECT=examples/poc/user-email
+  - PROJECT=examples/poc/ca
+  - PROJECT=examples/poc/hash-registry
+
 jobs:
   include:
     - stage: build
-      matrix:
-        include:
-          - env: PROJECT=hash-generator
-          - env: PROJECT=hash-registry
-          - env: PROJECT=examples/poc/shop
-          - env: PROJECT=examples/poc/user-accounting
-          - env: PROJECT=examples/poc/user-email
-          - env: PROJECT=examples/poc/ca
-          - env: PROJECT=examples/poc/hash-registry
+      env: PROJECT=hash-generator
       script: echo "building $PROJECT"
+    - stage: build
+      env: PROJECT=hash-registry
+      script: echo "building $PROJECT"
+    - stage: build
+      env: PROJECT=examples/poc/shop
+      script: echo "building $PROJECT"
+    - stage: build
+      env: PROJECT=examples/poc/user-accounting
+      script: echo "building $PROJECT"
+    - stage: build
+      env: PROJECT=examples/poc/user-email
+      script: echo "building $PROJECT"
+    - stage: build
+      env: PROJECT=examples/poc/ca
+      script: echo "building $PROJECT"
+    - stage: build
+      env: PROJECT=examples/poc/hash-registry
+      script: echo "building $PROJECT"
+
     - stage: deploy
-      matrix:
-        include:
-          - env: PROJECT=hash-generator
-          - env: PROJECT=hash-registry
-          - env: PROJECT=examples/poc/shop
-          - env: PROJECT=examples/poc/user-accounting
-          - env: PROJECT=examples/poc/user-email
-          - env: PROJECT=examples/poc/ca
-          - env: PROJECT=examples/poc/hash-registry
+      env: PROJECT=hash-generator
+      script: echo "deploying $PROJECT"
+    - stage: deploy
+      env: PROJECT=hash-registry
+      script: echo "deploying $PROJECT"
+    - stage: deploy
+      env: PROJECT=examples/poc/shop
+      script: echo "deploying $PROJECT"
+    - stage: deploy
+      env: PROJECT=examples/poc/user-accounting
+      script: echo "deploying $PROJECT"
+    - stage: deploy
+      env: PROJECT=examples/poc/user-email
+      script: echo "deploying $PROJECT"
+    - stage: deploy
+      env: PROJECT=examples/poc/ca
+      script: echo "deploying $PROJECT"
+    - stage: deploy
+      env: PROJECT=examples/poc/hash-registry
       script: echo "deploying $PROJECT"
 
 stages:
