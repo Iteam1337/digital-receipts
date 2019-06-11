@@ -32,7 +32,7 @@ spec:
           - name: USER_ACCOUNTING_URL
             value: https://user-accounting.digitala-kvitton.se
           - name: HASH_REGISTRY_URL
-            value: https://hash-registry.digitala-kvitton.se
+            value: https://hash-registry-poc.digitala-kvitton.se
           - name: CA_URL
             value: https://ca.digitala-kvitton.se
           - name: PUBLISHER_ORG_ID
