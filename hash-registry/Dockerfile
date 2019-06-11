@@ -1,4 +1,4 @@
-FROM node:10.15 as base
+FROM node:10.16 as base
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY jest.config.js ./
 RUN npm run test
 RUN npx apidoc -i lib
 
-FROM node:10.15
+FROM node:10.16
 
 WORKDIR /app
 COPY package*.json ./
