@@ -28,7 +28,7 @@ spec:
           - name: USER_ACCOUNTING_URL
             value: http://user-accounting.digitala-kvitton.se
           - name: HASH_REGISTRY_URL
-            value: http://hash-registry
+            value: http://hash-registry-poc
           - name: CA_URL
             value: http://ca
           - name: PUBLISHER_ORG_ID

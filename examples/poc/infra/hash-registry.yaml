@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hash-registry
+  name: hash-registry-poc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: hash-registry
+      io.kompose.service: hash-registry-poc
   template:
     metadata:
       labels:
-        io.kompose.service: hash-registry
+        io.kompose.service: hash-registry-poc
     spec:
       containers:
-        - name: hash-registry
-          image: digitalreceipts/hash-registry
+        - name: hash-registry-poc
+          image: digitalreceipts/hash-registry:poc
           imagePullPolicy: Always
           ports:
             - containerPort: 5500
@@ -32,7 +32,7 @@ spec:
           - name: USER_ACCOUNTING_URL
             value: http://user-accounting
           - name: HASH_REGISTRY_URL
-            value: http://hash-registry
+            value: http://hash-registry-poc
           - name: CA_URL
             value: http://ca
           - name: PUBLISHER_ORG_ID
@@ -40,8 +40,8 @@ spec:
           - name: USER_ACCOUNTING_ORG_ID
             value: "456"
       initContainers:
-        - name: migrate-hash-registry
-          image: digitalreceipts/hash-registry
+        - name: migrate-hash-registry-poc
+          image: digitalreceipts/hash-registry:poc
           env:
           - name: host
             value: hash-registry-db
@@ -55,9 +55,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hash-registry
+  name: hash-registry-poc
   labels:
-    io.kompose.service: hash-registry
+    io.kompose.service: hash-registry-poc
 spec:
   ports:
     - name: "80"
@@ -65,7 +65,7 @@ spec:
       port: 80
       targetPort: 5500
   selector:
-    io.kompose.service: hash-registry
+    io.kompose.service: hash-registry-poc
   type: ClusterIP
 status:
   loadBalancer: {}
@@ -73,16 +73,16 @@ status:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: hash-registry
+  name: hash-registry-poc
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - host: hash-registry.digitala-kvitton.se
+    - host: hash-registry-poc.digitala-kvitton.se
       http:
         paths:
           - backend:
-              serviceName: hash-registry
+              serviceName: hash-registry-poc
               servicePort: 80
 status:
   loadBalancer: {}
