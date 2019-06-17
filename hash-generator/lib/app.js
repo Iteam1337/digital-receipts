@@ -23,7 +23,7 @@ server.use(bodyParser.json())
  * @apiParam {Number} actualSalesUnitPrice Actual Sales Unit Price
  * @apiParam {Number} extendedAmount Extended Amount
  * @apiParam {Number} extendedDiscountAmount Extended Discount Amount
- * @apiParam {Number} tax Tax
+ * @apiParam {Number} vat Vat
  *
  * @apiSuccess {String} hash The hash for the sent receipt.
  *
