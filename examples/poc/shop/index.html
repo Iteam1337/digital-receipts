@@ -2,11 +2,17 @@
 <html>
 
 <head>
-  <h2 style="color: rgb(135, 129, 211)">Affärsfönster</h2>
+  <h2 data-intro='Denna webbsida simulerar vyn för en butikskund i en affär som har befogenhet att genenera kvitton.'
+    style="color: rgb(135, 129, 211)">
+    Affärsfönster
+  </h2>
   <link rel="stylesheet" type="text/css" href="css.css" />
+  <link rel="stylesheet" type="text/css" href="/intro.js/introjs.css" />
 </head>
 
 <body>
+  <script type="text/javascript" src="/intro.js/intro.js"></script>
+
   <form action="/buy" method="POST" id="buyForm">
     <label for="Företag"> Företag </label>
     <br>
@@ -21,7 +27,8 @@
       Köp produkt
     </h3>
 
-    <div style="display: table-cell;">
+    <div data-intro='Här kan du fylla i vilken artikel som kunden köper och vad den kostar.'
+      style="display: table-cell;">
       <ul>
         <li>
           <label for="date"> Datum </label>
@@ -68,9 +75,38 @@
   </form>
 
   <div id="buy">
-    <button onclick="buy()">KÖP</button>
+    <button data-intro="Tryck nu på köp för att simulera att kvittot genereras och skickas iväg till kundens email"
+      onclick="buy()">KÖP</button>
+    <div data-intro="Köpet är gjort:
+      </br>
+      1. Kvittot är genenerat
+      </br>
+      2. Det genererade kvittot körs genom en hash-algoritm och signeras digitalt.
+      </br>
+      3. Den signerade hashen skickas till hash-registret.
+      </br>
+      4. butikskunden har fått ett email med kvittot bifogat" id='check-box'
+      style="visibility: hidden; color: green; font-size:100px; width:120px; ">&#9989</div>
   </div>
   <script type="text/javascript">
+    const intro = introJs()
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.has('tutorial')) {
+      intro.setOptions({
+        'hidePrev': true,
+        'hideNext': true,
+        'showStepNumbers': false,
+        'doneLabel': 'Till hash-registret',
+        'nextLabel': 'Nästa'
+      })
+      intro.start().oncomplete(function () {
+        window.location.href = 'http://localhost:6900/?intro=hash-registry';
+      });
+      // intro.onexit(function () {
+      //   window.location.href = 'http://localhost:9000';
+      // });
+    }
+
     function setId() {
       var ref = document.querySelector(`#ref`);
       ref.value = Date.now();
@@ -88,6 +124,8 @@
 
     setDate()
     async function buy() {
+      const urlParams = new URLSearchParams(window.location.search)
+
       var form = document.querySelector('form');
       var formData = new FormData(form);
       var req = new XMLHttpRequest();
@@ -98,13 +136,19 @@
 
         if (code === 200) {
           document.getElementById(
-            'buy'
-          ).innerHTML = `<div style="color: green; font-size:100px ">&#9989</div>`
+              'check-box'
+            ).innerHTML =
+            `<div data-intro="Köpet är gjort; Kvittot är genenerat, skickat till hash-registret och butikskunden har fått ett email med kvittot"
+                  id='check-box' style="visibility: visible; color: green; font-size:100px ">&#9989</div>`
           setTimeout(() => {
             document.getElementById(
-              'buy'
-            ).innerHTML = `<button onclick="buy()">KÖP</button>`
-          }, 2500)
+                'buy'
+              ).innerHTML =
+              `<button onclick="buy()">KÖP</button>`
+          }, 5500)
+          if (urlParams.has('tutorial')) {
+            intro.nextStep()
+          }
         } else {
           alert(req.responseText)
         }

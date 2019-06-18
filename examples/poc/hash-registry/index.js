@@ -21,10 +21,10 @@ app.get('/receipts', async (req, res) => {
   const registeredReceipts = await r.table('registered_receipts')
   const usedReceipts = await r.table('used_receipts')
   res.send(`
-    <h2 style="color: rgb(135, 129, 211)">Kvittomatchning</h2>
-    <h3>Registered receipts</h3>
+    <h2 style="color: rgb(135, 129, 211)">Kvittomatchning (hash-register)</h2>
+    <h3>Publicerade kvitto-hashar</h3>
     <pre>${JSON.stringify(registeredReceipts, null, 2)}</pre>
-    <h3>Used receipts</h3>
+    <h3>Kostnadsförda kvitto-hashar</h3>
     <pre>${JSON.stringify(usedReceipts, null, 2)}</pre>
     <script type="text/javascript">setTimeout(() => { location.reload()}, 3000)</script>
   `)

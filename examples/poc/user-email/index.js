@@ -13,9 +13,9 @@ const got = require('got')
 app.use(require('body-parser').json())
 let receipts = []
 
-function beautifulNewReceipt(r) {
+function beautifulNewReceipt(r, elementIndex) {
     return `
-    <tr class="unread" onclick='openReceipt(${JSON.stringify(r)})'>
+    <tr ${elementIndex === 0 ? `data-step="1" data-intro="Klicka för att öppna mailet med ditt ditt kvitto"` : ""}  class="unread" onclick='openReceipt(${JSON.stringify(r)})'>
       <td class="inbox-small-cells">
           <input type="checkbox" class="mail-checkbox">
       </td>
@@ -40,25 +40,30 @@ function openReceipt(r) {
               .map(k => `<li>${k} : ${JSON.stringify(receipt[k])}</li>`)
               .join('')}
         </ul>
-        <pre>${JSON.stringify(r, null, 2)}</pre>
+        <pre data-step="1" data-intro-group="opened" data-intro="Det här är rådatan till ditt kvitto. </br> </br> Nästa steg är att vidarebefodra datan till ekonomisystemet, för att kostnadsföra kvittot.">${JSON.stringify(r, null, 2)}</pre>
         <canvas id="canvas"></canvas>
         <input style="display: block;" type="button" value="Ladda ner" onclick='downloadReceipt(${receiptJson})'/>
         <br/>
         <ul class="email-actions">
             <li><input type="button" value="Reply"/></li>
             <li><input type="button" value="Reply all"/></li>
-            <li><a onclick='forwardReceipt(${receiptJson})' class="btn mini btn-info">
+            <li data-intro="Klicka här för att vidarebefodra kvittot" id="forward-btn"><a onclick='forwardReceipt(${receiptJson})' class="btn mini btn-info">
                     Forward
             </a></li>
         </ul>
     `
     document.getElementById('email-container').innerHTML = receiptHtml
     QRCode.toCanvas(document.getElementById('canvas'), receiptJson)
+    intro.exit()
+    setTimeout(() => {
+        intro.start()
+    }, 1000);
 }
 
 function forwardReceipt(r) {
     const result = prompt('To', 'kvitton@ekonomi.se')
     if (result) {
+        intro.nextStep()
         fetch(`/forward`, {
             method: 'POST',
             headers: {
@@ -95,9 +100,10 @@ app.get('/emails', (req, res) => {
     res.send(`
 <head>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" type="text/css" href="/intro.js/introjs.css"/>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <h2 id="window-title">Mottagar-fönster för användaren</h2>
+    <h2 id="window-title">Mottagar-fönster för butikskunden</h2>
     <link rel="stylesheet" type="text/css" href="newcss.css" />
     <script src="/qrcode/build/qrcode.min.js"></script>
     <script type="text/javascript">
@@ -325,6 +331,20 @@ app.get('/emails', (req, res) => {
         </aside>
     </div>
 </div>
+<script type="text/javascript" src="/intro.js/intro.js"></script>
+<script type="text/javascript">
+    const urlParams = new URLSearchParams(window.location.search)
+
+    const intro = introJs()
+    intro.setOptions({'hidePrev': true, 'hideNext': true, 'showStepNumbers': false, 'skipLabel': 'Hoppa över demonstration', 'doneLabel': 'Till butikskundens företags affärssystem', 'nextLabel': 'Nästa'})
+    if (urlParams.has('tutorial')) {
+        setTimeout(() => {
+            intro.start().oncomplete(function() {
+                window.location.href = 'http://localhost:8900/expenses?tutorial=true';
+            });
+        }, 1000)
+    }
+</script>
   `)
 })
 

@@ -11,7 +11,9 @@ services:
       - USER_ACCOUNTING_URL=http://localhost:8900
       - HASH_REGISTRY_URL=http://localhost:5500
       - CA_URL=http://localhost:5700
-
+    volumes:
+      - ./index.js:/app/index.js
+      - ./public:/app/public
   ca-rethinkdb:
     image: rethinkdb:2.3.6
     networks:

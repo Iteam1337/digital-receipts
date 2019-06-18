@@ -35,7 +35,8 @@ app.post('/enroll-publisher', enrollPublisher)
 app.post('/enroll-reporter', enrollReporter)
 app.get('/enroll', (req, res) => {
   const {
-    success
+    success,
+    tutorial
   } = req.query
 
   res.send(`
@@ -43,14 +44,14 @@ app.get('/enroll', (req, res) => {
   <form action="/enroll-publisher" method="POST">
   <label for="publisher-org-id"> Org Id utgivare </label>
   <br>
-  <input name="organizationId" id="publisher-org-id" type="input" value="${
+  <input ${tutorial ? "readonly" : ""} name="organizationId" id="publisher-org-id" type="input" value="${
     process.env.PUBLISHER_ORG_ID
   }"/>
   <br>
 
-  <label for="publisher-endpoint"> Webaddress för publika nycklar</label>
+  <label for="publisher-endpoint"> Webbaddress för publika nycklar</label>
   <br>
-  <input name="endpoint" id="publisher-endpoint"="input" value="${
+  <input ${tutorial ? "readonly" : ""} name="endpoint" id="publisher-endpoint"="input" value="${
     process.env.SHOP_URL
   }/jwks"  />
 
@@ -62,14 +63,14 @@ app.get('/enroll', (req, res) => {
   <form action="/enroll-reporter" method="POST">
   <label for="reporter-org-id"> Org Id utgivare </label>
   <br>
-  <input name="organizationId" id="reporter-org-id" type="input" value="${
+  <input ${tutorial ? "readonly" : ""} name="organizationId" id="reporter-org-id" type="input" value="${
     process.env.USER_ACCOUNTING_ORG_ID
   }"/>
   <br>
 
-  <label for="reporter-endpoint"> Webaddress för publika nycklar</label>
+  <label for="reporter-endpoint"> Webbaddress för publika nycklar</label>
   <br>
-  <input name="endpoint" id="reporter-endpoint"="input" value="${
+  <input ${tutorial ? "readonly" : ""} name="endpoint" id="reporter-endpoint"="input" value="${
     process.env.USER_ACCOUNTING_URL
   }/jwks"  />
 
@@ -81,15 +82,15 @@ app.get('/enroll', (req, res) => {
     success === undefined
       ? ``
       : success === 'true'
-      ? `<div id="success-msg" style="color: green; font-size:30px; top:16px; left: 25px; z-index: 11;"> Successfully enrolled &#9989</div>`
-      : `<div style="color: red" id="success-msg"> You are already enrolled. You should try using the update endpoint`
+      ? `<div id="success-msg" style="color: green; font-size:30px; top:16px; left: 25px; z-index: 11;"> Ditt företag är nu registrerat! &#9989</div>`
+      : `<div style="color: red" id="success-msg"> Den här organisationen är redan registrerad.`
   }
   <script>
     setTimeout(() => {
       document.getElementById(
         'success-msg'
       ).innerHTML = ''
-    }, 2500)
+    }, 3500)
   </script>
   `)
 })

@@ -103,7 +103,7 @@ app.post('/buy', formReader.none(), async (req, res) => {
     })
   } catch (error) {
     console.log('Error registering receipt', error.body);
-    return res.status(500).send(JSON.stringify('Could not register receipt, are you enrolled?'))
+    return res.status(500).send(JSON.stringify('Kunda inte registrera kvitto i hash-registret, har du registrerat dig?'))
   }
   res.sendStatus(200)
 })
@@ -126,5 +126,5 @@ app.post('/enroll', async (_, res) => {
   }
 })
 app.use(express.static('public'))
-
+app.use(express.static('node_modules'))
 app.listen(port, () => console.log(`Shop app listening on port ${port}!`))

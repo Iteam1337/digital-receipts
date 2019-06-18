@@ -138,7 +138,9 @@ app.get('/report-receipt/:receiptName', async (req, res) => {
   const html = `
     <!DOCTYPE html>
     <html>
-      <head></head>
+      <head>
+      <link rel="stylesheet" type="text/css" href="/intro.js/introjs.css"/>
+      </head>
       <body>
         <form action="/report-receipt/${digitalDeceipt.hash}" method="POST">
         <label for="id_select">Typ av kvitto</label>
@@ -173,9 +175,17 @@ app.get('/report-receipt/:receiptName', async (req, res) => {
           receipt.organizationId
         }'/>
 
-        <input type="submit" value="Spara"/>
+        <input data-intro="Spara kvittot för att avvakta attesterande av ekonomiansvarig" type="submit" value="Spara"/>
         <input type="button" value="Tillbaka" onclick="location.href='/expenses';"/>
         </form>
+        <script type="text/javascript" src="/intro.js/intro.js"></script>
+        <script type="text/javascript">
+          const intro = introJs()
+          intro.setOptions({'hidePrev': true, 'hideNext': true, 'showStepNumbers': false, 'skipLabel': 'Hoppa över demonstration', 'doneLabel': 'Till attesteringsvyn', 'nextLabel': 'Nästa'})
+          if (localStorage.getItem('tutorial')) {
+            intro.start()
+          }
+        </script>
       </body>
     </html>
     `
@@ -272,7 +282,7 @@ app.post('/report-receipt/:hash', async (req, res) => {
     )
 
     if (message === 'Public key endpoint not found') {
-      message = 'Could not save receipt, are you enrolled?'
+      message = 'Kunda inte registrera kvitto i hash-registret, har du registrerat dig?'
     }
     setReceiptAsNotSaved(hash)
     console.log(message)

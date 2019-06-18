@@ -2,7 +2,9 @@
 <html>
 
 <head>
-  <h2 style="font-size: 24px;" id="window-title" class="h2-window-ti">Förkontering i affärssystemet</h2>
+  <h2 data-step="1" data-intro="Välkommen till butikskundens företags ekonomisystem för kontering"
+    style="font-size: 24px;" id="window-title" class="h2-window-ti">Förkontering i affärssystemet</h2>
+  <link rel="stylesheet" type="text/css" href="/intro.js/introjs.css" />
   <link rel="stylesheet" type="text/css" href="css.css" />
   <script src="/socket.io-client/dist/socket.io.js"></script>
 </head>
@@ -77,6 +79,34 @@
       </div>
     </form>
   </div>
+  <script type="text/javascript" src="/intro.js/intro.js"></script>
+  <script type="text/javascript">
+    const intro = introJs()
+    intro.setOptions({
+      'hidePrev': true,
+      'hideNext': true,
+      'showStepNumbers': false,
+      'skipLabel': 'Hoppa över demonstration',
+      'doneLabel': 'Till attesteringsvyn',
+      'nextLabel': 'Nästa'
+    })
+
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.has('tutorial') || localStorage.getItem('tutorial')) {
+
+      localStorage.setItem('tutorial', true)
+      setTimeout(() => {
+        intro.oncomplete(function () {
+          window.location.href = 'http://localhost:8900/attestation?tutorial=true';
+        });
+        if (urlParams.has('success')) {
+          intro.start('checkbox')
+        } else {
+          intro.start()
+        }
+      }, 1500)
+    }
+  </script>
 </body>
 <script type="text/javascript">
   ;
@@ -88,20 +118,22 @@
       receipts = incomingReceipts.filter(r => !r.receipt.done)
       const response = await fetch('/receiptsList.html')
       const receiptsTemplate = await response.text()
+      const isTutorial = localStorage.getItem('tutorial')
       const receiptsHtml = receipts
-        .map(r => {
+        .map((r, i) => {
           return `
-      <li style="position: relative;">
+      <li   style="position: relative;">
         ${
           r.receipt.saved
             ? `
-        <div style="color: green; font-size:100px; position: absolute; top:16px; left: 25px; z-index: 11;">&#9989</div>
+        <div data-intro-group="checkbox" data-intro=" Nu kan du gå in som ekonomiansvarig och attestera kvittot."
+          style="color: green; font-size:100px; position: absolute; top:16px; left: 25px; z-index: 11;">&#9989</div>
         `
             : r.receipt.saved === undefined
             ? ``
             : `<div style="color: green; font-size:100px; position: absolute; top:16px; left: 25px; z-index: 11;">&#10060</div>`
         }
-        <a style="position: absolute; top:0; left: 0; z-index:10;"
+        <a ${i === 0 ? `data-step="2" data-intro="Klicka på QR-koden för att rapportera in kvittot"`: ""} style="position: absolute; top:0; left: 0; z-index:10;"
           href="/report-receipt/${r.img
             .replace('/', '')
             .replace('.png', '')}"> <img src="${r.img}" alt="" border="1"
@@ -137,7 +169,7 @@
       urlParams.has('success') && urlParams.get('success') === 'true'
     const failedReport = urlParams.has('error') && urlParams.get('error')
     if (successfulReport) {
-      alert('det gick att förkontera!')
+      alert('Kvittot för-konterades med framgång!')
     }
 
     if (failedReport) {
