@@ -11,22 +11,27 @@ app.use(express.static('public'))
 
 app.get('/', (req, res) => {
   let introClass = req.query.intro || 'initial'
-  let introDoneRoute = `${process.env.SHOP_URL}/?tutorial=true`
+  let introDoneRoute = `${req.protocol}://${req.get('host')}/?intro=initial2`
   let introDoneLabel = 'Börja demonstrationen'
   let dataIntro = ''
-  if (introClass === "hash-registry") {
-    introDoneRoute = `${process.env.MAIL_URL}/emails?tutorial=true`
-    introDoneLabel = 'Till butikskundens inkorg'
-    dataIntro = "Kvitto-hashen syns nu här. Utan att frånge några detaljer om kvittot i sig."
-  }
 
-  if (introClass === "hash-registry-2") {
-    introClass = "hash-registry"
-    introDoneRoute = null
-    introDoneLabel = 'Avsluta guiden'
-    dataIntro = "Nu är även kvitto-hashen kostnadsförd och listas under 'Kostnadsförda kvitto-hashar' </br> </br> Det avslutar den här guiden. </br> Självklart kan du fortsätta klicka runt."
+  switch (introClass) {
+    case "initial2":
+      introDoneRoute = `${process.env.SHOP_URL}/?tutorial=true`
+      introDoneLabel = 'Till affären'
+      break;
+    case "hash-registry":
+      introDoneRoute = `${process.env.MAIL_URL}/emails?tutorial=true`
+      introDoneLabel = 'Till butikskundens inkorg'
+      dataIntro = "Kvitto-hashen syns nu här. Utan att frånge några detaljer om kvittot i sig."
+      break;
+    case "hash-registry-2":
+      introClass = "hash-registry"
+      introDoneRoute = null
+      introDoneLabel = 'Avsluta guiden'
+      dataIntro = "Nu är även kvitto-hashen kostnadsförd och listas under 'Kostnadsförda kvitto-hashar' </br> </br> Det avslutar den här guiden. </br> Självklart kan du fortsätta klicka runt."
+      break;
   }
-
   console.log(introClass);
   console.log(introDoneRoute);
 
@@ -56,7 +61,7 @@ app.get('/', (req, res) => {
           <li style="display: inline;"><iframe src="${process.env.MAIL_URL}/emails" width="1000" height="700"></iframe></li>
           <li style="display: inline;"><iframe src="${process.env.USER_ACCOUNTING_URL}/expenses" width="750" height="700"></iframe></li>
           <li style="display: inline;"><iframe src="${process.env.USER_ACCOUNTING_URL}/attestation" width="750" height="700"></iframe></li>
-          <li style="display: inline;"><iframe data-position="right" data-intro-group="initial" data-step="3" data-intro="Först behöver du sätta upp förutsättningarna för att systemet ska fungera. För tillfället kan två typer av aktörs-system integrera med systemet.</br> </br>
+          <li style="display: inline;"><iframe src="${process.env.CA_URL}/enroll${introClass === 'initial2' ? "?tutorial=true" : ""}" data-position="right" data-intro-group="initial2" data-step="3" data-intro="Först behöver du sätta upp förutsättningarna för att systemet ska fungera. För tillfället kan två typer av aktörs-system integrera med systemet.</br> </br>
           1. En aktör, kvittoutgivaren, som genererar, registrerar kvittot i vårt system och även utger kvitton till kund, efter en lyckad affär. Till exempel är denna aktör en faktisk butik. </br>
           2. En aktör, konteraren, som kan kontera det genererade kvittot i form av till exempel en företagsutgift och också registrerar konteringen i vårt system. Till exempel är denna aktör en anställds ekonomisystem. </br> </br>
           Du behöver registrera dig som båda dessa aktörer, för att systemet ska kunna bekräfta att endast verifierade aktörer använder systemet. </br> </br>
