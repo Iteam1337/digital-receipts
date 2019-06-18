@@ -16,16 +16,22 @@ server.use(bodyParser.json())
  * @api {post} /generate-hash Request a hash for a receipt
  * @apiName Generate
  * @apiGroup Hash
- *
- * @apiParam {String} organizationId Identifier by choice of supplier
- * @apiParam {String} [description] Description
- * @apiParam {Number} quantity Quantity
- * @apiParam {Number} actualSalesUnitPrice Actual Sales Unit Price
+ * @apiParam {String} currencyCode Currency Code in capital letters (ex SEK)
  * @apiParam {Number} extendedAmount Extended Amount
- * @apiParam {Number} extendedDiscountAmount Extended Discount Amount
- * @apiParam {Number} vat Vat
+ * @apiParam {String} receiptDateTime Date and time when the transaction was made
+ * @apiParam {String} receiptNumber Receipt identifier in the issuer system
+ * @apiParam {Number} vat Vat described as amount
  *
  * @apiSuccess {String} hash The hash for the sent receipt.
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "currencyCode": "SEK",
+ *       "extendedAmount": 100,
+ *       "receiptDateTime": "2012-01-11T09:49:00+01:00",
+ *       "receiptNumber": "1560840755805",
+ *       "vat": "25"
+ *     }
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -42,11 +48,31 @@ server.use(bodyParser.json())
  *     }
  */
 server.post('/generate-hash', (req, res) => {
-  const { body } = req
+  const {
+    currencyCode,
+    extendedAmount,
+    receiptDateTime,
+    receiptNumber,
+    vat
+  } = req.body
   try {
-    validatePayload(body)
-    res.send({ hash: generateHash(body) })
-  } catch(ex) {
+    validatePayload({
+      currencyCode,
+      extendedAmount,
+      receiptDateTime,
+      receiptNumber,
+      vat
+    })
+    res.send({
+      hash: generateHash({
+        currencyCode,
+        extendedAmount,
+        receiptDateTime,
+        receiptNumber,
+        vat
+      })
+    })
+  } catch (ex) {
     console.error(ex)
     res.status(500).send(ex.message)
   }
