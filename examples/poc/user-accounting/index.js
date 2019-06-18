@@ -161,12 +161,12 @@ app.get('/report-receipt/:receiptName', async (req, res) => {
 
         <label for="id_amount">Belopp</label>
         <input id="id_amount" type="text" name="amount" readonly="readonly" value='${
-          receipt.totalAmount
+          receipt.extendedAmount
         }'/>
 
         <label for="id_vat">Moms</label>
         <input id="id_vat" type="text" name="vat" readonly="readonly" value='${
-          receipt.totalTax
+          receipt.vat
         }'/>
 
         <input type="hidden" id="id_organizationId" name="organizationId" value='${

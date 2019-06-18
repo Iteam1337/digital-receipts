@@ -19,7 +19,7 @@ server.use(bodyParser.json())
  * @apiParam {String} currencyCode Currency Code in capital letters (ex SEK)
  * @apiParam {Number} extendedAmount Extended Amount
  * @apiParam {String} receiptDateTime Date and time when the transaction was made
- * @apiParam {String} receiptNumber Receipt identifier in the issuer system
+ * @apiParam {String} receiptCode Receipt identifier in the issuer system
  * @apiParam {Number} vat Vat described as amount
  *
  * @apiSuccess {String} hash The hash for the sent receipt.
@@ -29,7 +29,7 @@ server.use(bodyParser.json())
  *       "currencyCode": "SEK",
  *       "extendedAmount": 100,
  *       "receiptDateTime": "2012-01-11T09:49:00+01:00",
- *       "receiptNumber": "1560840755805",
+ *       "receiptCode": "1560840755805",
  *       "vat": "25"
  *     }
  *
@@ -52,7 +52,7 @@ server.post('/generate-hash', (req, res) => {
     currencyCode,
     extendedAmount,
     receiptDateTime,
-    receiptNumber,
+    receiptCode,
     vat
   } = req.body
   try {
@@ -60,7 +60,7 @@ server.post('/generate-hash', (req, res) => {
       currencyCode,
       extendedAmount,
       receiptDateTime,
-      receiptNumber,
+      receiptCode,
       vat
     })
     res.send({
@@ -68,7 +68,7 @@ server.post('/generate-hash', (req, res) => {
         currencyCode,
         extendedAmount,
         receiptDateTime,
-        receiptNumber,
+        receiptCode,
         vat
       })
     })

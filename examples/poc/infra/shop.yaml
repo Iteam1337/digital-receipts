@@ -41,6 +41,8 @@ spec:
             value: "456"
           - name: SHOP_PORT
             value: "9000"
+          - name: HASH_GENERATOR_URL
+            value: http://hash-generator
       restartPolicy: Always
 ---
 apiVersion: v1

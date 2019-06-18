@@ -11,7 +11,7 @@ describe('generate hash route', () => {
         currencyCode: 'SEK',
         extendedAmount: 100,
         receiptDateTime: '2012-01-11T09:49:00+01:00',
-        receiptNumber: '132084075580',
+        receiptCode: '132084075580',
         vat: '25'
       })
     expect(response.statusCode).toBe(200)
@@ -24,7 +24,7 @@ describe('generate hash route', () => {
         currencyCode: 'SEK',
         extendedAmount: 100,
         receiptDateTime: '2012-01-11T09:49:00+01:00',
-        receiptNumber: '132084075580',
+        receiptCode: '132084075580',
         vat: '25'
       })
     expect(response.body).toEqual({ hash: expect.any(String) })
@@ -53,7 +53,7 @@ describe('generate hash route', () => {
         currencyCode: 'SEK',
         extendedAmount: 100,
         receiptDateTime: '2012-01-11T09:49:00+01:00',
-        receiptNumber: '132084075580',
+        receiptCode: '132084075580',
         vat: '25'
       })
     const secondResponse = await request(app)
@@ -62,7 +62,7 @@ describe('generate hash route', () => {
         currencyCode: 'SEK',
         extendedAmount: 100,
         receiptDateTime: '2012-01-11T09:49:00+01:00',
-        receiptNumber: '1560840755805',
+        receiptCode: '1560840755805',
         vat: '25'
       })
 
