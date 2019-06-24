@@ -97,7 +97,7 @@
       localStorage.setItem('tutorial', true)
       setTimeout(() => {
         intro.oncomplete(function () {
-          window.location.href = 'http://localhost:8900/attestation?tutorial=true';
+          window.location.href = `http://${window.location.host}/attestation?tutorial=true`
         });
         if (urlParams.has('success')) {
           intro.start('checkbox')

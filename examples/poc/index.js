@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
     case "hash-registry":
       introDoneRoute = `${process.env.MAIL_URL}/emails?tutorial=true`
       introDoneLabel = 'Till butikskundens inkorg'
-      dataIntro = "Kvitto-hashen syns nu här. Utan att frånge några detaljer om kvittot i sig."
+      dataIntro = "Kvitto-hashen syns nu här. Utan att frånge några detaljer om kvittot i sig. </br> För att fortsätta flödet går vi till butikskundens inkorg"
       break;
     case "hash-registry-2":
       introClass = "hash-registry"
@@ -62,12 +62,12 @@ app.get('/', (req, res) => {
           <li style="display: inline;"><iframe src="${process.env.USER_ACCOUNTING_URL}/expenses" width="750" height="700"></iframe></li>
           <li style="display: inline;"><iframe src="${process.env.USER_ACCOUNTING_URL}/attestation" width="750" height="700"></iframe></li>
           <li style="display: inline;"><iframe src="${process.env.CA_URL}/enroll${introClass === 'initial2' ? "?tutorial=true" : ""}" data-position="right" data-intro-group="initial2" data-step="3" data-intro="Först behöver du sätta upp förutsättningarna för att systemet ska fungera. För tillfället kan två typer av aktörs-system integrera med systemet.</br> </br>
-          1. En aktör, kvittoutgivaren, som genererar, registrerar kvittot i vårt system och även utger kvitton till kund, efter en lyckad affär. Till exempel är denna aktör en faktisk butik. </br>
-          2. En aktör, konteraren, som kan kontera det genererade kvittot i form av till exempel en företagsutgift och också registrerar konteringen i vårt system. Till exempel är denna aktör en anställds ekonomisystem. </br> </br>
+          1. Kvittoutgivaren, som genererar, registrerar kvittot i vårt system och även utger kvitton till kund, efter en lyckad affär. Till exempel är denna aktör en faktisk butik. </br>
+          2. Konteraren, som kan kontera det genererade kvittot i form av till exempel en företagsutgift och också registrerar konteringen i vårt system. Till exempel är denna aktör en anställds ekonomisystem. </br> </br>
           Du behöver registrera dig som båda dessa aktörer, för att systemet ska kunna bekräfta att endast verifierade aktörer använder systemet. </br> </br>
           I verkligheten kommer dessa registreringar ofta göras av två olika företag, men just i den här demonstrationen kommer du att agera som samtliga aktörer i systemet.
           I registreringen krävs integrations-aktörerna på ett organisationsnummer och en webbaddress som systemet kan använda för att verifiera deras identitet. </br> </br>
-          Börja med att klicka på de båda registreringsknapparna för att tjänsten ska fungera korrekt. Tryck sedan på 'börja demonstrationen'" src="${process.env.CA_URL}/enroll" width="498" height="700"></iframe></li>
+          Börja med att klicka på de båda registreringsknapparna för att tjänsten ska fungera korrekt. Tryck sedan på 'Till affären'" src="${process.env.CA_URL}/enroll" width="498" height="700"></iframe></li>
           <li style="display: inline;"><iframe src="${process.env.CA_URL}" width="498" height="700"></iframe></li>
           <li style="display: inline;"><iframe data-intro-group="hash-registry" data-intro="${dataIntro}" src="${process.env.HASH_REGISTRY_URL}/receipts" width="498" height="700"></iframe></li>
         </ul>
@@ -84,8 +84,8 @@ app.get('/', (req, res) => {
                   if ('null' !== '${introDoneRoute}') {
                     window.location.href = '${introDoneRoute}';
                   } else {
-                    window.location.href = 'http://localhost:6900';
                     localStorage.setItem('tutorial', false)
+                    window.location.href = 'http://' + window.location.host ;
                   }
                 });
               }

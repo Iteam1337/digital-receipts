@@ -49,7 +49,9 @@
         if (urlParams.has('success')) {
           intro.start('success').oncomplete(function () {
             localStorage.removeItem('tutorial')
-            window.location.href = 'http://localhost:6900/?intro=hash-registry-2';
+            const frontpage_url = window.location.hostname === "localhost" ? "http://localhost:6900" :
+              "https://www.digitala-kvitton.se"
+            window.location.href = frontpage_url + '/?intro=hash-registry-2';
           })
         } else {
           intro.start('initial')

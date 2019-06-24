@@ -2,7 +2,8 @@
 <html>
 
 <head>
-  <h2 data-intro='Denna webbsida simulerar vyn för en butikskund i en affär som har befogenhet att genenera kvitton.'
+  <h2 data-intro-group="tutorial"
+    data-intro='Denna webbsida simulerar vyn för en butikskund i en affär som har befogenhet att genenera kvitton.'
     style="color: rgb(135, 129, 211)">
     Affärsfönster
   </h2>
@@ -27,7 +28,7 @@
       Köp produkt
     </h3>
 
-    <div data-intro='Här kan du fylla i vilken artikel som kunden köper och vad den kostar.'
+    <div data-intro-group="tutorial" data-intro='Här kan du fylla i vilken artikel som kunden köper och vad den kostar.'
       style="display: table-cell;">
       <ul>
         <li>
@@ -75,9 +76,10 @@
   </form>
 
   <div id="buy">
-    <button data-intro="Tryck nu på köp för att simulera att kvittot genereras och skickas iväg till kundens email"
+    <button data-intro-group="tutorial"
+      data-intro="Tryck nu på köp för att simulera att kvittot genereras och skickas iväg till kundens email"
       onclick="buy()">KÖP</button>
-    <div data-intro="Köpet är gjort:
+    <div data-intro-group="tutorial2" data-intro="Köpet är gjort:
       </br>
       1. Kvittot är genenerat
       </br>
@@ -85,26 +87,54 @@
       </br>
       3. Den signerade hashen skickas till hash-registret.
       </br>
-      4. butikskunden har fått ett email med kvittot bifogat" id='check-box'
+      4. Butikskunden har fått ett email med kvittot bifogat
+      </br>
+      </br>
+      Om vi nu går tillbaka till hash-registret kan vi se att kvittot har registrerats." id='check-box'
       style="visibility: hidden; color: green; font-size:100px; width:120px; ">&#9989</div>
   </div>
   <script type="text/javascript">
     const intro = introJs()
     const urlParams = new URLSearchParams(window.location.search)
-    if (urlParams.has('tutorial')) {
-      intro.setOptions({
-        'hidePrev': true,
-        'hideNext': true,
-        'showStepNumbers': false,
-        'doneLabel': 'Till hash-registret',
-        'nextLabel': 'Nästa'
-      })
-      intro.start().oncomplete(function () {
-        window.location.href = 'http://localhost:6900/?intro=hash-registry';
+    if (urlParams.has('tutorial') || urlParams.has('tutorial2')) {
+      if (urlParams.has('tutorial2')) {
+        intro.setOptions({
+          'hidePrev': true,
+          'hideNext': true,
+          'showStepNumbers': false,
+          'doneLabel': 'Tillbaka till hash-registret',
+          'nextLabel': 'Nästa'
+        })
+        document.getElementById(
+            'check-box'
+          ).innerHTML =
+          `<div id='check-box' style="visibility: visible; color: green; font-size:100px ">&#9989</div>`
+      } else {
+        intro.setOptions({
+          'hidePrev': true,
+          'hideNext': true,
+          'showStepNumbers': false,
+          'doneLabel': 'skip',
+          'nextLabel': 'Nästa'
+        })
+      }
+      let completed
+      const introGroup = urlParams.has('tutorial2') ? "tutorial2" : "tutorial"
+      intro.start(introGroup).oncomplete(function () {
+        completed = true
+        if (introGroup === "tutorial") {
+          window.location.href = 'http://' + window.location.host + '/?tutorial2=true';
+        } else {
+          const frontpage_url = window.location.hostname === "localhost" ? "http://localhost:6900" :
+            "https://www.digitala-kvitton.se"
+          window.location.href = frontpage_url + '/?intro=hash-registry';
+        }
       });
-      // intro.onexit(function () {
-      //   window.location.href = 'http://localhost:9000';
-      // });
+      intro.onexit(function (e) {
+        if (!completed) {
+          window.location.href = 'http://' + window.location.host;
+        }
+      });
     }
 
     function setId() {
@@ -138,8 +168,7 @@
           document.getElementById(
               'check-box'
             ).innerHTML =
-            `<div data-intro="Köpet är gjort; Kvittot är genenerat, skickat till hash-registret och butikskunden har fått ett email med kvittot"
-                  id='check-box' style="visibility: visible; color: green; font-size:100px ">&#9989</div>`
+            `<div id='check-box' style="visibility: visible; color: green; font-size:100px ">&#9989</div>`
           setTimeout(() => {
             document.getElementById(
                 'buy'
@@ -147,7 +176,7 @@
               `<button onclick="buy()">KÖP</button>`
           }, 5500)
           if (urlParams.has('tutorial')) {
-            intro.nextStep()
+            intro.start('tutorial2')
           }
         } else {
           alert(req.responseText)

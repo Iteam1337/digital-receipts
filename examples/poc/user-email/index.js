@@ -340,7 +340,7 @@ app.get('/emails', (req, res) => {
     if (urlParams.has('tutorial')) {
         setTimeout(() => {
             intro.start().oncomplete(function() {
-                window.location.href = 'http://localhost:8900/expenses?tutorial=true';
+                window.location.href = '${process.env.USER_ACCOUNTING_URL_EXT}/expenses?tutorial=true';
             });
         }, 1000)
     }

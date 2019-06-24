@@ -93,6 +93,8 @@ services:
       digital-receipts:
     ports:
       - 7900:7900
+    environment:
+      - USER_ACCOUNTING_URL_EXT=http://localhost:8900
 
 networks:
   digital-receipts:
