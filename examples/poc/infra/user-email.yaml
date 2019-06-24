@@ -24,20 +24,22 @@ spec:
               cpu: 100m
               memory: 100Mi
           env:
-          - name: SHOP_URL
-            value: http://shop
-          - name: MAIL_URL
-            value: http://user-email
-          - name: USER_ACCOUNTING_URL
-            value: http://user-accounting.digitala-kvitton.se
-          - name: HASH_REGISTRY_URL
-            value: http://hash-registry-poc
-          - name: CA_URL
-            value: http://ca
-          - name: PUBLISHER_ORG_ID
-            value: "123"
-          - name: USER_ACCOUNTING_ORG_ID
-            value: "456"
+            - name: SHOP_URL
+              value: http://shop
+            - name: MAIL_URL
+              value: http://user-email
+            - name: USER_ACCOUNTING_URL
+              value: http://user-accounting.digitala-kvitton.se
+            - name: HASH_REGISTRY_URL
+              value: http://hash-registry-poc
+            - name: CA_URL
+              value: http://ca
+            - name: PUBLISHER_ORG_ID
+              value: '123'
+            - name: USER_ACCOUNTING_ORG_ID
+              value: '456'
+            - name: USER_ACCOUNTING_URL_EXT
+              value: 'http://user-accounting.digitala-kvitton.se'
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -48,7 +50,7 @@ metadata:
     io.kompose.service: user-email
 spec:
   ports:
-    - name: "80"
+    - name: '80'
       protocol: TCP
       port: 80
       targetPort: 7900
