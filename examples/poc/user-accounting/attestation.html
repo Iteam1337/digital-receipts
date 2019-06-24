@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html>
 
+
 <head>
-  <h2 style="font-size: 24px;" id="window-title">Attestering i Affärssystemet</h2>
+  <h2 data-intro-group="initial" data-step="1"
+    data-intro="Nu är du i en vy som endast ekonomi-ansvariga användare kan se. Här kan du attestera kvitton."
+    style="font-size: 24px;" id="window-title">Attestering i Affärssystemet</h2>
   <link rel="stylesheet" type="text/css" href="css.css" />
+  <link rel="stylesheet" type="text/css" href="/intro.js/introjs.css" />
   <script src="/socket.io-client/dist/socket.io.js"></script>
 </head>
 
 <body>
-  <div class="content">
+  <script type="text/javascript" src="/intro.js/intro.js"></script>
+
+  <div class="content" data-intro-group="success" data-step="3" data-intro="Nu är allt klart och du kan åter titta i
+  hash-registret för att se att ditt kvitto har blivit kostnadsfört.">
     <h2>Nya kvitton</h2>
   </div>
   <div id="expenseForm:files" class="ui-outputpanel ui-widget">
@@ -22,8 +29,36 @@
   </div>
   <div id="expenseForm:j_idt515" class="ui-outputpanel ui-widget form-panel clearfix "></div>
   <form method="POST" action="/attest">
-    <input type="submit" value="Attestera" />
+    <input data-intro-group="initial" data-step="2"
+      data-intro="Attestera nu kvittot för att det ska hamna i bokföringen och registreras i Hash-registret"
+      type="submit" value="Attestera" />
   </form>
+  <script type="text/javascript">
+    const intro = introJs()
+    intro.setOptions({
+      'hidePrev': true,
+      'hideNext': true,
+      'showStepNumbers': false,
+      'doneLabel': 'Till hash-registret',
+      'skipLabel': 'Hoppa över demonstration',
+      'nextLabel': 'Nästa'
+    })
+    setTimeout(() => {
+      if (localStorage.getItem('tutorial')) {
+        const urlParams = new URLSearchParams(window.location.search)
+        if (urlParams.has('success')) {
+          intro.start('success').oncomplete(function () {
+            localStorage.removeItem('tutorial')
+            const frontpage_url = window.location.hostname === "localhost" ? "http://localhost:6900" :
+              "https://www.digitala-kvitton.se"
+            window.location.href = frontpage_url + '/?intro=hash-registry-2';
+          })
+        } else {
+          intro.start('initial')
+        }
+      }
+    }, 1000);
+  </script>
 </body>
 <script type="text/javascript">
   ;
@@ -50,13 +85,7 @@
                     ? ``
                     : `<div style="color: green; font-size:100px; position: absolute; top:16px; left: 25px; z-index: 11;">&#10060</div>`
                 }
-                <a style="position: absolute; top:0; left: 0; z-index:10;"
-                  href="/report-receipt/${r.img
-                    .replace('/', '')
-                    .replace('.png', '')}"> <img src="${
-              r.img
-            }" alt="" border="1"
-                    class="expense-file-preview" /></a>
+                <img src="${ r.img }" alt="" border="1" class="expense-file-preview" />
                 <pre style="left: 160px; position: relative;">${JSON.stringify(
                   r.receipt,
                   null,
@@ -85,7 +114,7 @@
       urlParams.has('success') && urlParams.get('success') === 'true'
     const failedReport = urlParams.has('error') && urlParams.get('error')
     if (successfulReport) {
-      alert('det gick att attestera!')
+      alert('Kvittot attesterades med framgång!')
     }
 
     if (failedReport) {
