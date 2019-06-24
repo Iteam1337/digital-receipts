@@ -1,1 +1,2 @@
-user-accounting/receipts
+user-accounting/receipts/*.png
+user-accounting/receipts/*.json

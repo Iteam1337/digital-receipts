@@ -19,7 +19,10 @@ spec:
           ports:
             - containerPort: 9000
               protocol: TCP
-          resources: {}
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
           env:
           - name: CA_DB_HOST
             value: hash-registry-rethinkdb

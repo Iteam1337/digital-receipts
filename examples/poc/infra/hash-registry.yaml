@@ -19,7 +19,10 @@ spec:
           ports:
             - containerPort: 5500
               protocol: TCP
-          resources: {}
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
           env:
           - name: REGISTRY_DB_HOST
             value: hash-registry-db
