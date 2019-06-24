@@ -19,7 +19,10 @@ spec:
           ports:
             - containerPort: 6900
               protocol: TCP
-          resources: {}
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
           env:
           - name: CA_DB_HOST
             value: hash-registry-rethinkdb
@@ -32,7 +35,7 @@ spec:
           - name: USER_ACCOUNTING_URL
             value: https://user-accounting.digitala-kvitton.se
           - name: HASH_REGISTRY_URL
-            value: https://hash-registry.digitala-kvitton.se
+            value: https://hash-registry-poc.digitala-kvitton.se
           - name: CA_URL
             value: https://ca.digitala-kvitton.se
           - name: PUBLISHER_ORG_ID

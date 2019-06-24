@@ -19,7 +19,10 @@ spec:
           ports:
             - containerPort: 5700
               protocol: TCP
-          resources: {}
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
           env:
           - name: CA_DB_HOST
             value: ca-db
@@ -34,7 +37,7 @@ spec:
           - name: USER_ACCOUNTING_URL
             value: http://user-accounting
           - name: HASH_REGISTRY_URL
-            value: http://hash-registry
+            value: http://hash-registry-poc
           - name: CA_URL
             value: http://ca
           - name: PUBLISHER_ORG_ID

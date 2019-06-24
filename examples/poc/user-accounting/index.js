@@ -38,7 +38,6 @@ const kid = crypto
 
 const USER_ACCOUNTING_ORG_ID = process.env.USER_ACCOUNTING_ORG_ID
 
-fs.mkdir(`${__dirname}/receipts`, () => {})
 
 const watcher = chokidar.watch(`${__dirname}/receipts`, {
   persistent: true
@@ -163,12 +162,12 @@ app.get('/report-receipt/:receiptName', async (req, res) => {
 
         <label for="id_amount">Belopp</label>
         <input id="id_amount" type="text" name="amount" readonly="readonly" value='${
-          receipt.totalAmount
+          receipt.extendedAmount
         }'/>
 
         <label for="id_vat">Moms</label>
         <input id="id_vat" type="text" name="vat" readonly="readonly" value='${
-          receipt.totalTax
+          receipt.vat
         }'/>
 
         <input type="hidden" id="id_organizationId" name="organizationId" value='${

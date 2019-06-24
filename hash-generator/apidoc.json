@@ -1,7 +1,7 @@
 {
   "name": "Hash Generator API",
   "version": "1.0.0",
-  "description": "apidoc example project",
+  "description": "Generate a hash from receipt information",
   "title": "Hash Generator API",
   "url" : "https://hash-generator.digitala-kvitton.se",
   "sampleUrl": "https://hash-generator.digitala-kvitton.se",

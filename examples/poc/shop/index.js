@@ -4,8 +4,8 @@ require('dotenv').config({
 const express = require('express')
 const app = express()
 const moment = require('moment')
-const multer = require('multer');
-const formReader = multer();
+const multer = require('multer')
+const formReader = multer()
 const got = require('got')
 const jwt = require('jsonwebtoken')
 const {
@@ -15,13 +15,13 @@ const {
   serialize
 } = require('jwks-provider')
 const crypto = require('crypto')
-const {
-  createHash
-} = require('./receipt-hash-generator')
 const privateKey = readFileSync(`${__dirname}/keys/private_key.pem`)
 const publicKey = readFileSync(`${__dirname}/keys/public_key.pem`, 'utf8')
 const port = process.env.SHOP_PORT
 const ORGANIZATION_ID = process.env.PUBLISHER_ORG_ID
+const {
+  HASH_GENERATOR_URL
+} = process.env
 
 const kid = crypto
   .createHash('SHA256')
@@ -52,7 +52,7 @@ app.post('/buy', formReader.none(), async (req, res) => {
       description: incommingReceipt.articleName,
       tax: {
         amount: incommingReceipt.tax,
-        percent: incommingReceipt.tax / incommingReceipt.amount * 100
+        percent: (incommingReceipt.tax / incommingReceipt.amount) * 100
       },
       quantity: 1,
       unitCostPrice: incommingReceipt.amount,
@@ -64,16 +64,26 @@ app.post('/buy', formReader.none(), async (req, res) => {
       // Identifier by choice of supplier
       // itemID
     }],
-    receiptDateTime: moment(incommingReceipt.date + 'T' + incommingReceipt.time),
+    receiptDateTime: moment(
+      incommingReceipt.date + 'T' + incommingReceipt.time
+    ),
     receiptCode: incommingReceipt.ref,
     currencyCode: incommingReceipt.currency,
-    totalTax: incommingReceipt.tax,
-    totalAmount: incommingReceipt.amount // Not in standard..?
+    vat: incommingReceipt.tax,
+    extendedAmount: incommingReceipt.amount // Not in standard..?
   }
-  const hash = createHash(receipt)
+  const {
+    body: {
+      hash
+    }
+  } = await got(`${HASH_GENERATOR_URL}/generate-hash`, {
+    method: 'POST',
+    json: true,
+    body: receipt
+  })
 
   const token = jwt.sign({
-      hash,
+      hash
     },
     privateKey, {
       algorithm: 'RS256',

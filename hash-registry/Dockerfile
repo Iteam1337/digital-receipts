@@ -7,6 +7,7 @@ RUN npm ci
 
 COPY ./lib ./lib
 COPY apidoc.json ./
+COPY apidoc_header.md ./
 COPY jest.config.js ./
 
 RUN npm run test
@@ -19,6 +20,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 COPY ./lib ./lib
+COPY ./migrations ./migrations
 COPY --from=base /app/doc ./doc
 
 CMD npm start

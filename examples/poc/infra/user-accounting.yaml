@@ -6,11 +6,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: user-accounting
+      app: user-accounting
   template:
     metadata:
       labels:
-        io.kompose.service: user-accounting
+        app: user-accounting
     spec:
       containers:
         - name: user-accounting
@@ -19,7 +19,10 @@ spec:
           ports:
             - containerPort: 8900
               protocol: TCP
-          resources: {}
+          resources:
+            limits:
+              cpu: 100m
+              memory: 200Mi
           env:
           - name: SHOP_URL
             value: http://shop
@@ -28,7 +31,7 @@ spec:
           - name: USER_ACCOUNTING_URL
             value: http://user-accounting
           - name: HASH_REGISTRY_URL
-            value: http://hash-registry
+            value: http://hash-registry-poc
           - name: CA_URL
             value: http://ca
           - name: PUBLISHER_ORG_ID
@@ -42,7 +45,7 @@ kind: Service
 metadata:
   name: user-accounting
   labels:
-    io.kompose.service: user-accounting
+    app: user-accounting
 spec:
   ports:
     - name: "80"
@@ -50,7 +53,7 @@ spec:
       port: 80
       targetPort: 8900
   selector:
-    io.kompose.service: user-accounting
+    app: user-accounting
   type: ClusterIP
 status:
   loadBalancer: {}

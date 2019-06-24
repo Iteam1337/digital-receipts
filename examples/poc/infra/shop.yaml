@@ -19,7 +19,10 @@ spec:
           ports:
             - containerPort: 9000
               protocol: TCP
-          resources: {}
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
           env:
           - name: CA_DB_HOST
             value: hash-registry-rethinkdb
@@ -32,7 +35,7 @@ spec:
           - name: USER_ACCOUNTING_URL
             value: http://user-accounting
           - name: HASH_REGISTRY_URL
-            value: http://hash-registry
+            value: http://hash-registry-poc
           - name: CA_URL
             value: http://ca
           - name: PUBLISHER_ORG_ID
@@ -41,6 +44,8 @@ spec:
             value: "456"
           - name: SHOP_PORT
             value: "9000"
+          - name: HASH_GENERATOR_URL
+            value: http://hash-generator
       restartPolicy: Always
 ---
 apiVersion: v1
