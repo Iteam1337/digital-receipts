@@ -124,7 +124,7 @@
       const receiptsHtml = receipts
         .map((r, i) => {
           return `
-      <li   style="position: relative;">
+      <li style="position: relative;">
         ${
           r.receipt.saved
             ? `
@@ -138,8 +138,8 @@
         <a ${i === 0 ? `data-step="2" data-intro="Klicka på QR-koden för att rapportera in kvittot"`: ""} style="position: absolute; top:0; left: 0; z-index:10;"
           href="/report-receipt/${r.img
             .replace('/', '')
-            .replace('.png', '')}"> <img src="${r.img}" alt="" border="1"
-            class="expense-file-preview" /></a>
+            .replace('.png', '')}">
+        <img src="${r.img}" alt="" border="1" class="expense-file-preview" /></a>
         <pre style="left: 160px; position: relative;">${JSON.stringify(
           r.receipt,
           null,

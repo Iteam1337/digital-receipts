@@ -79,9 +79,11 @@
                     ? ``
                     : `<div style="color: green; font-size:100px; position: absolute; top:16px; left: 25px; z-index: 11;">&#10060</div>`
                 }
-                <img src="${
-                  r.img
-                }" alt="" border="1" class="expense-file-preview" />
+                <div style="position: absolute; top:0; left: 0; z-index:10;">
+                  <img src="${
+                    r.img
+                  }" alt="" border="1" class="expense-file-preview" />
+                </div>
                 <pre style="left: 160px; position: relative;">${JSON.stringify(
                   r.receipt,
                   null,
