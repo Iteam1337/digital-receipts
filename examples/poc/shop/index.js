@@ -66,7 +66,8 @@ app.post('/buy', formReader.none(), async (req, res) => {
     receiptCode: incommingReceipt.ref,
     currencyCode: incommingReceipt.currency,
     vat: incommingReceipt.tax,
-    extendedAmount: incommingReceipt.amount // Not in standard..?
+    extendedAmount: incommingReceipt.amount, // Not in standard..?
+    invoice: incommingReceipt.invoice && incommingReceipt.invoice === 'on'
   }
   const {
     body: { hash }
@@ -88,17 +89,32 @@ app.post('/buy', formReader.none(), async (req, res) => {
     }
   )
 
-  got(`${process.env.MAIL_URL}/emails`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      hash,
-      receipt
+  if (receipt.invoice) {
+    got(`${process.env.USER_ACCOUNTING_URL}/receipts`, {
+      json: true,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: {
+        hash,
+        receipt
+      }
     })
-  })
+  } else {
+    got(`${process.env.MAIL_URL}/emails`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        hash,
+        receipt
+      })
+    })
+  }
+
   try {
     await got(`${process.env.HASH_REGISTRY_URL}/register-receipt`, {
       method: 'POST',
@@ -113,6 +129,7 @@ app.post('/buy', formReader.none(), async (req, res) => {
       .status(500)
       .send(JSON.stringify('Could not register receipt, are you enrolled?'))
   }
+
   res.sendStatus(200)
 })
 

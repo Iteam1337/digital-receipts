@@ -85,7 +85,7 @@
     let receipts = []
 
     async function setReceiptsHtml(incomingReceipts) {
-      receipts = incomingReceipts.filter(r => !r.receipt.done)
+      receipts = incomingReceipts.filter(r => !r.receipt.done && !r.receipt.receipt.invoice)
       const response = await fetch('/receiptsList.html')
       const receiptsTemplate = await response.text()
       const receiptsHtml = receipts
