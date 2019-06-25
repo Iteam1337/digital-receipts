@@ -16,3 +16,6 @@ echo "$deployment is being deployed"
 
 kubectl --server=$KUBERNETES_SERVER --token=$KUBERNETES_TOKEN --insecure-skip-tls-verify=true scale deployment/$deployment --replicas=0
 kubectl --server=$KUBERNETES_SERVER --token=$KUBERNETES_TOKEN --insecure-skip-tls-verify=true scale deployment/$deployment --replicas=1
+
+kubectl --server=$KUBERNETES_SERVER --token=$KUBERNETES_TOKEN --insecure-skip-tls-verify=true scale deployment/frontpage --replicas=0
+kubectl --server=$KUBERNETES_SERVER --token=$KUBERNETES_TOKEN --insecure-skip-tls-verify=true scale deployment/frontpage --replicas=1

@@ -12,6 +12,8 @@ if [[ $1 == *"examples/poc"* ]]; then
   tag="poc"
   fi
   docker build -f $PROJECT_PATH/Dockerfile -t $DOCKER_REPO:$tag .
+  docker build -t digitalreceipts/frontpage .
+  docker push digitalreceipts/frontpage
 else
   cd $1
   DOCKER_REPO="digitalreceipts/$1";
