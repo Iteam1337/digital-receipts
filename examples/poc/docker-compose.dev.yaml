@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  ca-rethinkdb:
+    image: rethinkdb:2.3.6
+    networks:
+      digital-receipts:
+    ports:
+      - 127.0.0.1:8081:8080
+      - 127.0.0.1:28016:28015
+  hash-registry-rethinkdb:
+    image: rethinkdb:2.3.6
+    networks:
+      digital-receipts:
+    ports:
+      - 127.0.0.1:8080:8080
+      - 127.0.0.1:28015:28015
+
+networks:
+  digital-receipts:
+    external:
+      name: digital-receipts
