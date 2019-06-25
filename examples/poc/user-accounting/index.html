@@ -93,7 +93,9 @@
 
     const urlParams = new URLSearchParams(window.location.search)
     if (urlParams.has('tutorial') || localStorage.getItem('tutorial')) {
-
+      intro.onexit(function () {
+        localStorage.removeItem('tutorial')
+      })
       localStorage.setItem('tutorial', true)
       setTimeout(() => {
         intro.oncomplete(function () {

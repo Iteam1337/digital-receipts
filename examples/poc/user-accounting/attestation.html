@@ -1,84 +1,74 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <h2
-      data-intro-group="initial"
-      data-step="1"
-      data-intro="Nu är du i en vy som endast ekonomi-ansvariga användare kan se. Här kan du attestera kvitton."
-      style="font-size: 24px;"
-      id="window-title"
-    >
-      Attestering i Affärssystemet
-    </h2>
-    <link rel="stylesheet" type="text/css" href="css.css" />
-    <link rel="stylesheet" type="text/css" href="/intro.js/introjs.css" />
-    <script src="/socket.io-client/dist/socket.io.js"></script>
-  </head>
 
-  <body>
-    <script type="text/javascript" src="/intro.js/intro.js"></script>
+<head>
+  <h2 data-intro-group="initial" data-step="1"
+    data-intro="Nu är du i en vy som endast ekonomi-ansvariga användare kan se. Här kan du attestera kvitton."
+    style="font-size: 24px;" id="window-title">
+    Attestering i Affärssystemet
+  </h2>
+  <link rel="stylesheet" type="text/css" href="css.css" />
+  <link rel="stylesheet" type="text/css" href="/intro.js/introjs.css" />
+  <script src="/socket.io-client/dist/socket.io.js"></script>
+</head>
 
-    <div
-      class="content"
-      data-intro-group="success"
-      data-step="3"
-      data-intro="Nu är allt klart och du kan åter titta i
-  hash-registret för att se att ditt kvitto har blivit kostnadsfört."
-    >
-      <h2>Nya kvitton</h2>
-    </div>
-    <div id="expenseForm:files1" class="ui-outputpanel ui-widget"></div>
+<body>
+  <script type="text/javascript" src="/intro.js/intro.js"></script>
 
-    <div class="content">
-      <h2>Nya fakturor</h2>
-    </div>
-    <div id="expenseForm:files2" class="ui-outputpanel ui-widget"></div>
+  <div class="content" data-intro-group="success" data-step="3" data-intro="Nu är allt klart och du kan åter titta i
+  hash-registret för att se att ditt kvitto har blivit kostnadsfört.">
+    <h2>Nya kvitton</h2>
+  </div>
+  <div id="expenseForm:files1" class="ui-outputpanel ui-widget"></div>
 
-    <form method="POST" action="/attest">
-      <input
-        data-intro-group="initial"
-        data-step="2"
-        data-intro="Attestera nu kvittot för att det ska hamna i bokföringen och registreras i Hash-registret"
-        type="submit"
-        value="Attestera"
-      />
-    </form>
-    <script type="text/javascript">
-      const intro = introJs()
-      intro.setOptions({
-        hidePrev: true,
-        hideNext: true,
-        showStepNumbers: false,
-        doneLabel: 'Till hash-registret',
-        skipLabel: 'Hoppa över demonstration',
-        nextLabel: 'Nästa'
-      })
-      setTimeout(() => {
-        if (localStorage.getItem('tutorial')) {
-          const urlParams = new URLSearchParams(window.location.search)
-          if (urlParams.has('success')) {
-            intro.start('success').oncomplete(function() {
-              localStorage.removeItem('tutorial')
-              const frontpage_url =
-                window.location.hostname === 'localhost'
-                  ? 'http://localhost:6900'
-                  : 'https://www.digitala-kvitton.se'
-              window.location.href = frontpage_url + '/?intro=hash-registry-2'
-            })
-          } else {
-            intro.start('initial')
-          }
-        }
-      }, 1000)
-    </script>
-  </body>
+  <div class="content">
+    <h2>Nya fakturor</h2>
+  </div>
+  <div id="expenseForm:files2" class="ui-outputpanel ui-widget"></div>
+
+  <form method="POST" action="/attest">
+    <input data-intro-group="initial" data-step="2"
+      data-intro="Attestera nu kvittot för att det ska hamna i bokföringen och registreras i Hash-registret"
+      type="submit" value="Attestera" />
+  </form>
   <script type="text/javascript">
-    ;(async () => {
-      var socket = io()
-      let receipts = []
+    const intro = introJs().onexit(function () {
+      localStorage.removeItem('tutorial')
+    })
+    intro.setOptions({
+      hidePrev: true,
+      hideNext: true,
+      showStepNumbers: false,
+      doneLabel: 'Till hash-registret',
+      skipLabel: 'Hoppa över demonstration',
+      nextLabel: 'Nästa'
+    })
+    setTimeout(() => {
+      if (localStorage.hasItem('tutorial')) {
+        const urlParams = new URLSearchParams(window.location.search)
+        if (urlParams.has('success')) {
+          intro.start('success').oncomplete(function () {
+            localStorage.removeItem('tutorial')
+            const frontpage_url =
+              window.location.hostname === 'localhost' ?
+              'http://localhost:6900' :
+              'https://www.digitala-kvitton.se'
+            window.location.href = frontpage_url + '/?intro=hash-registry-2'
+          })
+        } else {
+          intro.start('initial')
+        }
+      }
+    }, 1000)
+  </script>
+</body>
+<script type="text/javascript">
+  (async () => {
+    var socket = io()
+    let receipts = []
 
-      function lineItem(r) {
-        return `
+    function lineItem(r) {
+      return `
               <li style="position: relative;">
                 ${
                   r.receipt.saved
@@ -99,58 +89,59 @@
                 )}</pre>
               </li>
               `
-      }
+    }
 
-      async function setReceiptsHtml(incomingReceipts) {
-        receipts = incomingReceipts
-        const receiptsList = await fetch('/receiptsList.html')
-        const invoicesList = await fetch('/invoicesList.html')
-        const receiptsTemplate = await receiptsList.text()
-        const invoicesTemplate = await invoicesList.text()
+    async function setReceiptsHtml(incomingReceipts) {
+      receipts = incomingReceipts
+      const receiptsList = await fetch('/receiptsList.html')
+      const invoicesList = await fetch('/invoicesList.html')
+      const receiptsTemplate = await receiptsList.text()
+      const invoicesTemplate = await invoicesList.text()
 
-        const receiptsHtml = incomingReceipts
-          .filter(r => r.receipt.saved)
-          .filter(r => !r.receipt.done)
-          .map(r => lineItem(r))
-          .join('')
+      const receiptsHtml = incomingReceipts
+        .filter(r => r.receipt.saved)
+        .filter(r => !r.receipt.done)
+        .map(r => lineItem(r))
+        .join('')
 
-        const invoicesHtml = incomingReceipts
-          .filter(r => r.receipt.receipt.invoice)
-          .filter(r => !r.receipt.done)
-          .map(r => lineItem(r))
-          .join('')
+      const invoicesHtml = incomingReceipts
+        .filter(r => r.receipt.receipt.invoice)
+        .filter(r => !r.receipt.done)
+        .map(r => lineItem(r))
+        .join('')
 
-        document.getElementById(
-          'expenseForm:files1'
-        ).innerHTML = receiptsTemplate
-        document.getElementById(
-          'expenseForm:files2'
-        ).innerHTML = invoicesTemplate
-        document.getElementById(
-          'expenseForm:j_idt510:table'
-        ).innerHTML = receiptsHtml
-        document.getElementById(
-          'expenseForm:j_idt520:table'
-        ).innerHTML = invoicesHtml
-      }
+      document.getElementById(
+        'expenseForm:files1'
+      ).innerHTML = receiptsTemplate
+      document.getElementById(
+        'expenseForm:files2'
+      ).innerHTML = invoicesTemplate
+      document.getElementById(
+        'expenseForm:j_idt510:table'
+      ).innerHTML = receiptsHtml
+      document.getElementById(
+        'expenseForm:j_idt520:table'
+      ).innerHTML = invoicesHtml
+    }
 
-      socket.on('receipts', setReceiptsHtml)
-      socket.on('receipt', async r => {
-        receipts.push(r)
-        setReceiptsHtml(receipts)
-      })
+    socket.on('receipts', setReceiptsHtml)
+    socket.on('receipt', async r => {
+      receipts.push(r)
+      setReceiptsHtml(receipts)
+    })
 
-      const urlParams = new URLSearchParams(window.location.search)
-      const successfulReport =
-        urlParams.has('success') && urlParams.get('success') === 'true'
-      const failedReport = urlParams.has('error') && urlParams.get('error')
-      if (successfulReport) {
-        alert('Kvittot attesterades med framgång!')
-      }
+    const urlParams = new URLSearchParams(window.location.search)
+    const successfulReport =
+      urlParams.has('success') && urlParams.get('success') === 'true'
+    const failedReport = urlParams.has('error') && urlParams.get('error')
+    if (successfulReport) {
+      alert('Kvittot attesterades med framgång!')
+    }
 
-      if (failedReport) {
-        alert(failedReport)
-      }
-    })()
-  </script>
+    if (failedReport) {
+      alert(failedReport)
+    }
+  })()
+</script>
+
 </html>
