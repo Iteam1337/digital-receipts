@@ -44,7 +44,7 @@
       nextLabel: 'Nästa'
     })
     setTimeout(() => {
-      if (localStorage.hasItem('tutorial')) {
+      if (localStorage.getItem('tutorial')) {
         const urlParams = new URLSearchParams(window.location.search)
         if (urlParams.has('success')) {
           intro.start('success').oncomplete(function () {
