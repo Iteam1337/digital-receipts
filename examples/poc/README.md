@@ -52,17 +52,20 @@ $ docker network create digital-receipts
 
 - Bring databases up
 ```bash
+$ cd examples/poc
 $ docker-compose -f docker-compose.dev.yaml up
 ```
 
 - Run database migrations
 ```bash
-npm run migrate
+$ cd examples/poc
+$ npm run migrate
 ```
 
 - Start services
 ```bash
-npm run start:iframe
+$ cd examples/poc
+$ npm run start:iframe
 ```
 
 ----
