@@ -36,7 +36,8 @@ $ docker-compose up
 
 - Run database migrations
 ```bash
-npm run migrate
+$ cd examples/poc
+$ npm run migrate
 ```
 
 
