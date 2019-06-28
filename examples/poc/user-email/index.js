@@ -105,7 +105,7 @@ app.get('/emails', (req, res) => {
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <h2 id="window-title">Mottagar-fönster för butikskunden</h2>
     <link rel="stylesheet" type="text/css" href="newcss.css" />
-    <script src="https://qrcode/build/qrcode.min.js"></script>
+    <script src="/qrcode/build/qrcode.min.js"></script>
     <script type="text/javascript">
       var openReceipt = ${eval(openReceipt)}
       var forwardReceipt = ${eval(forwardReceipt)}
