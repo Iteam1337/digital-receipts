@@ -104,12 +104,12 @@ app.get('/', (req, res) => {
         </a>
       </div>
 
-        <ul data-intro-group="initial" data-step="2" data-intro="Dessa fönster är de centrala komponenterna i flödet, som slutar i att en butikskund har kostnadsfört ett kvitto." style="list-style-type: none;" >
-          <li style="display: inline;"><iframe src="${process.env.SHOP_URL}" width="500" height="700"></iframe></li>
-          <li style="display: inline;"><iframe src="${process.env.MAIL_URL}/emails" width="1000" height="700"></iframe></li>
-          <li style="display: inline;"><iframe src="${process.env.USER_ACCOUNTING_URL}/expenses" width="750" height="700"></iframe></li>
-          <li style="display: inline;"><iframe src="${process.env.USER_ACCOUNTING_URL}/attestation" width="750" height="700"></iframe></li>
-          <li style="display: inline;"><iframe src="${process.env.CA_URL}/enroll${introClass === 'initial2' ? "?tutorial=true" : ""}" data-position="right" data-intro-group="initial2" data-step="3" data-intro="Först behöver du sätta upp förutsättningarna för att systemet ska fungera. För tillfället kan två typer av aktörs-system integrera med systemet.</br> </br>
+        <ul data-scrollto="tooltip" data-intro-group="initial" data-step="2" data-intro="Dessa fönster är de centrala komponenterna i flödet, som slutar i att en butikskund har kostnadsfört ett kvitto." style="list-style-type: none;" >
+          <li style="display: inline;"><iframe id="shop-iframe" src="${process.env.SHOP_URL}" width="500" height="700"></iframe></li>
+          <li style="display: inline;"><iframe id="mail-iframe" src="${process.env.MAIL_URL}/emails" width="1000" height="700"></iframe></li>
+          <li style="display: inline;"><iframe id="user-accounting-expenses-iframe" src="${process.env.USER_ACCOUNTING_URL}/expenses" width="750" height="700"></iframe></li>
+          <li style="display: inline;"><iframe id="user-accounting-attestation" src="${process.env.USER_ACCOUNTING_URL}/attestation" width="750" height="700"></iframe></li>
+          <li style="display: inline;"><iframe id="ca-iframe" src="${process.env.CA_URL}/enroll${introClass === 'initial2' ? "?tutorial=true" : ""}" data-position="right" data-intro-group="initial2" data-step="3" data-intro="Först behöver du sätta upp förutsättningarna för att systemet ska fungera. För tillfället kan två typer av aktörs-system integrera med systemet.</br> </br>
           1. Kvittoutgivaren, som genererar, registrerar kvittot i vårt system och även utger kvitton till kund, efter en lyckad affär. Till exempel är denna aktör en faktisk butik. </br>
           2. Konteraren, som kan kontera det genererade kvittot i form av till exempel en företagsutgift och också registrerar konteringen i vårt system. Till exempel är denna aktör en anställds ekonomisystem. </br> </br>
           Du behöver registrera dig som båda dessa aktörer, för att systemet ska kunna bekräfta att endast verifierade aktörer använder systemet. </br> </br>
@@ -117,10 +117,25 @@ app.get('/', (req, res) => {
           I registreringen krävs integrations-aktörerna på ett organisationsnummer och en webbaddress som systemet kan använda för att verifiera deras identitet. </br> </br>
           Börja med att klicka på de båda registreringsknapparna för att tjänsten ska fungera korrekt. Tryck sedan på 'Till affären'" src="${process.env.CA_URL}/enroll" width="498" height="700"></iframe></li>
           <li style="display: inline;"><iframe src="${process.env.CA_URL}" width="498" height="700"></iframe></li>
-          <li style="display: inline;"><iframe data-intro-group="hash-registry" data-intro="${dataIntro}" src="${process.env.HASH_REGISTRY_URL}/receipts" width="498" height="700"></iframe></li>
+          <li style="display: inline;"><iframe id="hash-registry-iframe" data-intro-group="hash-registry" data-intro="${dataIntro}" src="${process.env.HASH_REGISTRY_URL}/receipts" width="498" height="700"></iframe></li>
         </ul>
         <script type="text/javascript" src="/intro.js/intro.js"></script>
         <script type="text/javascript">
+          window.onload = function () {
+            if (!localStorage.getItem('id')) {
+              const iframes = ["shop-iframe", "mail-iframe", "user-accounting-expenses-iframe", "ca-iframe", "hash-registry-iframe"]
+              const sessionId = Date.now()
+              iframes.forEach(iframe => {
+                const win = document.getElementById(iframe).contentWindow;
+
+                win.postMessage(JSON.stringify({
+                  key: 'id',
+                  data: sessionId
+                }), "*");
+              })
+              localStorage.setItem('id', sessionId)
+            }
+          };
             function enableTutorial() {
               localStorage.setItem('tutorial', true)
               window.location.reload()
@@ -131,7 +146,9 @@ app.get('/', (req, res) => {
             setTimeout(() => {
               if (localStorage.getItem('tutorial') !== "false") {
                 intro.start('${introClass}')
+                let complete
                 intro.oncomplete(function() {
+                  completed = true
                   if ('null' !== '${introDoneRoute}') {
                     window.location.href = '${introDoneRoute}';
                   } else {
@@ -140,7 +157,9 @@ app.get('/', (req, res) => {
                   }
                 });
                 intro.onexit(function() {
-                  localStorage.setItem('tutorial', false)
+                  if (!completed) {
+                    localStorage.setItem('tutorial', false)
+                  }
                 });
               }
             }, 1000)

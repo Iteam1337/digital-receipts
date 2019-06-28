@@ -15,7 +15,7 @@ let receipts = []
 
 function beautifulNewReceipt(r, elementIndex) {
     return `
-    <tr ${elementIndex === 0 ? `data-step="1" data-intro="Klicka för att öppna mailet med ditt ditt kvitto"` : ""}  class="unread" onclick='openReceipt(${JSON.stringify(r)})'>
+    <tr ${elementIndex === 0 ? `data-step="1" data-intro="Klicka för att öppna mailet med ditt kvitto"` : ""}  class="unread" onclick='openReceipt(${JSON.stringify(r)})'>
       <td class="inbox-small-cells">
           <input type="checkbox" class="mail-checkbox">
       </td>
@@ -333,6 +333,10 @@ app.get('/emails', (req, res) => {
 </div>
 <script type="text/javascript" src="/intro.js/intro.js"></script>
 <script type="text/javascript">
+    window.onmessage = function(e) {
+        var payload = JSON.parse(e.data);
+        localStorage.setItem(payload.key, payload.data);
+    };
     const urlParams = new URLSearchParams(window.location.search)
 
     const intro = introJs()

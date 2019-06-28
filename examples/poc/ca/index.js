@@ -86,6 +86,10 @@ app.get('/enroll', (req, res) => {
       : `<div style="color: red" id="success-msg"> Den här organisationen är redan registrerad.`
   }
   <script>
+      window.onmessage = function (e) {
+        var payload = JSON.parse(e.data);
+        localStorage.setItem(payload.key, payload.data);
+      };
     setTimeout(() => {
       document.getElementById(
         'success-msg'

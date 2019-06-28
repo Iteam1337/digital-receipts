@@ -32,8 +32,13 @@
       type="submit" value="Attestera" />
   </form>
   <script type="text/javascript">
+    window.onmessage = function (e) {
+      var payload = JSON.parse(e.data);
+      localStorage.setItem(payload.key, payload.data);
+    };
     const intro = introJs().onexit(function () {
       localStorage.removeItem('tutorial')
+      localStorage.removeItem('attestation-tutorial')
     })
     intro.setOptions({
       hidePrev: true,
@@ -44,11 +49,11 @@
       nextLabel: 'Nästa'
     })
     setTimeout(() => {
-      if (localStorage.getItem('tutorial')) {
+      if (localStorage.getItem('attestation-tutorial')) {
         const urlParams = new URLSearchParams(window.location.search)
         if (urlParams.has('success')) {
           intro.start('success').oncomplete(function () {
-            localStorage.removeItem('tutorial')
+            localStorage.removeItem('attestation-tutorial')
             const frontpage_url =
               window.location.hostname === 'localhost' ?
               'http://localhost:6900' :

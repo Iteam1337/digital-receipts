@@ -93,14 +93,21 @@
 
     const urlParams = new URLSearchParams(window.location.search)
     if (urlParams.has('tutorial') || localStorage.getItem('tutorial')) {
-      intro.onexit(function () {
-        localStorage.removeItem('tutorial')
-      })
+
       localStorage.setItem('tutorial', true)
       setTimeout(() => {
+        let completed
         intro.oncomplete(function () {
-          window.location.href = `http://${window.location.host}/attestation?tutorial=true`
+          completed = true
+          localStorage.setItem('attestation-tutorial', true)
+          window.location.href = `http://${window.location.host}/attestation`
         });
+        intro.onexit(function () {
+          if (!completed) {
+            localStorage.removeItem('tutorial')
+            localStorage.removeItem('attestation-tutorial')
+          }
+        })
         if (urlParams.has('success')) {
           intro.start('checkbox')
         } else {
@@ -111,7 +118,10 @@
   </script>
 </body>
 <script type="text/javascript">
-  ;
+  window.onmessage = function (e) {
+    var payload = JSON.parse(e.data);
+    localStorage.setItem(payload.key, payload.data);
+  };
   (async () => {
     var socket = io()
     let receipts = []

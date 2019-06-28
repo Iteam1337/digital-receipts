@@ -99,6 +99,10 @@
       style="visibility: hidden; color: green; font-size:100px; width:120px; ">&#9989</div>
   </div>
   <script type="text/javascript">
+    window.onmessage = function (e) {
+      var payload = JSON.parse(e.data);
+      localStorage.setItem(payload.key, payload.data);
+    };
     const intro = introJs()
     const urlParams = new URLSearchParams(window.location.search)
     if (urlParams.has('tutorial') || urlParams.has('tutorial2')) {
