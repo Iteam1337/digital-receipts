@@ -125,15 +125,14 @@ app.get('/', (req, res) => {
             if (!localStorage.getItem('id')) {
               const iframes = ["shop-iframe", "mail-iframe", "user-accounting-expenses-iframe", "ca-iframe", "hash-registry-iframe"]
               const sessionId = Date.now()
-              iframes.forEach(iframe => {
+              Promise.all(iframes.map(iframe => {
                 const win = document.getElementById(iframe).contentWindow;
 
-                win.postMessage(JSON.stringify({
+                return win.postMessage(JSON.stringify({
                   key: 'id',
                   data: sessionId
                 }), "*");
-              })
-              localStorage.setItem('id', sessionId)
+              })).then(() => localStorage.setItem('id', sessionId))
             }
           };
             function enableTutorial() {
