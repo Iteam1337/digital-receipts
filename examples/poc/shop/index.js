@@ -45,6 +45,10 @@ app.get('/jwks', async (_, res) => {
 app.post('/buy', formReader.none(), async (req, res) => {
   const incommingReceipt = req.body
 
+  const {
+    id
+  } = req.query
+
   const receipt = {
     organizationId: incommingReceipt.orgId,
     shopName: incommingReceipt.businessName,
@@ -106,7 +110,7 @@ app.post('/buy', formReader.none(), async (req, res) => {
       }
     })
   } else {
-    got(`${process.env.MAIL_URL}/emails`, {
+    got(`${process.env.MAIL_URL}/emails?id=${id}`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

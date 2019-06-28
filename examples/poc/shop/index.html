@@ -168,7 +168,10 @@
       var form = document.querySelector('form');
       var formData = new FormData(form);
       var req = new XMLHttpRequest();
-      req.open('POST', '/buy')
+      const id = localStorage.getItem('id')
+      console.log(id);
+
+      req.open('POST', '/buy?id=' + id)
       req.onload = function (e) {
         var code = req.status;
         var text = req.statusText;

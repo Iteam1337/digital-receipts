@@ -148,9 +148,9 @@ app.get('/', (req, res) => {
                 intro.start('${introClass}')
                 let complete
                 intro.oncomplete(function() {
-                  completed = true
+                  let completed = true
                   if ('null' !== '${introDoneRoute}') {
-                    window.location.href = '${introDoneRoute}';
+                    window.location.href = '${introDoneRoute}' + '&id=' + localStorage.getItem('id');
                   } else {
                     localStorage.setItem('tutorial', false)
                     window.location.href = 'http://' + window.location.host;

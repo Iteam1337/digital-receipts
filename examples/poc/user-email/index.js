@@ -11,7 +11,7 @@ require('dotenv').config({
 const got = require('got')
 
 app.use(require('body-parser').json())
-let receipts = []
+let receipts = {}
 
 function beautifulNewReceipt(r, elementIndex) {
     return `
@@ -55,8 +55,11 @@ function openReceipt(r) {
     document.getElementById('email-container').innerHTML = receiptHtml
     QRCode.toCanvas(document.getElementById('canvas'), receiptJson)
     intro.exit()
+    const urlParams = new URLSearchParams(window.location.search)
     setTimeout(() => {
-        intro.start()
+        if (urlParams.has('tutorial')) {
+            intro.start()
+        }
     }, 1000);
 }
 
@@ -90,13 +93,32 @@ app.post('/forward', async (req, res) => {
 })
 
 app.post('/emails', (req, res) => {
-    receipts.unshift({
+    const {
+        id
+    } = req.query
+    console.log(id, 'made a purchase');
+
+    let userReceipts = receipts[id]
+
+    if (!userReceipts) {
+        userReceipts = []
+    }
+    userReceipts.unshift({
         ...req.body,
         date: moment().format('HH:mm')
     })
+    receipts[id] = userReceipts
     res.sendStatus(200)
 })
+
 app.get('/emails', (req, res) => {
+    const {
+        id
+    } = req.query
+    console.log(receipts);
+    console.log(id);
+
+    const userReceipts = receipts[id] || []
     res.send(`
 <head>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -261,8 +283,7 @@ app.get('/emails', (req, res) => {
                     </div>
 
                     <div class="btn-group">
-                        <a data-original-title="Refresh" data-placement="top" data-toggle="dropdown" href="/emails"
-                            class="btn mini tooltips">
+                        <a data-original-title="Refresh" data-placement="top" data-toggle="dropdown" href="/emails?id=${id}" class="btn mini tooltips">
                             <i class=" fa fa-refresh"></i>
                         </a>
                     </div>
@@ -303,7 +324,7 @@ app.get('/emails', (req, res) => {
                 </div>
                 <table class="table table-inbox table-hover">
                     <tbody>
-                        ${receipts.map(beautifulNewReceipt).join('')}
+                        ${userReceipts.map(beautifulNewReceipt).join('')}
                         <tr class="unread">
                             <td class="inbox-small-cells">
                                 <input type="checkbox" class="mail-checkbox">
@@ -333,11 +354,15 @@ app.get('/emails', (req, res) => {
 </div>
 <script type="text/javascript" src="/intro.js/intro.js"></script>
 <script type="text/javascript">
+    const urlParams = new URLSearchParams(window.location.search)
+
+    if (!urlParams.has('id')) {
+        window.location.href = window.location.href + '?id=' + localStorage.getItem('id')
+    }
     window.onmessage = function(e) {
         var payload = JSON.parse(e.data);
         localStorage.setItem(payload.key, payload.data);
     };
-    const urlParams = new URLSearchParams(window.location.search)
 
     const intro = introJs()
     intro.setOptions({'hidePrev': true, 'hideNext': true, 'showStepNumbers': false, 'skipLabel': 'Hoppa över demonstration', 'doneLabel': 'Till butikskundens företags affärssystem', 'nextLabel': 'Nästa'})
