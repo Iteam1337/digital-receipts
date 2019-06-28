@@ -16,10 +16,14 @@ const jimpRead = util.promisify(jimp.read)
 const moment = require('moment')
 const got = require('got')
 const jwt = require('jsonwebtoken')
-const { serialize } = require('jwks-provider')
+const {
+  serialize
+} = require('jwks-provider')
 const crypto = require('crypto')
 const qrcode = require('qrcode')
-const { readFileSync } = require('fs')
+const {
+  readFileSync
+} = require('fs')
 const privateKey = readFileSync(`${__dirname}/keys/private_key.pem`)
 const publicKey = readFileSync(`${__dirname}/keys/public_key.pem`, 'utf8')
 require('dotenv').config({
@@ -38,26 +42,6 @@ const watcher = chokidar.watch(`${__dirname}/receipts`, {
   persistent: true
 })
 
-async function readReceiptQR(path) {
-  const imgPath = path.replace(`${__dirname}/receipts`, '')
-  const imgBuffer = await readFile(`${__dirname}/receipts/${imgPath}`)
-  const image = await jimpRead(imgBuffer)
-  const qr = new QrCode()
-  qr.callback = function(err, value) {
-    if (err) {
-      console.error('Error reading receipt', err)
-      // TODO handle error
-      return
-    }
-    const receipt = {
-      img: imgPath,
-      receipt: JSON.parse(value.result)
-    }
-    receipts.push(receipt)
-    io.emit('receipt', receipt)
-  }
-  qr.decode(image.bitmap)
-}
 
 function readReceiptJson(receiptName) {
   const imgPath = `${receiptName}.png`
@@ -71,7 +55,7 @@ function readReceiptJson(receiptName) {
 }
 
 watcher
-  .on('add', async function(path) {
+  .on('add', async function (path) {
     if (path.endsWith('.json')) {
       console.log('new receipt')
       const receiptName = path
@@ -83,14 +67,14 @@ watcher
       io.emit('receipt', receipt)
     }
   })
-  .on('change', function(path) {
+  .on('change', function (path) {
     io.emit('receipts', receipts)
     console.log('File', path, 'has been changed')
   })
-  .on('unlink', function(path) {
+  .on('unlink', function (path) {
     console.log('File', path, 'has been removed')
   })
-  .on('error', function(error) {
+  .on('error', function (error) {
     console.error('Error happened', error)
   })
 
@@ -120,10 +104,14 @@ app.get('/attestation', (_, res) => {
 })
 
 app.get('/report-receipt/:receiptName', async (req, res) => {
-  const { receiptName } = req.params
+  const {
+    receiptName
+  } = req.params
 
   const digitalDeceipt = readReceiptJson(receiptName).receipt
-  const { receipt } = digitalDeceipt
+  const {
+    receipt
+  } = digitalDeceipt
 
   const html = `
     <!DOCTYPE html>
@@ -243,13 +231,13 @@ function setReceiptAsNotSaved(hash) {
 }
 
 app.post('/report-receipt/:hash', async (req, res) => {
-  const { hash } = req.params
-  const token = jwt.sign(
-    {
+  const {
+    hash
+  } = req.params
+  const token = jwt.sign({
       hash
     },
-    privateKey,
-    {
+    privateKey, {
       algorithm: 'RS256',
       keyid: kid,
       issuer: USER_ACCOUNTING_ORG_ID
@@ -293,14 +281,16 @@ app.post('/attest', async (req, res) => {
 
   try {
     await Promise.all(
-      savedReceipts.map(({ receipt: { hash } }) => {
-        const token = jwt.sign(
-          {
+      savedReceipts.map(({
+        receipt: {
+          hash
+        }
+      }) => {
+        const token = jwt.sign({
             hash,
             reporterOrgId: USER_ACCOUNTING_ORG_ID
           },
-          privateKey,
-          {
+          privateKey, {
             algorithm: 'RS256',
             keyid: kid,
             issuer: USER_ACCOUNTING_ORG_ID
