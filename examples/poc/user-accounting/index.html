@@ -145,7 +145,7 @@
             ? ``
             : `<div style="color: green; font-size:100px; position: absolute; top:16px; left: 25px; z-index: 11;">&#10060</div>`
         }
-        <a ${i === 0 ? `data-step="2" data-intro="Klicka på QR-koden för att rapportera in kvittot"`: ""} style="position: absolute; top:0; left: 0; z-index:10;"
+        <a ${i === receipts.length - 1 ? `data-step="2" data-intro="Klickar på QR-koden för att rapportera in kvittot"`: ""} style="position: absolute; top:0; left: 0; z-index:10;"
           href="/report-receipt/${r.img
             .replace('/', '')
             .replace('.png', '')}">
