@@ -116,7 +116,6 @@ app.get('/emails', (req, res) => {
         id
     } = req.query
     console.log(receipts);
-    console.log(id);
 
     const userReceipts = receipts[id] || []
     res.send(`
@@ -357,7 +356,11 @@ app.get('/emails', (req, res) => {
     const urlParams = new URLSearchParams(window.location.search)
 
     if (!urlParams.has('id')) {
-        window.location.href = window.location.href + '?id=' + localStorage.getItem('id')
+        if (localStorage.getItem('id')) {
+            window.location.href = window.location.href + '?id=' + localStorage.getItem('id')
+        } else {
+            window.location.href = window.location.href
+        }
     }
     window.onmessage = function(e) {
         var payload = JSON.parse(e.data);
