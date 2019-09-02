@@ -100,7 +100,31 @@ app.post('/buy', formReader.none(), async (req, res) => {
       },
       body: {
         hash,
-        receipt
+        receipt: {
+          organizationId: incommingReceipt.orgId,
+          shopName: incommingReceipt.businessName,
+          lineItems: [
+            {
+              description: incommingReceipt.articleName,
+              tax: {
+                amount: incommingReceipt.tax,
+                percent: (incommingReceipt.tax / incommingReceipt.amount) * 100
+              },
+              quantity: 1,
+              unitCostPrice: incommingReceipt.amount,
+              discountAmount: 0
+            }
+          ],
+          invoiceDateTime: moment(
+            incommingReceipt.date + 'T' + incommingReceipt.time
+          ),
+          invoiceCode: incommingReceipt.ref,
+          invoiceSeriesNumber: incommingReceipt.seriesNumber,
+          currencyCode: incommingReceipt.currency,
+          vat: incommingReceipt.tax,
+          extendedAmount: incommingReceipt.amount, // Not in standard..?
+          invoice: incommingReceipt.invoice && incommingReceipt.invoice === 'on'
+        }
       }
     })
   } else {
