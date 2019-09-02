@@ -13,7 +13,7 @@ label.time {
 }
 
 /* Style the buttons that are used to open the tab content */
-.tab button {
+.tab div {
   background-color: inherit;
   float: left;
   border: none;
@@ -24,12 +24,12 @@ label.time {
 }
 
 /* Change background color of buttons on hover */
-.tab button:hover {
+.tab div:hover {
   background-color: #ddd;
 }
 
 /* Create an active/current tablink class */
-.tab button.active {
+.tab div.active {
   background-color: #ccc;
 }
 
