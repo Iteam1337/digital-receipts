@@ -2,10 +2,7 @@ require('dotenv').config({
   path: process.cwd() + '/../.env'
 })
 const express = require('express')
-const {
-  enrollPublisher,
-  enrollReporter
-} = require('./enroll')
+const { enrollPublisher, enrollReporter } = require('./enroll')
 const getEndpoint = require('./getEndpoint')
 const app = express()
 const port = process.env.CA_PORT
@@ -14,7 +11,6 @@ const r = require('rethinkdbdash')({
   port: process.env.CA_DB_PORT || 28016,
   db: 'ca'
 }) // TODO remove rethinkdbdash or use adapter for it
-
 
 app.use(
   require('body-parser').urlencoded({
@@ -34,24 +30,25 @@ app.get('/', async (_, res) => {
 app.post('/enroll-publisher', enrollPublisher)
 app.post('/enroll-reporter', enrollReporter)
 app.get('/enroll', (req, res) => {
-  const {
-    success,
-    tutorial
-  } = req.query
+  const { success, tutorial } = req.query
 
   res.send(`
   <h2 style="color: rgb(135, 129, 211)">Registrera mig som kvittoutgivare</h2>
   <form action="/enroll-publisher" method="POST">
   <label for="publisher-org-id"> Org Id utgivare </label>
   <br>
-  <input ${tutorial ? "readonly" : ""} name="organizationId" id="publisher-org-id" type="input" value="${
+  <input ${
+    tutorial ? 'readonly' : ''
+  } name="organizationId" id="publisher-org-id" type="input" value="${
     process.env.PUBLISHER_ORG_ID
   }"/>
   <br>
 
   <label for="publisher-endpoint"> Webbaddress för publika nycklar</label>
   <br>
-  <input ${tutorial ? "readonly" : ""} name="endpoint" id="publisher-endpoint"="input" value="${
+  <input ${
+    tutorial ? 'readonly' : ''
+  } name="endpoint" id="publisher-endpoint"="input" value="${
     process.env.SHOP_URL
   }/jwks"  />
 
@@ -63,14 +60,18 @@ app.get('/enroll', (req, res) => {
   <form action="/enroll-reporter" method="POST">
   <label for="reporter-org-id"> Org Id utgivare </label>
   <br>
-  <input ${tutorial ? "readonly" : ""} name="organizationId" id="reporter-org-id" type="input" value="${
+  <input ${
+    tutorial ? 'readonly' : ''
+  } name="organizationId" id="reporter-org-id" type="input" value="${
     process.env.USER_ACCOUNTING_ORG_ID
   }"/>
   <br>
 
   <label for="reporter-endpoint"> Webbaddress för publika nycklar</label>
   <br>
-  <input ${tutorial ? "readonly" : ""} name="endpoint" id="reporter-endpoint"="input" value="${
+  <input ${
+    tutorial ? 'readonly' : ''
+  } name="endpoint" id="reporter-endpoint"="input" value="${
     process.env.USER_ACCOUNTING_URL
   }/jwks"  />
 
@@ -91,9 +92,13 @@ app.get('/enroll', (req, res) => {
         localStorage.setItem(payload.key, payload.data);
       };
     setTimeout(() => {
-      document.getElementById(
+      const successMsgElement = document.getElementById(
         'success-msg'
-      ).innerHTML = ''
+      )
+
+      if (successMsgElement) {
+        successMsgElement.innerHTML = ''
+      }
     }, 3500)
   </script>
   `)
