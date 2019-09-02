@@ -16,24 +16,26 @@ app.get('/', (req, res) => {
   let dataIntro = ''
 
   switch (introClass) {
-    case "initial2":
+    case 'initial2':
       introDoneRoute = `${process.env.SHOP_URL}/?tutorial=true`
       introDoneLabel = 'Till affären'
-      break;
-    case "hash-registry":
+      break
+    case 'hash-registry':
       introDoneRoute = `${process.env.MAIL_URL}/emails?tutorial=true`
       introDoneLabel = 'Till butikskundens inkorg'
-      dataIntro = "Kvitto-hashen syns nu här. Utan att frånge några detaljer om kvittot i sig. </br> För att fortsätta flödet går vi till butikskundens inkorg"
-      break;
-    case "hash-registry-2":
-      introClass = "hash-registry"
+      dataIntro =
+        'Kvitto-hashen syns nu här. Utan att frånge några detaljer om kvittot i sig. </br> För att fortsätta flödet går vi till butikskundens inkorg'
+      break
+    case 'hash-registry-2':
+      introClass = 'hash-registry'
       introDoneRoute = null
       introDoneLabel = 'Avsluta guiden'
-      dataIntro = "Nu är även kvitto-hashen kostnadsförd och listas under 'Kostnadsförda kvitto-hashar' </br> </br> Det avslutar den här guiden. </br> Självklart kan du fortsätta klicka runt."
-      break;
+      dataIntro =
+        "Nu är även kvitto-hashen kostnadsförd och listas under 'Kostnadsförda kvitto-hashar' </br> </br> Det avslutar den här guiden. </br> Självklart kan du fortsätta klicka runt."
+      break
   }
-  console.log(introClass);
-  console.log(introDoneRoute);
+  console.log(introClass)
+  console.log(introDoneRoute)
 
   res.send(`
     <!DOCTYPE html>
@@ -93,7 +95,7 @@ app.get('/', (req, res) => {
         </a>
         </br>
         </br>
-        <a href="github.com">
+        <a href="https://github.com/Iteam1337/digital-receipts" target="_blank">
         <svg class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg>
         Mer information och se koden på github</a>
         </br>
@@ -105,19 +107,37 @@ app.get('/', (req, res) => {
       </div>
 
         <ul data-scrollto="tooltip" data-intro-group="initial" data-step="2" data-intro="Dessa fönster är de centrala komponenterna i flödet, som slutar i att en butikskund har kostnadsfört ett kvitto." style="list-style-type: none;" >
-          <li style="display: inline;"><iframe id="shop-iframe" src="${process.env.SHOP_URL}" width="500" height="700"></iframe></li>
-          <li style="display: inline;"><iframe id="mail-iframe" src="${process.env.MAIL_URL}/emails" width="1000" height="700"></iframe></li>
-          <li style="display: inline;"><iframe id="user-accounting-expenses-iframe" src="${process.env.USER_ACCOUNTING_URL}/expenses" width="750" height="700"></iframe></li>
-          <li style="display: inline;"><iframe id="user-accounting-attestation" src="${process.env.USER_ACCOUNTING_URL}/attestation" width="750" height="700"></iframe></li>
-          <li style="display: inline;"><iframe id="ca-iframe" src="${process.env.CA_URL}/enroll${introClass === 'initial2' ? "?tutorial=true" : ""}" data-position="right" data-intro-group="initial2" data-step="3" data-intro="Först behöver du sätta upp förutsättningarna för att systemet ska fungera. För tillfället kan två typer av aktörs-system integrera med systemet.</br> </br>
+          <li style="display: inline;"><iframe id="shop-iframe" src="${
+            process.env.SHOP_URL
+          }" width="500" height="700"></iframe></li>
+          <li style="display: inline;"><iframe id="mail-iframe" src="${
+            process.env.MAIL_URL
+          }/emails" width="1000" height="700"></iframe></li>
+          <li style="display: inline;"><iframe id="user-accounting-expenses-iframe" src="${
+            process.env.USER_ACCOUNTING_URL
+          }/expenses" width="750" height="700"></iframe></li>
+          <li style="display: inline;"><iframe id="user-accounting-attestation" src="${
+            process.env.USER_ACCOUNTING_URL
+          }/attestation" width="750" height="700"></iframe></li>
+          <li style="display: inline;"><iframe id="ca-iframe" src="${
+            process.env.CA_URL
+          }/enroll${
+    introClass === 'initial2' ? '?tutorial=true' : ''
+  }" data-position="right" data-intro-group="initial2" data-step="3" data-intro="Först behöver du sätta upp förutsättningarna för att systemet ska fungera. För tillfället kan två typer av aktörs-system integrera med systemet.</br> </br>
           1. Kvittoutgivaren, som genererar, registrerar kvittot i vårt system och även utger kvitton till kund, efter en lyckad affär. Till exempel är denna aktör en faktisk butik. </br>
           2. Konteraren, som kan kontera det genererade kvittot i form av till exempel en företagsutgift och också registrerar konteringen i vårt system. Till exempel är denna aktör en anställds ekonomisystem. </br> </br>
           Du behöver registrera dig som båda dessa aktörer, för att systemet ska kunna bekräfta att endast verifierade aktörer använder systemet. </br> </br>
           I verkligheten kommer dessa registreringar ofta göras av två olika företag, men just i den här demonstrationen kommer du att agera som samtliga aktörer i systemet.
           I registreringen krävs integrations-aktörerna på ett organisationsnummer och en webbaddress som systemet kan använda för att verifiera deras identitet. </br> </br>
-          Börja med att klicka på de båda registreringsknapparna för att tjänsten ska fungera korrekt. Tryck sedan på 'Till affären'" src="${process.env.CA_URL}/enroll" width="498" height="700"></iframe></li>
-          <li style="display: inline;"><iframe src="${process.env.CA_URL}" width="498" height="700"></iframe></li>
-          <li style="display: inline;"><iframe id="hash-registry-iframe" data-intro-group="hash-registry" data-intro="${dataIntro}" src="${process.env.HASH_REGISTRY_URL}/receipts" width="498" height="700"></iframe></li>
+          Börja med att klicka på de båda registreringsknapparna för att tjänsten ska fungera korrekt. Tryck sedan på 'Till affären'" src="${
+            process.env.CA_URL
+          }/enroll" width="498" height="700"></iframe></li>
+          <li style="display: inline;"><iframe src="${
+            process.env.CA_URL
+          }" width="498" height="700"></iframe></li>
+          <li style="display: inline;"><iframe id="hash-registry-iframe" data-intro-group="hash-registry" data-intro="${dataIntro}" src="${
+    process.env.HASH_REGISTRY_URL
+  }/receipts" width="498" height="700"></iframe></li>
         </ul>
         <script type="text/javascript" src="/intro.js/intro.js"></script>
         <script type="text/javascript">
@@ -185,6 +205,5 @@ app.get('/simulators', (_, res) => {
     </html>
   `)
 })
-
 
 app.listen(port, () => console.log(`Everything running on ${port}!`))
