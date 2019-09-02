@@ -17,7 +17,7 @@
   <form action="/buy" method="POST" id="buyForm">
     <label for="Företag"> Företag </label>
     <br>
-    <input name="businessName" value="Tågresor.se" />
+    <input name="businessName" value="Affären.se" />
     </input>
     <br>
     <label for="organisationsId"> OrganisationsId </label>
@@ -30,53 +30,15 @@
 
     <div data-intro-group="tutorial" data-intro='Här kan du fylla i vilken artikel som kunden köper och vad den kostar.'
       style="display: table-cell;">
-      <ul>
-        <li>
-          <label for="date"> Datum </label>
-          <label class="time" for="time"> tid </label>
-          <br>
-          <input name="date" type="date" id="date" value="YYYY-MM-DD" />
-          </input>
-          <input name="time" type="time" id="time" value="16:48" />
-          </input>
-        </li>
-        <li>
-          <label for="ref"> KvittoId </label>
-          <br>
-          <input name="ref" id="ref">
-          </input>
-        </li>
-        <li>
-          <label for="articleName"> Artikelnamn </label>
-          <br>
-          <input name="articleName" id="articleName" value="Tågbiljett">
-          </input>
-        </li>
-        <li>
-          <label for="amount"> Belopp </label>
-          <br>
-          <input name="amount" id="amount" value="100">
-          </input>
-        </li>
-        <li>
-          <label for="tax"> Moms </label>
-          <br>
-          <input name="tax" id="tax" value="25">
-          </input>
-        </li>
-        <li>
-          <label for="currency"> Valuta </label>
-          <br>
-          <input name="currency" id="currency" value="SEK">
-          </input>
-        </li>
-        <li>
-          <label for="currency"> Faktura </label>
-          <br>
-          <input type="checkbox" name="invoice" id="invoice">
-          </input>
-        </li>
-      </ul>
+      <!-- Tab links -->
+      <div class="tab">
+        <div class="tablinks" onclick="openTab(event, 'receipt-tab')" id="defaultOpen">Kvitto</div>
+        <div class="tablinks" onclick="openTab(event, 'invoice-tab')">Faktura</div>
+      </div>
+
+      <!-- Tab content -->
+      <div id="receipt-tab" class="tabcontent"></div>
+      <div id="invoice-tab" class="tabcontent"></div>
     </div>
   </form>
 
@@ -99,6 +61,58 @@
       style="visibility: hidden; color: green; font-size:100px; width:120px; ">&#9989</div>
   </div>
   <script type="text/javascript">
+    let invoiceHtml, receiptHtml
+
+    function openTab(evt, type) {
+      // Declare all variables
+      var i, tabcontent, tablinks;
+
+      // Get all elements with class="tabcontent" and hide them
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].innerHTML = ''
+        tabcontent[i].style.display = "none";
+      }
+
+      // Get all elements with class="tablinks" and remove the class "active"
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+
+      let htmlContent
+
+      switch (type) {
+        case 'receipt-tab':
+        default:
+          htmlContent = receiptHtml
+          break;
+        case 'invoice-tab':
+          htmlContent = invoiceHtml
+          break;
+      }
+
+      // Show the current tab, and add an "active" class to the button that opened the tab
+      document.getElementById(type).innerHTML = htmlContent
+      document.getElementById(type).style.display = "block";
+      evt.currentTarget.className += " active";
+      setId()
+      setDate()
+      setSeriesNumber()
+      evt.preventDefault()
+    }
+
+
+    Promise.all([
+      fetch('invoiceTab.html'),
+      fetch('receiptTab.html'),
+    ])
+      .then(r => Promise.all(r.map(x => x.text())))
+      .then(([invoiceTab, receiptTab]) => {
+        receiptHtml = receiptTab
+        invoiceHtml = invoiceTab
+        document.getElementById('defaultOpen').click();
+      })
     window.onmessage = function (e) {
       var payload = JSON.parse(e.data);
       localStorage.setItem(payload.key, payload.data);
@@ -115,8 +129,8 @@
           'nextLabel': 'Nästa'
         })
         document.getElementById(
-            'check-box'
-          ).innerHTML =
+          'check-box'
+        ).innerHTML =
           `<div id='check-box' style="visibility: visible; color: green; font-size:100px ">&#9989</div>`
       } else {
         intro.setOptions({
@@ -148,9 +162,15 @@
 
     function setId() {
       var ref = document.querySelector(`#ref`);
-      ref.value = Date.now();
+      ref.value = Math.floor(Date.now() * Math.random());
     }
     setId()
+
+    function setSeriesNumber() {
+      var ref = document.querySelector(`#seriesNumber`);
+      ref.value = Math.floor(Date.now() * Math.random());
+    }
+    setSeriesNumber()
 
     function setDate() {
       const myDate = document.querySelector(`input[type="date"]`);
@@ -178,13 +198,13 @@
 
         if (code === 200) {
           document.getElementById(
-              'check-box'
-            ).innerHTML =
+            'check-box'
+          ).innerHTML =
             `<div id='check-box' style="visibility: visible; color: green; font-size:100px ">&#9989</div>`
           setTimeout(() => {
             document.getElementById(
-                'buy'
-              ).innerHTML =
+              'buy'
+            ).innerHTML =
               `<button onclick="buy()">KÖP</button>`
           }, 5500)
           if (urlParams.has('tutorial')) {

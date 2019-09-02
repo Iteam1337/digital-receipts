@@ -8,20 +8,14 @@ const multer = require('multer')
 const formReader = multer()
 const got = require('got')
 const jwt = require('jsonwebtoken')
-const {
-  readFileSync
-} = require('fs')
-const {
-  serialize
-} = require('jwks-provider')
+const { readFileSync } = require('fs')
+const { serialize } = require('jwks-provider')
 const crypto = require('crypto')
 const privateKey = readFileSync(`${__dirname}/keys/private_key.pem`)
 const publicKey = readFileSync(`${__dirname}/keys/public_key.pem`, 'utf8')
 const port = process.env.SHOP_PORT
 const ORGANIZATION_ID = process.env.PUBLISHER_ORG_ID
-const {
-  HASH_GENERATOR_URL
-} = process.env
+const { HASH_GENERATOR_URL } = process.env
 
 const kid = crypto
   .createHash('SHA256')
@@ -45,29 +39,29 @@ app.get('/jwks', async (_, res) => {
 app.post('/buy', formReader.none(), async (req, res) => {
   const incommingReceipt = req.body
 
-  const {
-    id
-  } = req.query
+  const { id } = req.query
 
   const receipt = {
     organizationId: incommingReceipt.orgId,
     shopName: incommingReceipt.businessName,
-    lineItems: [{
-      description: incommingReceipt.articleName,
-      tax: {
-        amount: incommingReceipt.tax,
-        percent: (incommingReceipt.tax / incommingReceipt.amount) * 100
-      },
-      quantity: 1,
-      unitCostPrice: incommingReceipt.amount,
-      discountAmount: 0
-      // sequenceNumber: 1
-      // actualSalesUnitPrice: amount - discount,
-      // ExtendedAmount,
-      // ExtendedDiscountAmount,
-      // Identifier by choice of supplier
-      // itemID
-    }],
+    lineItems: [
+      {
+        description: incommingReceipt.articleName,
+        tax: {
+          amount: incommingReceipt.tax,
+          percent: (incommingReceipt.tax / incommingReceipt.amount) * 100
+        },
+        quantity: 1,
+        unitCostPrice: incommingReceipt.amount,
+        discountAmount: 0
+        // sequenceNumber: 1
+        // actualSalesUnitPrice: amount - discount,
+        // ExtendedAmount,
+        // ExtendedDiscountAmount,
+        // Identifier by choice of supplier
+        // itemID
+      }
+    ],
     receiptDateTime: moment(
       incommingReceipt.date + 'T' + incommingReceipt.time
     ),
@@ -78,19 +72,19 @@ app.post('/buy', formReader.none(), async (req, res) => {
     invoice: incommingReceipt.invoice && incommingReceipt.invoice === 'on'
   }
   const {
-    body: {
-      hash
-    }
+    body: { hash }
   } = await got(`${HASH_GENERATOR_URL}/generate-hash`, {
     method: 'POST',
     json: true,
     body: receipt
   })
 
-  const token = jwt.sign({
+  const token = jwt.sign(
+    {
       hash
     },
-    privateKey, {
+    privateKey,
+    {
       algorithm: 'RS256',
       keyid: kid,
       issuer: ORGANIZATION_ID
@@ -106,7 +100,31 @@ app.post('/buy', formReader.none(), async (req, res) => {
       },
       body: {
         hash,
-        receipt
+        receipt: {
+          organizationId: incommingReceipt.orgId,
+          shopName: incommingReceipt.businessName,
+          lineItems: [
+            {
+              description: incommingReceipt.articleName,
+              tax: {
+                amount: incommingReceipt.tax,
+                percent: (incommingReceipt.tax / incommingReceipt.amount) * 100
+              },
+              quantity: 1,
+              unitCostPrice: incommingReceipt.amount,
+              discountAmount: 0
+            }
+          ],
+          invoiceDateTime: moment(
+            incommingReceipt.date + 'T' + incommingReceipt.time
+          ),
+          invoiceCode: incommingReceipt.ref,
+          invoiceSeriesNumber: incommingReceipt.seriesNumber,
+          currencyCode: incommingReceipt.currency,
+          vat: incommingReceipt.tax,
+          extendedAmount: incommingReceipt.amount, // Not in standard..?
+          invoice: incommingReceipt.invoice && incommingReceipt.invoice === 'on'
+        }
       }
     })
   } else {
@@ -132,8 +150,14 @@ app.post('/buy', formReader.none(), async (req, res) => {
       }
     })
   } catch (error) {
-    console.log('Error registering receipt', error.body);
-    return res.status(500).send(JSON.stringify('Kunda inte registrera kvitto i hash-registret, har du registrerat dig?'))
+    console.log('Error registering receipt', error.body)
+    return res
+      .status(500)
+      .send(
+        JSON.stringify(
+          'Kunda inte registrera kvitto i hash-registret, har du registrerat dig?'
+        )
+      )
   }
 
   res.sendStatus(200)
@@ -141,9 +165,7 @@ app.post('/buy', formReader.none(), async (req, res) => {
 
 app.post('/enroll', async (_, res) => {
   try {
-    const {
-      body
-    } = await got(`${process.env.CA_URL}/enroll`, {
+    const { body } = await got(`${process.env.CA_URL}/enroll`, {
       method: 'POST',
       json: true,
       body: {
