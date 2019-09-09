@@ -1,0 +1,10 @@
+{
+  "packages": [
+    "ca",
+    "hash-registry",
+    "shop",
+    "user-accounting",
+    "user-email"
+  ],
+  "version": "0.0.0"
+}
