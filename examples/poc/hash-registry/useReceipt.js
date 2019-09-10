@@ -25,7 +25,7 @@ async function useReceipt(req, res, next) {
       .send('The receipt-hash has already been used in this context')
     return next()
   }
-  await r.table('used_receipts').insert({ hash, reporterOrgId })
+  await r.table('used_receipts').insert({ hash, kid })
   res.send('')
 }
 
