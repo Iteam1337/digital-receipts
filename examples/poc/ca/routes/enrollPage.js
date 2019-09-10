@@ -28,21 +28,12 @@ module.exports = (req, res) => {
   }"/>
   <br>
 
-  <label for="txt-keys-number"> Generate some keys </label>
+  <label for="publisher-txt-keys-number"> Generate some keys </label>
   <br/>
-  <input type="text" value="2" id="txt-keys-number"/>
-  <input type="button" value="Generate keys" onclick="generateKeys()"/>
-  <pre id="keys-container"></pre>
-
-  <!--<label for="publisher-endpoint"> Webbaddress för publika nycklar</label>
-  <br>
-  <input ${
-    tutorial ? 'readonly' : ''
-  } name="endpoint" id="publisher-endpoint"="input" value="${
-    process.env.SHOP_URL
-  }/jwks"  />-->
-
-  <input type="hidden" id="input-keys" name="keys"/>
+  <input type="text" value="1" id="publisher-txt-keys-number"/>
+  <input type="button" value="Generate keys" onclick="generateKeys('publisher')"/>
+  <pre id="publisher-keys-container"></pre>
+  <input type="hidden" id="publisher-input-keys" name="keys"/>
   <br>
   <input type="submit" value="Registrera"/>
   </form>
@@ -58,14 +49,12 @@ module.exports = (req, res) => {
   }"/>
   <br>
 
-  <label for="reporter-endpoint"> Webbaddress för publika nycklar</label>
-  <br>
-  <input ${
-    tutorial ? 'readonly' : ''
-  } name="endpoint" id="reporter-endpoint"="input" value="${
-    process.env.USER_ACCOUNTING_URL
-  }/jwks"  />
-
+  <label for="reporter-txt-keys-number"> Generate some keys </label>
+  <br/>
+  <input type="text" value="1" id="reporter-txt-keys-number"/>
+  <input type="button" value="Generate keys" onclick="generateKeys('reporter')"/>
+  <pre id="reporter-keys-container"></pre>
+  <input type="hidden" id="reporter-input-keys" name="keys"/>
   <br>
   <input type="submit" value="Registrera"/>
   </form>
@@ -98,13 +87,13 @@ module.exports = (req, res) => {
       }
     }, 3500)
 
-    function generateKeys () {
-      const keyNumber = document.getElementById('txt-keys-number').value
+    function generateKeys (type) {
+      const keyNumber = document.getElementById(type + '-txt-keys-number').value
       fetch('/keys?total=' + keyNumber)
         .then(res => res.json())
         .then(data => {
-          document.getElementById('input-keys').value = JSON.stringify(data)
-          document.getElementById('keys-container').innerHTML = data.map(({ publicKey }) => publicKey).join('\\n')
+          document.getElementById(type + '-input-keys').value = JSON.stringify(data)
+          document.getElementById(type + '-keys-container').innerHTML = data.map(({ publicKey }) => publicKey).join('\\n')
         })
     }
   </script>

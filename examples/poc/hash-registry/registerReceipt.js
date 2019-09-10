@@ -1,23 +1,13 @@
-const r = require('rethinkdbdash')({
-  host: process.env.REGISTRY_DB_HOST,
-  port: process.env.REGISTRY_DB_PORT,
-  db: 'hash_registry'
-}) // TODO remove rethinkdb or move to adapter
+const r = require('./rethinkAdapter')
 const jwt = require('jsonwebtoken')
 const retrieveKey = require('./retrieveKey')
 
 async function registerReceipt(req, res) {
   let key
+  const { token } = req.body
   const {
-    token
-  } = req.body
-  const {
-    header: {
-      kid
-    },
-    payload: {
-      iss
-    }
+    header: { kid },
+    payload: { iss }
   } = jwt.decode(token, {
     complete: true
   })
@@ -26,10 +16,7 @@ async function registerReceipt(req, res) {
   } catch (error) {
     return res.status(500).send(error.message)
   }
-  const {
-    hash,
-    organizationId
-  } = jwt.verify(token, key, {
+  const { hash, organizationId } = jwt.verify(token, key, {
     algorithms: ['RS256', 'RS512']
   })
 
@@ -45,7 +32,7 @@ async function registerReceipt(req, res) {
 
   const result = await r.table('registered_receipts').insert({
     hash,
-    registerOrgId: organizationId
+    kid
   })
   res.send(result)
 }

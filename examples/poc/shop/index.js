@@ -24,7 +24,7 @@ app.get('/', (_, res) => {
 })
 
 app.post('/buy', formReader.none(), async (req, res) => {
-  const keyToken = req.cookies.keyToken
+  const keyToken = req.cookies.publisherKeyToken
   const results = await r.table('private_keys_for_poc').filter({
     token: keyToken
   })

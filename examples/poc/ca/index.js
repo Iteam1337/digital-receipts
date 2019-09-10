@@ -15,6 +15,7 @@ const enrollPage = require('./routes/enrollPage')
 const generateKeys = require('./routes/generateKeys')
 const { key } = require('./keyProvider')
 const { serialize } = require('jwks-provider')
+const getKey = require('./routes/getKey')
 
 app.get('/jwks', async (_, res) => {
   res.send(serialize([key]))
@@ -29,7 +30,11 @@ app.get('/', async (_, res) => {
   res.send(`
     <h2 style="color: rgb(135, 129, 211)">Tillitslogik för system-integrationer</h2>
 
-    <pre>${JSON.stringify(keys, null, 2)}</pre>
+    <pre>${JSON.stringify(
+      keys.map(({ kid, key, type }) => ({ kid, key, type })),
+      null,
+      2
+    )}</pre>
     <script type="text/javascript">setTimeout(() => { location.reload()}, 3000)</script>
   `)
 })
@@ -40,6 +45,7 @@ app.get('/enroll', enrollPage)
 app.get('/keys', generateKeys)
 
 app.get('/endpoints/:organizationId', getEndpoint)
+app.get('/key/:kid', getKey)
 
 app.listen(port, () => {
   console.log('CA running on ', port)
