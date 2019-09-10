@@ -8,35 +8,29 @@ const multer = require('multer')
 const formReader = multer()
 const got = require('got')
 const jwt = require('jsonwebtoken')
-const { readFileSync } = require('fs')
-const { serialize } = require('jwks-provider')
-const crypto = require('crypto')
-const privateKey = readFileSync(`${__dirname}/keys/private_key.pem`)
-const publicKey = readFileSync(`${__dirname}/keys/public_key.pem`, 'utf8')
 const port = process.env.SHOP_PORT
 const ORGANIZATION_ID = process.env.PUBLISHER_ORG_ID
 const { HASH_GENERATOR_URL } = process.env
+const r = require('rethinkdbdash')({
+  host: process.env.CA_DB_HOST || 'localhost',
+  port: process.env.CA_DB_PORT || 28016,
+  db: 'ca'
+}) // TODO remove rethinkdb or move to adapter
 
-const kid = crypto
-  .createHash('SHA256')
-  .update(publicKey)
-  .digest('hex')
-// TODO move keyid creation to a key provider
+app.use(require('cookie-parser')())
 
 app.get('/', (_, res) => {
   res.sendFile(__dirname + '/index.html')
 })
 
-app.get('/jwks', async (_, res) => {
-  const key = {
-    publicKey,
-    use: 'sig',
-    kid
-  } // TODO this should be part of key provider
-  res.send(serialize([key]))
-})
-
 app.post('/buy', formReader.none(), async (req, res) => {
+  const keyToken = req.cookies.keyToken
+  const results = await r.table('private_keys_for_poc').filter({
+    token: keyToken
+  })
+
+  const { privateKey, kid } = results[0]
+
   const incommingReceipt = req.body
 
   const { id } = req.query

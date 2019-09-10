@@ -11,7 +11,14 @@ const r = require('rethinkdbdash')({
   port: process.env.CA_DB_PORT || 28016,
   db: 'ca'
 }) // TODO remove rethinkdbdash or use adapter for it
+const enrollPage = require('./routes/enrollPage')
+const generateKeys = require('./routes/generateKeys')
+const { key } = require('./keyProvider')
+const { serialize } = require('jwks-provider')
 
+app.get('/jwks', async (_, res) => {
+  res.send(serialize([key]))
+})
 app.use(
   require('body-parser').urlencoded({
     extended: true
@@ -29,80 +36,8 @@ app.get('/', async (_, res) => {
 
 app.post('/enroll-publisher', enrollPublisher)
 app.post('/enroll-reporter', enrollReporter)
-app.get('/enroll', (req, res) => {
-  const { success, tutorial } = req.query
-
-  res.send(`
-  <h2 style="color: rgb(135, 129, 211)">Registrera mig som kvittoutgivare</h2>
-  <form action="/enroll-publisher" method="POST">
-  <label for="publisher-org-id"> Org Id utgivare </label>
-  <br>
-  <input ${
-    tutorial ? 'readonly' : ''
-  } name="organizationId" id="publisher-org-id" type="input" value="${
-    process.env.PUBLISHER_ORG_ID
-  }"/>
-  <br>
-
-  <label for="publisher-endpoint"> Webbaddress för publika nycklar</label>
-  <br>
-  <input ${
-    tutorial ? 'readonly' : ''
-  } name="endpoint" id="publisher-endpoint"="input" value="${
-    process.env.SHOP_URL
-  }/jwks"  />
-
-  <br>
-  <input type="submit" value="Registrera"/>
-  </form>
-
-  <h2 style="color: rgb(135, 129, 211)">Registrera mig som konterare</h2>
-  <form action="/enroll-reporter" method="POST">
-  <label for="reporter-org-id"> Org Id utgivare </label>
-  <br>
-  <input ${
-    tutorial ? 'readonly' : ''
-  } name="organizationId" id="reporter-org-id" type="input" value="${
-    process.env.USER_ACCOUNTING_ORG_ID
-  }"/>
-  <br>
-
-  <label for="reporter-endpoint"> Webbaddress för publika nycklar</label>
-  <br>
-  <input ${
-    tutorial ? 'readonly' : ''
-  } name="endpoint" id="reporter-endpoint"="input" value="${
-    process.env.USER_ACCOUNTING_URL
-  }/jwks"  />
-
-  <br>
-  <input type="submit" value="Registrera"/>
-  </form>
-
-  ${
-    success === undefined
-      ? ``
-      : success === 'true'
-      ? `<div id="success-msg" style="color: green; font-size:30px; top:16px; left: 25px; z-index: 11;"> Ditt företag är nu registrerat! &#9989</div>`
-      : `<div style="color: red" id="success-msg"> Den här organisationen är redan registrerad.`
-  }
-  <script>
-      window.onmessage = function (e) {
-        var payload = JSON.parse(e.data);
-        localStorage.setItem(payload.key, payload.data);
-      };
-    setTimeout(() => {
-      const successMsgElement = document.getElementById(
-        'success-msg'
-      )
-
-      if (successMsgElement) {
-        successMsgElement.innerHTML = ''
-      }
-    }, 3500)
-  </script>
-  `)
-})
+app.get('/enroll', enrollPage)
+app.get('/keys', generateKeys)
 
 app.get('/endpoints/:organizationId', getEndpoint)
 

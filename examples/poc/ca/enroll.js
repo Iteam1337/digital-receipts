@@ -3,20 +3,64 @@ const r = require('rethinkdbdash')({
   port: process.env.CA_DB_PORT || 28016,
   db: 'ca'
 }) // TODO remove rethinkdb or move to adapter
+const jwt = require('jsonwebtoken')
+const { kid, privateKey } = require('./keyProvider')
 
 async function enrollPublisher(req, res) {
-  const { endpoint, organizationId } = req.body
+  const { organizationId } = req.body
+  let keys
+  try {
+    keys = JSON.parse(req.body.keys)
+  } catch (ex) {
+    return res.redirect('/enroll?success=false')
+  }
+
   const results = await r.table('keys').filter({
     organizationId
   })
 
   if (!results.length) {
-    await r.table('keys').insert({
-      endpoint,
+    const token = jwt.sign(
+      {
+        keys: keys.map(({ kid }) => kid)
+      },
+      privateKey,
+      {
+        algorithm: 'RS256',
+        keyid: kid
+      }
+    )
+
+    res.cookie('keyToken', token)
+
+    await Promise.all(
+      keys.map(async ({ publicKey, privateKey, kid }) => {
+        await r.table('keys').insert({
+          publicKey,
+          kid,
+          type: 'publisher'
+        })
+
+        await r.table('private_keys_for_poc').insert({
+          publicKey,
+          privateKey,
+          kid,
+          token
+        })
+      })
+    )
+
+    await r.table('companies').insert({
       organizationId,
-      type: 'publisher'
+      keys: keys.length
     })
-    return res.redirect('/enroll?success=true')
+
+    // await r.table('keys').insert({
+    //   endpoint,
+    //   organizationId,
+    //   type: 'publisher'
+    // })
+    return res.redirect(`/enroll?success=true&token=${token}`)
   }
 
   return res.redirect('/enroll?success=false')

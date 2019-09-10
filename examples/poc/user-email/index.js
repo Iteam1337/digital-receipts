@@ -6,7 +6,7 @@ const staticMails = require('./assets/staticMails')
 const qrcode = require('qrcode')
 const fs = require('fs')
 require('dotenv').config({
-    path: process.cwd() + '/../.env'
+  path: process.cwd() + '/../.env'
 })
 const got = require('got')
 
@@ -14,8 +14,12 @@ app.use(require('body-parser').json())
 let receipts = {}
 
 function beautifulNewReceipt(r, elementIndex) {
-    return `
-    <tr ${elementIndex === 0 ? `data-step="1" data-intro="Klicka för att öppna mailet med ditt kvitto"` : ""}  class="unread" onclick='openReceipt(${JSON.stringify(r)})'>
+  return `
+    <tr ${
+      elementIndex === 0
+        ? `data-step="1" data-intro="Klicka för att öppna mailet med ditt kvitto"`
+        : ''
+    }  class="unread" onclick='openReceipt(${JSON.stringify(r)})'>
       <td class="inbox-small-cells">
           <input type="checkbox" class="mail-checkbox">
       </td>
@@ -23,24 +27,28 @@ function beautifulNewReceipt(r, elementIndex) {
       <td class="view-message dont-show">${r.receipt.shopName}</td>
       <td class="view-message">Tack för din beställning NULL NULL</td>
       <td class="view-message inbox-small-cells"></td>
-      <td class="view-message text-right">${moment(r.receipt.receiptDateTime).format('HH:mm')}</td>
+      <td class="view-message text-right">${moment(
+        r.receipt.receiptDateTime
+      ).format('HH:mm')}</td>
   </tr>
   `
 }
 
 function openReceipt(r) {
-    const {
-        receipt
-    } = r
-    const receiptJson = JSON.stringify(r)
-    const receiptHtml = `
+  const { receipt } = r
+  const receiptJson = JSON.stringify(r)
+  const receiptHtml = `
         <h2>${receipt.shopName}</h2>
         <ul>
             ${Object.keys(receipt)
               .map(k => `<li>${k} : ${JSON.stringify(receipt[k])}</li>`)
               .join('')}
         </ul>
-        <pre data-step="1" data-intro-group="opened" data-intro="Det här är rådatan till ditt kvitto. </br> </br> Nästa steg är att vidarebefodra datan till ekonomisystemet, för att kostnadsföra kvittot.">${JSON.stringify(r, null, 2)}</pre>
+        <pre data-step="1" data-intro-group="opened" data-intro="Det här är rådatan till ditt kvitto. </br> </br> Nästa steg är att vidarebefodra datan till ekonomisystemet, för att kostnadsföra kvittot.">${JSON.stringify(
+          r,
+          null,
+          2
+        )}</pre>
         <canvas id="canvas"></canvas>
         <input style="display: block;" type="button" value="Ladda ner" onclick='downloadReceipt(${receiptJson})'/>
         <br/>
@@ -52,73 +60,69 @@ function openReceipt(r) {
             </a></li>
         </ul>
     `
-    document.getElementById('email-container').innerHTML = receiptHtml
-    QRCode.toCanvas(document.getElementById('canvas'), receiptJson)
-    intro.exit()
-    const urlParams = new URLSearchParams(window.location.search)
-    setTimeout(() => {
-        if (urlParams.has('tutorial')) {
-            intro.start()
-        }
-    }, 1000);
+  document.getElementById('email-container').innerHTML = receiptHtml
+  QRCode.toCanvas(document.getElementById('canvas'), receiptJson)
+  intro.exit()
+  const urlParams = new URLSearchParams(window.location.search)
+  setTimeout(() => {
+    if (urlParams.has('tutorial')) {
+      intro.start()
+    }
+  }, 1000)
 }
 
 function forwardReceipt(r) {
-    const result = prompt('To', 'kvitton@ekonomi.se')
-    if (result) {
-        intro.nextStep()
-        fetch(`/forward`, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(r)
-        })
-    }
+  const result = prompt('To', 'kvitton@ekonomi.se')
+  if (result) {
+    intro.nextStep()
+    fetch(`/forward`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(r)
+    })
+  }
 }
 
 app.post('/forward', async (req, res) => {
-    await got(`${process.env.USER_ACCOUNTING_URL}/receipts`, {
-        json: true,
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: {
-            ...req.body
-        }
-    })
-    res.send(200)
+  await got(`${process.env.USER_ACCOUNTING_URL}/receipts`, {
+    json: true,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: {
+      ...req.body
+    }
+  })
+  res.send(200)
 })
 
 app.post('/emails', (req, res) => {
-    const {
-        id
-    } = req.query
-    console.log(id, 'made a purchase');
+  const { id } = req.query
+  console.log(id, 'made a purchase')
 
-    let userReceipts = receipts[id]
+  let userReceipts = receipts[id]
 
-    if (!userReceipts) {
-        userReceipts = []
-    }
-    userReceipts.unshift({
-        ...req.body,
-        date: moment().format('HH:mm')
-    })
-    receipts[id] = userReceipts
-    res.sendStatus(200)
+  if (!userReceipts) {
+    userReceipts = []
+  }
+  userReceipts.unshift({
+    ...req.body,
+    date: moment().format('HH:mm')
+  })
+  receipts[id] = userReceipts
+  res.sendStatus(200)
 })
 
 app.get('/emails', (req, res) => {
-    const {
-        id
-    } = req.query
-    console.log(receipts);
+  const { id } = req.query
+  console.log(receipts)
 
-    const userReceipts = receipts[id] || []
-    res.send(`
+  const userReceipts = receipts[id] || []
+  res.send(`
 <head>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <link rel="stylesheet" type="text/css" href="/intro.js/introjs.css"/>
@@ -358,8 +362,6 @@ app.get('/emails', (req, res) => {
     if (!urlParams.has('id')) {
         if (localStorage.getItem('id')) {
             window.location.href = window.location.href + '?id=' + localStorage.getItem('id')
-        } else {
-            window.location.href = window.location.href
         }
     }
     window.onmessage = function(e) {
@@ -372,7 +374,9 @@ app.get('/emails', (req, res) => {
     if (urlParams.has('tutorial')) {
         setTimeout(() => {
             intro.start().oncomplete(function() {
-                window.location.href = '${process.env.USER_ACCOUNTING_URL_EXT}/expenses?tutorial=true';
+                window.location.href = '${
+                  process.env.USER_ACCOUNTING_URL_EXT
+                }/expenses?tutorial=true';
             });
         }, 1000)
     }

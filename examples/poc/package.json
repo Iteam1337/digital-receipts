@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "lerna exec -- npm start",
     "start:iframe": "npm run start & node index.js",
+    "start:dev": "lerna exec -- nodemon . & nodemon index.js",
     "migrate": "npm run migrate --prefix hash-registry & npm run migrate --prefix ca",
     "postinstall": "lerna exec --parallel -- npm install"
   },
