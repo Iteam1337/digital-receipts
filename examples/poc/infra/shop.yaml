@@ -25,7 +25,7 @@ spec:
               memory: 100Mi
           env:
           - name: CA_DB_HOST
-            value: hash-registry-rethinkdb
+            value: ca-db
           - name: CA_DB_PORT
             value: "28015"
           - name: SHOP_URL
