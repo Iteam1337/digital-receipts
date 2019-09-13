@@ -1,11 +1,41 @@
+<h3>Utgivare:</h3>
 <ul>
   <li>
-    <label for="date"> Datum </label>
-    <label class="time" for="time"> tid </label>
+    <label for="firma">Firma</label><br />
+    <input name="sellerFirma" type="text" value="Affären.se" />
+  </li>
+  <li>
+    <label>Organisationsnummer</label><br />
+    <input name="orgId" type="text" value="123" />
+  </li>
+  <li>
+    <label>Momsnummer</label><br />
+    <input name="taxNumber" type="text" value="21675" />
+  </li>
+  <li>
+    <label>Adress</label><br />
+    <input name="sellerAddress" type="text" value="Sankt Eriksgatan 95, 113 32 Stockholm" />
+  </li>
+</ul>
+
+<h3>Mottagare:</h3>
+<ul>
+  <li>
+    <label>Firma</label><br />
+    <input name="buyerFirma" type="text" value="Bästa Affären.se" />
+  </li>
+  <li>
+    <label>Adress</label><br />
+    <input name="buyerAddress" type="text" value="Götgatan 85A, 116 62 Stockholm" />
+  </li>
+</ul>
+
+<h3>Fakturauppgifter:</h3>
+<ul>
+  <li>
+    <label for="customerNumber">Kundnummer</label>
     <br>
-    <input name="date" type="date" id="date" value="YYYY-MM-DD" />
-    </input>
-    <input name="time" type="time" id="time" value="16:48" />
+    <input name="customerNumber" id="customerNumber" value="3213">
     </input>
   </li>
   <li>
@@ -15,9 +45,47 @@
     </input>
   </li>
   <li>
-    <label for="seriesNumber"> Serienummer </label>
+    <label for="date"> Fakturadatum </label>
+    <label class="time" for="time"> tid </label>
     <br>
-    <input name="seriesNumber" id="seriesNumber">
+    <input name="date" type="date" id="date" value="YYYY-MM-DD" />
+    </input>
+    <input name="time" type="time" id="time" value="16:48" />
+    </input>
+  </li>
+  <li>
+    <label for="date"> Förfallodatum </label>
+    <label class="time" for="time"> tid </label>
+    <br>
+    <input name="dueDate" type="date" id="due-date" value="YYYY-MM-DD" />
+    </input>
+    <input name="dueTime" type="time" id="due-time" value="16:48" />
+    </input>
+  </li>
+  <li>
+    <input type="hidden" name="invoice" id="invoice" value="on">
+    </input>
+  </li>
+  <li>
+    <label for="terms"> Betalningsvillkor </label>
+    <br>
+    <input name="terms" id="terms" value="Lorem ipsum dolor sit amet">
+    </input>
+  </li>
+  <li>
+    <label for="information"> Betalningsinformation </label>
+    <br>
+    <input name="information" id="information" value="Lorem ipsum dolor sit amet">
+    </input>
+  </li>
+</ul>
+
+<h3>Artiklar:</h3>
+<ul>
+  <li>
+    <label for="description"> Beskrivning </label>
+    <br>
+    <input name="description" id="description" value="Lorem ipsum dolor sit amet">
     </input>
   </li>
   <li>
@@ -27,9 +95,9 @@
     </input>
   </li>
   <li>
-    <label for="amount"> Belopp </label>
+    <label for="amount"> Belopp före moms </label>
     <br>
-    <input name="amount" id="amount" value="100">
+    <input name="amount" id="amount" value="75">
     </input>
   </li>
   <li>
@@ -39,13 +107,9 @@
     </input>
   </li>
   <li>
-    <label for="currency"> Valuta </label>
+    <label for="total-amount"> Summa att betala </label>
     <br>
-    <input name="currency" id="currency" value="SEK">
-    </input>
-  </li>
-  <li>
-    <input type="hidden" name="invoice" id="invoice" value="on">
+    <input name="totalAmount" id="total-amount" value="100">
     </input>
   </li>
 </ul>

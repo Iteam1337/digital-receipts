@@ -15,15 +15,7 @@
   <script type="text/javascript" src="/intro.js/intro.js"></script>
 
   <form action="/buy" method="POST" id="buyForm">
-    <label for="Företag"> Företag </label>
-    <br>
-    <input name="businessName" value="Affären.se" />
-    </input>
-    <br>
-    <label for="organisationsId"> OrganisationsId </label>
-    <br>
-    <input name="orgId" value="123" />
-    </input>
+
     <h3>
       Köp produkt
     </h3>
@@ -98,7 +90,6 @@
       evt.currentTarget.className += " active";
       setId()
       setDate()
-      setSeriesNumber()
       evt.preventDefault()
     }
 
@@ -170,15 +161,18 @@
       var ref = document.querySelector(`#seriesNumber`);
       ref.value = Math.floor(Date.now() * Math.random());
     }
-    setSeriesNumber()
 
     function setDate() {
-      const myDate = document.querySelector(`input[type="date"]`);
-      const myTime = document.querySelector(`input[type="time"]`);
+      const sellDate = document.querySelectorAll(`input[type="date"]`);
+      const sellTime = document.querySelectorAll(`input[type="time"]`);
       const today = new Date();
       today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-      myDate.value = today.toJSON().substring(0, 10)
-      myTime.value = today.toJSON().substring(11, 16)
+      sellDate.forEach((a, i) => {
+        a.value = new Date(today.setDate(today.getDate() + i)).toJSON().substring(0, 10)
+      })
+      sellTime.forEach((a, i) => {
+        a.value = today.toJSON().substring(11, 16)
+      })
     }
 
     setDate()
@@ -217,7 +211,6 @@
       req.send(formData)
       setId()
       setDate()
-      setSeriesNumber()
     }
   </script>
 </body>

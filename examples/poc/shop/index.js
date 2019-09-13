@@ -60,11 +60,12 @@ app.post('/buy', formReader.none(), async (req, res) => {
       incommingReceipt.date + 'T' + incommingReceipt.time
     ),
     receiptCode: incommingReceipt.ref,
-    currencyCode: incommingReceipt.currency,
+    currencyCode: incommingReceipt.currency || 'SEK',
     vat: incommingReceipt.tax,
     extendedAmount: incommingReceipt.amount, // Not in standard..?
     invoice: incommingReceipt.invoice && incommingReceipt.invoice === 'on'
   }
+
   const {
     body: { hash }
   } = await got(`${HASH_GENERATOR_URL}/generate-hash`, {
@@ -96,7 +97,8 @@ app.post('/buy', formReader.none(), async (req, res) => {
         hash,
         receipt: {
           organizationId: incommingReceipt.orgId,
-          shopName: incommingReceipt.businessName,
+          shopName: incommingReceipt.sellerFirma,
+          buyerName: incommingReceipt.buyerFirma,
           lineItems: [
             {
               description: incommingReceipt.articleName,
@@ -112,11 +114,13 @@ app.post('/buy', formReader.none(), async (req, res) => {
           invoiceDateTime: moment(
             incommingReceipt.date + 'T' + incommingReceipt.time
           ),
+          invoiceDueDateTime: moment(
+            incommingReceipt.dueDate + 'T' + incommingReceipt.dueTime
+          ),
           invoiceCode: incommingReceipt.ref,
-          invoiceSeriesNumber: incommingReceipt.seriesNumber,
           currencyCode: incommingReceipt.currency,
           vat: incommingReceipt.tax,
-          extendedAmount: incommingReceipt.amount, // Not in standard..?
+          extendedAmount: incommingReceipt.totalAmount, // Not in standard..?
           invoice: incommingReceipt.invoice && incommingReceipt.invoice === 'on'
         }
       }
