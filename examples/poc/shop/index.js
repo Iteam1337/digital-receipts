@@ -13,7 +13,7 @@ const ORGANIZATION_ID = process.env.PUBLISHER_ORG_ID
 const { HASH_GENERATOR_URL } = process.env
 const r = require('rethinkdbdash')({
   host: process.env.CA_DB_HOST || 'localhost',
-  port: process.env.CA_DB_PORT || 28016,
+  port: process.env.CA_DB_PORT || 28015,
   db: 'ca'
 }) // TODO remove rethinkdb or move to adapter
 
