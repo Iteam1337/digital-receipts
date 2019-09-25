@@ -48,7 +48,7 @@ module.exports = (req, res) => {
     process.env.USER_ACCOUNTING_ORG_ID
   }"/>
   <br>
-
+  
   <label for="reporter-txt-keys-number"> Generate some keys </label>
   <br/>
   <input type="text" value="1" id="reporter-txt-keys-number"/>
@@ -96,6 +96,8 @@ module.exports = (req, res) => {
           document.getElementById(type + '-keys-container').innerHTML = data.map(({ publicKey }) => publicKey).join('\\n')
         })
     }
+    generateKeys('publisher')
+    generateKeys('reporter')
   </script>
   `)
 }
