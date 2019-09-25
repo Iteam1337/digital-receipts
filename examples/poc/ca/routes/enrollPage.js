@@ -31,7 +31,7 @@ module.exports = (req, res) => {
   <label for="publisher-txt-keys-number"> Generate some keys </label>
   <br/>
   <input type="text" value="1" id="publisher-txt-keys-number"/>
-  <input type="button" value="Generate keys" onclick="generateKeys('publisher')"/>
+  <input type="button" value="Generera nycklar" onclick="generateKeys('publisher')"/>
   <pre id="publisher-keys-container"></pre>
   <input type="hidden" id="publisher-input-keys" name="keys"/>
   <br>
@@ -52,7 +52,7 @@ module.exports = (req, res) => {
   <label for="reporter-txt-keys-number"> Generate some keys </label>
   <br/>
   <input type="text" value="1" id="reporter-txt-keys-number"/>
-  <input type="button" value="Generate keys" onclick="generateKeys('reporter')"/>
+  <input type="button" value="Generera nycklar" onclick="generateKeys('reporter')"/>
   <pre id="reporter-keys-container"></pre>
   <input type="hidden" id="reporter-input-keys" name="keys"/>
   <br>
