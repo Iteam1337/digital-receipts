@@ -129,7 +129,7 @@ app.get('/', (req, res) => {
           Du behöver registrera dig som båda dessa aktörer, för att systemet ska kunna bekräfta att endast verifierade aktörer använder systemet. </br> </br>
           I verkligheten kommer dessa registreringar ofta göras av två olika företag, men just i den här demonstrationen kommer du att agera som samtliga aktörer i systemet.
           I registreringen krävs integrations-aktörerna på ett organisationsnummer och en webbaddress som systemet kan använda för att verifiera deras identitet. </br> </br>
-          Börja med att klicka på de båda registreringsknapparna för att tjänsten ska fungera korrekt. Tryck sedan på 'Till affären'" src="${
+          Börja med att klicka på de båda, "generera-nycklar" och sedan registreringsknapparna för att tjänsten ska fungera korrekt. Tryck sedan på 'Till affären'" src="${
             process.env.CA_URL
           }/enroll" width="498" height="700"></iframe></li>
           <li style="display: inline;"><iframe src="${
