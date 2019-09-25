@@ -128,8 +128,8 @@ app.get('/', (req, res) => {
           2. Konteraren, som kan kontera det genererade kvittot i form av till exempel en företagsutgift och också registrerar konteringen i vårt system. Till exempel är denna aktör en anställds ekonomisystem. </br> </br>
           Du behöver registrera dig som båda dessa aktörer, för att systemet ska kunna bekräfta att endast verifierade aktörer använder systemet. </br> </br>
           I verkligheten kommer dessa registreringar ofta göras av två olika företag, men just i den här demonstrationen kommer du att agera som samtliga aktörer i systemet.
-          I registreringen krävs integrations-aktörerna på ett organisationsnummer och en webbaddress som systemet kan använda för att verifiera deras identitet. </br> </br>
-          Börja med att klicka på de båda, "generera-nycklar" och sedan registreringsknapparna för att tjänsten ska fungera korrekt. Tryck sedan på 'Till affären'" src="${
+          I registreringen krävs integrations-aktörerna på ett organisationsnummer och en publik nyckel som systemet kan använda för att verifiera deras identitet. </br> </br>
+          Nycklarna har för enkelheten skull genererats åt dig, så börja med att klicka på de båda registreringsknapparna för att tjänsten ska fungera korrekt. Tryck sedan på 'Till affären'" src="${
             process.env.CA_URL
           }/enroll" width="498" height="700"></iframe></li>
           <li style="display: inline;"><iframe src="${
