@@ -2,19 +2,26 @@ require('dotenv').config({
   path: process.cwd() + '/../.env'
 })
 const express = require('express')
-const { enrollPublisher, enrollReporter } = require('./enroll')
+const {
+  enrollPublisher,
+  enrollReporter
+} = require('./enroll')
 const getEndpoint = require('./getEndpoint')
 const app = express()
 const port = process.env.CA_PORT
 const r = require('rethinkdbdash')({
   host: process.env.CA_DB_HOST || 'localhost',
-  port: process.env.CA_DB_PORT || 28016,
+  port: process.env.CA_DB_PORT || 28015,
   db: 'ca'
 }) // TODO remove rethinkdbdash or use adapter for it
 const enrollPage = require('./routes/enrollPage')
 const generateKeys = require('./routes/generateKeys')
-const { key } = require('./keyProvider')
-const { serialize } = require('jwks-provider')
+const {
+  key
+} = require('./keyProvider')
+const {
+  serialize
+} = require('jwks-provider')
 const getKey = require('./routes/getKey')
 
 app.get('/jwks', async (_, res) => {

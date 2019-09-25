@@ -1,6 +1,6 @@
 const r = require('rethinkdbdash')({
   host: process.env.CA_DB_HOST || 'localhost',
-  port: process.env.CA_DB_PORT || 28016,
+  port: process.env.CA_DB_PORT || 28015,
   db: 'ca'
 }) // TODO remove rethinkdb or move to adapter
 const jwt = require('jsonwebtoken')
