@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   combiner:
@@ -65,6 +65,8 @@ services:
     build:
       context: .
       dockerfile: ./shop/Dockerfile
+    environment:
+      - CA_DB_HOST=ca-rethinkdb
     networks:
       digital-receipts:
     volumes:
@@ -76,6 +78,8 @@ services:
     build:
       context: .
       dockerfile: ./user-accounting/Dockerfile
+    environment:
+      - CA_DB_HOST=ca-rethinkdb
     networks:
       digital-receipts:
     ports:
