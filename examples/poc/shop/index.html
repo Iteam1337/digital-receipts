@@ -29,8 +29,10 @@
       </div>
 
       <!-- Tab content -->
-      <div id="receipt-tab" class="tabcontent"></div>
-      <div id="invoice-tab" class="tabcontent"></div>
+      <div id="tab-wrapper">
+        <div id="receipt-tab" class="tabcontent"></div>
+        <div id="invoice-tab" class="tabcontent"></div>
+      </div>
     </div>
   </form>
 
@@ -49,7 +51,7 @@
       4. Butikskunden har fått ett email med kvittot bifogat
       </br>
       </br>
-      Om vi nu går tillbaka till hash-registret kan vi se att kvittot har registrerats." id='check-box'
+      Om vi nu går tillbaka till hash-registret kan vi se att kvittot har registrerats." id="check-box"
       style="visibility: hidden; color: green; font-size:100px; width:120px; ">&#9989</div>
   </div>
   <script type="text/javascript">
@@ -95,9 +97,9 @@
 
 
     Promise.all([
-      fetch('invoiceTab.html'),
-      fetch('receiptTab.html'),
-    ])
+        fetch('invoiceTab.html'),
+        fetch('receiptTab.html'),
+      ])
       .then(r => Promise.all(r.map(x => x.text())))
       .then(([invoiceTab, receiptTab]) => {
         receiptHtml = receiptTab
@@ -120,8 +122,8 @@
           'nextLabel': 'Nästa'
         })
         document.getElementById(
-          'check-box'
-        ).innerHTML =
+            'check-box'
+          ).innerHTML =
           `<div id='check-box' style="visibility: visible; color: green; font-size:100px ">&#9989</div>`
       } else {
         intro.setOptions({
@@ -192,13 +194,13 @@
 
         if (code === 200) {
           document.getElementById(
-            'check-box'
-          ).innerHTML =
+              'check-box'
+            ).innerHTML =
             `<div id='check-box' style="visibility: visible; color: green; font-size:100px ">&#9989</div>`
           setTimeout(() => {
             document.getElementById(
-              'buy'
-            ).innerHTML =
+                'buy'
+              ).innerHTML =
               `<button onclick="buy()">KÖP</button>`
           }, 5500)
           if (urlParams.has('tutorial')) {

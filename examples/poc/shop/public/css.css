@@ -33,6 +33,10 @@ label.time {
   background-color: #ccc;
 }
 
+#tab-wrapper {
+  min-height: 400px;
+}
+
 /* Style the tab content */
 .tabcontent {
   display: none;
