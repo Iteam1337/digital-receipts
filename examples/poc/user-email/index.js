@@ -66,7 +66,10 @@ function openReceipt(r) {
   const urlParams = new URLSearchParams(window.location.search)
   setTimeout(() => {
     if (urlParams.has('tutorial')) {
-      intro.start()
+      intro.setOptions({'hidePrev': true, 'hideNext': true, 'showStepNumbers': false, 'skipLabel': 'Avbryt demonstration', 'doneLabel': 'Avbryt demonstration', 'nextLabel': 'Nästa'})
+      intro.start().oncomplete(function() {
+        window.location.href = location.protocol + '//' + location.host + location.pathname
+      })
     }
   }, 1000)
 }
@@ -74,7 +77,7 @@ function openReceipt(r) {
 function forwardReceipt(r) {
   const result = prompt('To', 'kvitton@ekonomi.se')
   if (result) {
-    intro.nextStep()
+    window.location.href = `${ userAccountingUrlExt }/expenses?tutorial=true`
     fetch(`/forward`, {
       method: 'POST',
       headers: {
@@ -134,6 +137,7 @@ app.get('/emails', (req, res) => {
     <script type="text/javascript">
       var openReceipt = ${eval(openReceipt)}
       var forwardReceipt = ${eval(forwardReceipt)}
+      let userAccountingUrlExt = '${process.env.USER_ACCOUNTING_URL_EXT}'
     </script>
 </head>
 
@@ -372,14 +376,10 @@ app.get('/emails', (req, res) => {
     };
 
     const intro = introJs()
-    intro.setOptions({'hidePrev': true, 'hideNext': true, 'showStepNumbers': false, 'skipLabel': 'Hoppa över demonstration', 'doneLabel': 'Till butikskundens företags affärssystem', 'nextLabel': 'Nästa'})
+    intro.setOptions({'hidePrev': true, 'hideNext': true, 'showStepNumbers': false, 'skipLabel': 'Hoppa över demonstration', 'doneLabel': 'Skip', 'nextLabel': 'Nästa'})
     if (urlParams.has('tutorial')) {
         setTimeout(() => {
-            intro.start().oncomplete(function() {
-                window.location.href = '${
-                  process.env.USER_ACCOUNTING_URL_EXT
-                }/expenses?tutorial=true';
-            });
+            intro.start()
         }, 1000)
     }
 </script>

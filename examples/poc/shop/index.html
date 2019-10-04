@@ -44,11 +44,11 @@
       </br>
       1. Kvittot är genenerat
       </br>
-      2. Det genererade kvittot körs genom en hash-algoritm och signeras digitalt.
+      2. Det genererade kvittot har körts genom en hash-algoritm och signerats digitalt.
       </br>
-      3. Den signerade hashen skickas till hash-registret.
+      3. Den signerade hashen har skickats till hash-registret.
       </br>
-      4. Butikskunden har fått ett email med kvittot bifogat
+      4. Butikskunden har fått ett email med kvittot med tillhörande kvitto-hash bifogat.
       </br>
       </br>
       Om vi nu går tillbaka till hash-registret kan vi se att kvittot har registrerats." id="check-box"
@@ -113,6 +113,7 @@
     const intro = introJs()
     const urlParams = new URLSearchParams(window.location.search)
     if (urlParams.has('tutorial') || urlParams.has('tutorial2')) {
+      let completed
       if (urlParams.has('tutorial2')) {
         intro.setOptions({
           'hidePrev': true,
@@ -125,6 +126,12 @@
             'check-box'
           ).innerHTML =
           `<div id='check-box' style="visibility: visible; color: green; font-size:100px ">&#9989</div>`
+        completed = true
+        intro.start('tutorial2').oncomplete(function () {
+          const frontpage_url = window.location.hostname === "localhost" ? "http://localhost:6900" :
+            "https://www.digitala-kvitton.se"
+          window.location.href = frontpage_url + '/?intro=hash-registry';
+        })
       } else {
         intro.setOptions({
           'hidePrev': true,
@@ -133,19 +140,11 @@
           'doneLabel': 'skip',
           'nextLabel': 'Nästa'
         })
+        intro.start('tutorial').oncomplete(function () {
+          completed = true
+          window.location.href = 'http://' + window.location.host
+        });
       }
-      let completed
-      const introGroup = urlParams.has('tutorial2') ? "tutorial2" : "tutorial"
-      intro.start(introGroup).oncomplete(function () {
-        completed = true
-        if (introGroup === "tutorial") {
-          window.location.href = 'http://' + window.location.host + '/?tutorial2=true';
-        } else {
-          const frontpage_url = window.location.hostname === "localhost" ? "http://localhost:6900" :
-            "https://www.digitala-kvitton.se"
-          window.location.href = frontpage_url + '/?intro=hash-registry';
-        }
-      });
       intro.onexit(function (e) {
         if (!completed) {
           window.location.href = 'http://' + window.location.host;
@@ -204,7 +203,7 @@
               `<button onclick="buy()">KÖP</button>`
           }, 5500)
           if (urlParams.has('tutorial')) {
-            intro.start('tutorial2')
+            window.location.href = location.protocol + '//' + location.host + location.pathname + '?tutorial2=true'
           }
         } else {
           alert(req.responseText)
