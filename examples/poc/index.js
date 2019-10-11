@@ -11,7 +11,7 @@ app.use(express.static('public'))
 
 app.get('/', (req, res) => {
   let introClass = req.query.intro || 'initial'
-  let introDoneRoute = `${req.protocol}://${req.get('host')}/?intro=initial2`
+  let introDoneRoute = `/?intro=initial2`
   let introDoneLabel = 'Börja demonstrationen'
   let dataIntro = ''
 
