@@ -100,7 +100,7 @@
         intro.oncomplete(function () {
           completed = true
           localStorage.setItem('attestation-tutorial', true)
-          window.location.href = `http://${window.location.host}/attestation`
+          window.location.href = `${window.location.protocol}//${window.location.host}/attestation`
         });
         intro.onexit(function () {
           if (!completed) {

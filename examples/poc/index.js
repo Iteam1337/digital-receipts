@@ -172,7 +172,7 @@ app.get('/', (req, res) => {
                     window.location.href = '${introDoneRoute}' + '&id=' + localStorage.getItem('id');
                   } else {
                     localStorage.setItem('tutorial', false)
-                    window.location.href = 'http://' + window.location.host;
+                    window.location.href = window.location.protocol + '//' + window.location.host;
                   }
                 });
                 intro.onexit(function() {
