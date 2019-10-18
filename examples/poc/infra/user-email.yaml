@@ -29,7 +29,7 @@ spec:
             - name: MAIL_URL
               value: http://user-email
             - name: USER_ACCOUNTING_URL
-              value: http://user-accounting.digitala-kvitton.se
+              value: https://user-accounting.digitala-kvitton.se
             - name: HASH_REGISTRY_URL
               value: http://hash-registry-poc
             - name: CA_URL
@@ -39,7 +39,7 @@ spec:
             - name: USER_ACCOUNTING_ORG_ID
               value: '456'
             - name: USER_ACCOUNTING_URL_EXT
-              value: 'http://user-accounting.digitala-kvitton.se'
+              value: 'https://user-accounting.digitala-kvitton.se'
       restartPolicy: Always
 ---
 apiVersion: v1
