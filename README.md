@@ -6,15 +6,15 @@ Instructions to integrate as an entity (receipt-publisher / -reporter) in this f
 
 
 # Instruktioner på svenska
-Här följer en icke-teknisk beskriverning av projektet och dess olika komponenter.
+Här följer en icke-teknisk beskrivning av projektet och dess olika komponenter.
 Premissen är att bygga ett självreglerande system med så lite administration som möjligt. Där alla parter ges möjlighet och hålls, via olika incitament, ansvariga för att utföra sin del korrekt.
 
 I systemet finns det två centrala APIer. Ett hash-register och en Certificate Authority.
 
 ## Hash-register
-Hash registret finns till som ett centralt register för alla kvitton (hashar) som har utfärdats. Kvitton lagras inte i fullo utan körs först genom en kryptografisk funktion, s.k [hashfunktion](https://en.wikipedia.org/wiki/Cryptographic_hash_function), som möjliggör att, med kvittodatan tillgänglig (vid en ev. kontroll), verifiera att hashen är deriverad från datan. Däremot är det inte möjligt att återskapa kvittodatan från endast hashen.
+Hash-registret finns till som ett centralt register för alla kvitton (hashar) som har utfärdats. Kvitton lagras inte i fullo utan körs först genom en kryptografisk funktion, s.k [hashfunktion](https://en.wikipedia.org/wiki/Cryptographic_hash_function), som möjliggör att, med kvittodatan tillgänglig (vid en ev. kontroll), verifiera att hashen är deriverad från datan. Däremot är det inte möjligt att återskapa kvittodatan från endast hashen.
 
-OBS. För att kunna registrera en hash i hash-registret krävs att aktören först registrerar sig i Certificate Authority (se nedan). Detta finns i förebyggande syfte för att endast tillåta seriösta aktörer. 
+OBS. För att kunna registrera en hash i hash-registret krävs att aktören först registrerar sig i Certificate Authority (se nedan). Detta finns i förebyggande syfte för att endast tillåta seriösa aktörer. 
 
 
 ## CA
