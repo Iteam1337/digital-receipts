@@ -88,7 +88,7 @@ app.get('/expenses', (_, res) => {
 app.get('/attestation', (_, res) => {
   res.sendFile(`${__dirname}/attestation.html`)
 })
-
+  
 app.get('/report-receipt/:receiptName', async (req, res) => {
   const { receiptName } = req.params
 
@@ -137,9 +137,13 @@ app.get('/report-receipt/:receiptName', async (req, res) => {
 
         <input data-intro="Spara kvittot för att avvakta attesterande av ekonomiansvarig" type="submit" value="Spara"/>
         <input type="button" value="Tillbaka" onclick="location.href='/expenses';"/>
+        <input type="button" value="Ta bort" onclick="deleteReceipt('${digitalDeceipt.hash}')"/>
         </form>
         <script type="text/javascript" src="/intro.js/intro.js"></script>
         <script type="text/javascript">
+          function deleteReceipt(hash) {
+            return fetch("/receipts/" + hash, {method: 'DELETE'})
+          }
           const intro = introJs()
           intro.setOptions({'hidePrev': true, 'hideNext': true, 'showStepNumbers': false, 'skipLabel': 'Hoppa över demonstration', 'doneLabel': 'Till attesteringsvyn', 'nextLabel': 'Nästa'})
           if (localStorage.getItem('tutorial')) {
@@ -211,6 +215,14 @@ function setReceiptAsNotSaved(hash) {
     }
   })
 }
+
+app.delete('/receipts/:hash', async (req, res) => {
+  const { hash } = req.params
+
+  console.log('delete', hash);
+  setReceiptAsDone(hash)
+  res.sendStatus(200)
+})
 
 app.post('/report-receipt/:hash', async (req, res) => {
   const { hash } = req.params
