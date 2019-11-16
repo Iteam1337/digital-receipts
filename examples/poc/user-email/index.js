@@ -77,7 +77,9 @@ function openReceipt(r) {
 function forwardReceipt(r) {
   const result = prompt('To', 'kvitton@ekonomi.se')
   if (result) {
-    window.location.href = `${ userAccountingUrlExt }/expenses?tutorial=true`
+      if (urlParams.has('tutorial')) {
+          window.location.href = `${ userAccountingUrlExt }/expenses?tutorial=true`
+      }
     fetch(`/forward`, {
       method: 'POST',
       headers: {
