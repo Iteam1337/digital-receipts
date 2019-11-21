@@ -368,7 +368,9 @@ app.get('/emails', (req, res) => {
     if (!urlParams.has('id')) {
         if (localStorage.getItem('id')) {
             window.location.href = window.location.href + '?id=' + localStorage.getItem('id')
-        } 
+        } else {
+            window.location.href = window.location.href
+        }
     }
     window.onmessage = function(e) {
         var payload = JSON.parse(e.data);
