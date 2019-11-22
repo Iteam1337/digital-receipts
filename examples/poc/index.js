@@ -153,6 +153,17 @@ app.get('/', (req, res) => {
                   data: sessionId
                 }), "*");
               })).then(() => localStorage.setItem('id', sessionId))
+            } else {
+              const iframes = ["shop-iframe", "mail-iframe", "user-accounting-expenses-iframe", "ca-iframe", "hash-registry-iframe"]
+              const sessionId = localStorage.getItem('id')
+              Promise.all(iframes.map(iframe => {
+                const win = document.getElementById(iframe).contentWindow;
+
+                return win.postMessage(JSON.stringify({
+                  key: 'id',
+                  data: sessionId
+                }), "*");
+              }))
             }
           };
             function enableTutorial() {
